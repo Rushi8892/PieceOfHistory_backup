@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Piece of History"
+description = "A Snowy Blue daily competition where people submit a story, make cumulative USD payments, and compete to make their story part of permanent public history."
+version = "1.0.0"
+id = "artifacts/piece-of-history"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25721
+
+[services.development]
+run = "pnpm --filter @workspace/piece-of-history run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/piece-of-history", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/piece-of-history/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25721"
+BASE_PATH = "/"

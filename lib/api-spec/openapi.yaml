@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: public
+    description: Public Piece of History content
 paths:
   /healthz:
     get:
@@ -24,6 +26,47 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /stats:
+    get:
+      operationId: getSiteStats
+      tags: [public]
+      summary: Get live site statistics
+      description: Returns real counts used by the public site footer.
+      responses:
+        "200":
+          description: Site statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteStats"
+  /me:
+    get:
+      operationId: getCurrentUser
+      tags: [public]
+      summary: Get the signed-in local user
+      description: Creates the local user record on the first authenticated request.
+      responses:
+        "200":
+          description: The signed-in local user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentUser"
+        "401":
+          description: Authentication required
+  /competition/today:
+    get:
+      operationId: getTodayCompetition
+      tags: [public]
+      summary: Get today's active competition
+      description: Returns the current active day and its ranked participants.
+      responses:
+        "200":
+          description: Today's competition
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TodayCompetition"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +76,93 @@ components:
           type: string
       required:
         - status
+    SiteStats:
+      type: object
+      properties:
+        daysLaunched:
+          type: integer
+          minimum: 0
+        users:
+          type: integer
+          minimum: 0
+        piecesOfHistory:
+          type: integer
+          minimum: 0
+      required:
+        - daysLaunched
+        - users
+        - piecesOfHistory
+    CompetitionParticipant:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        displayName:
+          type: string
+        story:
+          type: string
+        websiteUrl:
+          type: [string, "null"]
+          format: uri
+        runningTotalCents:
+          type: integer
+          minimum: 0
+        rank:
+          type: integer
+          minimum: 1
+      required:
+        - id
+        - displayName
+        - story
+        - websiteUrl
+        - runningTotalCents
+        - rank
+    TodayCompetition:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        closingTimestamp:
+          type: string
+          format: date-time
+        minimumPaymentCents:
+          type: integer
+          minimum: 1
+        participants:
+          type: array
+          items:
+            $ref: "#/components/schemas/CompetitionParticipant"
+      required:
+        - id
+        - date
+        - closingTimestamp
+        - minimumPaymentCents
+        - participants
+    CurrentUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        displayName:
+          type: string
+        email:
+          type: [string, "null"]
+          format: email
+        authProvider:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+      required:
+        - id
+        - displayName
+        - email
+        - authProvider
+        - role
 
