@@ -5,6 +5,8 @@ import competitionRouter from "./competition";
 import meRouter from "./me";
 import storiesRouter from "./stories";
 import paymentsRouter from "./payments";
+import archiveRouter from "./archive";
+import adminRouter from "./admin";
 
 const router: IRouter = Router();
 
@@ -14,5 +16,7 @@ router.use(competitionRouter);
 router.use(meRouter);
 router.use(storiesRouter);
 router.use(paymentsRouter);
+router.use(archiveRouter);
+router.use(adminRouter);
 
 export default router;

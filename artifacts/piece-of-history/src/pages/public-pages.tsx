@@ -20,7 +20,7 @@ export function LandingPage() {
               Leave one day <span className="text-accent italic">behind.</span>
             </h1>
             <p className="mt-8 max-w-lg text-lg leading-8 text-muted-foreground md:text-xl">
-              Piece of History is a daily storytelling competition for the moments you almost forgot. Write yours down. Let people back it. See what stays.
+              Piece of History is a small side project for the moments you almost forgot. Write yours down. Let people back it. See what stays.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <Show when="signed-out">

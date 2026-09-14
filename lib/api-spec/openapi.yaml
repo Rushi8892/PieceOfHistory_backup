@@ -16,6 +16,12 @@ tags:
     description: Authenticated stories and payment setup
   - name: payments
     description: Authenticated payment orders and Razorpay webhooks
+  - name: archive
+    description: Public closed Piece of History archive
+  - name: history
+    description: Authenticated private participant history
+  - name: admin
+    description: Owner-only moderation and administration
 paths:
   /healthz:
     get:
@@ -179,7 +185,128 @@ paths:
           description: Event accepted or safely ignored
         "400":
           description: Invalid signature or body
+  /archive:
+    get:
+      operationId: getArchive
+      tags: [archive]
+      summary: Browse closed Pieces of History
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Paginated closed days
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArchiveResponse"
+  /archive/{date}:
+    get:
+      operationId: getArchiveDetail
+      tags: [archive]
+      summary: Get a public closed-day archive detail
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Closed-day winner detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArchiveDetail"
+        "404":
+          description: Closed day or visible winning story not found
+  /me/history:
+    get:
+      operationId: getMyHistory
+      tags: [history]
+      summary: Get the authenticated participant's private history
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Paginated private history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MyHistoryResponse"
+        "401":
+          description: Authentication required
+  /admin/overview:
+    get:
+      operationId: getAdminOverview
+      tags: [admin]
+      summary: Get owner-only administration overview
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Basic owner administration data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminOverview"
+        "401":
+          description: Authentication required
+        "403":
+          description: Administrator role required
+  /admin/stories/{storyId}/hide:
+    post:
+      operationId: hideAdminStory
+      tags: [admin]
+      summary: Hide a story for abuse moderation
+      security:
+        - clerkSession: []
+      parameters:
+        - name: storyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Idempotent moderation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HideStoryResponse"
+        "401":
+          description: Authentication required
+        "403":
+          description: Administrator role required
+        "404":
+          description: Story not found
 components:
+  parameters:
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      name: pageSize
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
   securitySchemes:
     clerkSession:
       type: http
@@ -367,4 +494,200 @@ components:
     RazorpayWebhookPayload:
       type: object
       additionalProperties: true
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          minimum: 0
+        page:
+          type: integer
+          minimum: 1
+        pageSize:
+          type: integer
+          minimum: 1
+        totalPages:
+          type: integer
+          minimum: 0
+      required: [total, page, pageSize, totalPages]
+    ArchiveItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        winnerDisplayName:
+          type: [string, "null"]
+        winningStandingCents:
+          type: [integer, "null"]
+          minimum: 0
+        participantCount:
+          type: integer
+          minimum: 0
+      required: [id, date, winnerDisplayName, winningStandingCents, participantCount]
+    ArchiveResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ArchiveItem"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+      required: [items, pagination]
+    ArchiveDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        winnerDisplayName:
+          type: string
+        winningStory:
+          type: string
+        winningStandingCents:
+          type: [integer, "null"]
+          minimum: 0
+        participantCount:
+          type: integer
+          minimum: 0
+        winnerWebsiteUrl:
+          type: [string, "null"]
+          format: uri
+      required: [id, date, winnerDisplayName, winningStory, winningStandingCents, participantCount, winnerWebsiteUrl]
+    HistoryPayment:
+      type: object
+      properties:
+        amountCents:
+          type: integer
+          minimum: 1
+        capturedAt:
+          type: string
+          format: date-time
+        paymentReference:
+          type: string
+      required: [amountCents, capturedAt, paymentReference]
+    MyHistoryItem:
+      type: object
+      properties:
+        dayId:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [active, closed]
+        storyText:
+          type: [string, "null"]
+        displayName:
+          type: [string, "null"]
+        websiteUrl:
+          type: [string, "null"]
+          format: uri
+        storyStatus:
+          type: [string, "null"]
+          enum: [visible, hidden, moderated, null]
+        payments:
+          type: array
+          items:
+            $ref: "#/components/schemas/HistoryPayment"
+        finalRunningTotalCents:
+          type: integer
+          minimum: 0
+        finalRank:
+          type: [integer, "null"]
+          minimum: 1
+        result:
+          type: string
+          enum: [won, lost, in_progress]
+      required: [dayId, date, status, storyText, displayName, websiteUrl, storyStatus, payments, finalRunningTotalCents, finalRank, result]
+    MyHistoryResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/MyHistoryItem"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+      required: [items, pagination]
+    AdminPayment:
+      type: object
+      properties:
+        storyId:
+          type: string
+          format: uuid
+        userDisplayName:
+          type: string
+        dayDate:
+          type: string
+          format: date
+        amountCents:
+          type: integer
+          minimum: 1
+        paymentReference:
+          type: string
+        status:
+          type: string
+          enum: [captured]
+        capturedAt:
+          type: string
+          format: date-time
+      required: [storyId, userDisplayName, dayDate, amountCents, paymentReference, status, capturedAt]
+    AdminClosedDay:
+      type: object
+      properties:
+        dayId:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        winnerDisplayName:
+          type: [string, "null"]
+        winningStandingCents:
+          type: [integer, "null"]
+          minimum: 0
+        closedAt:
+          type: [string, "null"]
+          format: date-time
+      required: [dayId, date, winnerDisplayName, winningStandingCents, closedAt]
+    AdminOverview:
+      type: object
+      properties:
+        totalUsers:
+          type: integer
+          minimum: 0
+        totalPiecesOfHistory:
+          type: integer
+          minimum: 0
+        capturedPayments:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminPayment"
+        capturedPaymentsPagination:
+          $ref: "#/components/schemas/Pagination"
+        closedDays:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminClosedDay"
+      required: [totalUsers, totalPiecesOfHistory, capturedPayments, capturedPaymentsPagination, closedDays]
+    HideStoryResponse:
+      type: object
+      properties:
+        storyId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [hidden]
+      required: [storyId, status]
 

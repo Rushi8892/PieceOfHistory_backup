@@ -5,7 +5,11 @@ export const dailyPieceStatusEnum = pgEnum("daily_piece_status", [
   "active",
   "closed",
 ]);
-export const storyStatusEnum = pgEnum("story_status", ["visible", "hidden"]);
+export const storyStatusEnum = pgEnum("story_status", [
+  "visible",
+  "hidden",
+  "moderated",
+]);
 export const paymentStatusEnum = pgEnum("payment_status", [
   "pending",
   "captured",

@@ -2,7 +2,8 @@ import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { ArrowUpRight, Check, Clock3, ExternalLink, Menu, PenLine, X } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import type { CompetitionParticipant, SiteStats, TodayCompetition } from '@workspace/api-client-react';
-import { Show } from '@clerk/react';
+import { getGetCurrentUserQueryKey, useGetCurrentUser } from '@workspace/api-client-react';
+import { Show, useAuth } from '@clerk/react';
 
 export function Logo({ light = false }: { light?: boolean }) {
   return (
@@ -58,15 +59,24 @@ export function PrimaryButton({
 export function SiteNav() {
   const [location] = useLocation();
   const [open, setOpen] = useState(false);
+  const { isLoaded, isSignedIn } = useAuth();
+  const { data: user } = useGetCurrentUser({
+    query: {
+      enabled: isLoaded && isSignedIn,
+      queryKey: getGetCurrentUserQueryKey(),
+      retry: false,
+    },
+  });
   const isActive = (path: string) => path === '/' ? location === '/' : location.startsWith(path);
   const links = [
     { href: '/explore', label: 'Explore' },
+    { href: '/archive', label: 'Archive' },
     { href: '/competition', label: 'Today' },
     { href: '/how-it-works', label: 'How it works' },
   ];
 
   return (
-    <header className="relative z-20 border-b border-primary/10 bg-background/90 backdrop-blur-md">
+    <header className="relative z-20 border-b border-primary/10 bg-background/95 backdrop-blur-md">
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
         <Logo />
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
@@ -75,6 +85,16 @@ export function SiteNav() {
               {link.label}
             </Link>
           ))}
+          <Show when="signed-in">
+            <Link href="/my-history" className="nav-link text-sm font-semibold" data-active={isActive('/my-history')} data-testid="link-nav-my-history">
+              My History
+            </Link>
+            {user?.role === 'admin' && (
+              <Link href="/admin" className="nav-link text-sm font-semibold" data-active={isActive('/admin')} data-testid="link-nav-admin">
+                Admin
+              </Link>
+            )}
+          </Show>
         </nav>
         <div className="hidden items-center gap-3 md:flex">
           <Show when="signed-out">
@@ -99,6 +119,16 @@ export function SiteNav() {
                 {link.label}
               </Link>
             ))}
+            <Show when="signed-in">
+              <Link href="/my-history" onClick={() => setOpen(false)} className="rounded-xl px-4 py-3 text-sm font-semibold text-primary hover:bg-muted" data-testid="link-mobile-my-history">
+                My History
+              </Link>
+              {user?.role === 'admin' && (
+                <Link href="/admin" onClick={() => setOpen(false)} className="rounded-xl px-4 py-3 text-sm font-semibold text-primary hover:bg-muted" data-testid="link-mobile-admin">
+                  Admin
+                </Link>
+              )}
+            </Show>
             <div className="mt-3 grid grid-cols-2 gap-2 border-t border-primary/10 pt-4">
               <Show when="signed-out">
                 <Link href="/sign-in" className="rounded-full border border-primary/15 px-4 py-3 text-center text-sm font-semibold text-primary" data-testid="link-mobile-sign-in">Sign in</Link>
@@ -123,13 +153,14 @@ export function SiteFooter({ stats }: { stats?: SiteStats }) {
           <div>
             <Logo light />
             <p className="mt-7 max-w-xs text-sm leading-6 text-primary-foreground/65">
-              A small place for the days that changed you. One story, every day, forever.
+              A tiny side project for the days that changed you. One story, every day, forever.
             </p>
           </div>
           <div>
             <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.22em] text-secondary">Find your way</p>
             <div className="mt-5 flex flex-col items-start gap-3 text-sm text-primary-foreground/70">
               <Link href="/explore" className="transition-colors hover:text-secondary" data-testid="footer-link-explore">Explore stories</Link>
+              <Link href="/archive" className="transition-colors hover:text-secondary" data-testid="footer-link-archive">The Archive</Link>
               <Link href="/competition" className="transition-colors hover:text-secondary" data-testid="footer-link-competition">Today&apos;s competition</Link>
               <Link href="/how-it-works" className="transition-colors hover:text-secondary" data-testid="footer-link-how-it-works">How it works</Link>
             </div>
@@ -155,7 +186,7 @@ export function SiteFooter({ stats }: { stats?: SiteStats }) {
         </div>
         <div className="mt-16 flex flex-col justify-between gap-3 border-t border-primary-foreground/15 pt-5 text-xs text-primary-foreground/45 sm:flex-row">
           <span>© {new Date().getFullYear()} Piece of History</span>
-          <span>Developed by Piece of History · Made for the days worth remembering.</span>
+           <span>A side project by Piece of History · Made for the days worth remembering.</span>
         </div>
       </div>
     </footer>

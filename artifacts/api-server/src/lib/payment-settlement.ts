@@ -153,7 +153,12 @@ export async function settleCapturedPayment(
     await tx
       .update(storiesTable)
       .set({ status: "visible", updatedAt: payment.capturedAt })
-      .where(eq(storiesTable.id, story.id));
+      .where(
+        and(
+          eq(storiesTable.id, story.id),
+          eq(storiesTable.status, "hidden"),
+        ),
+      );
 
     const standings = await tx
       .select()

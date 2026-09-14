@@ -20,8 +20,16 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AdminOverview,
+  ArchiveDetail,
+  ArchiveResponse,
   CurrentUser,
+  GetAdminOverviewParams,
+  GetArchiveParams,
+  GetMyHistoryParams,
   HealthStatus,
+  HideStoryResponse,
+  MyHistoryResponse,
   PaymentOrder,
   PaymentOrderInput,
   RazorpayWebhookPayload,
@@ -709,5 +717,408 @@ export const useReceiveRazorpayWebhook = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getReceiveRazorpayWebhookMutationOptions(options));
+    }
+
+export const getGetArchiveUrl = (params?: GetArchiveParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/archive?${stringifiedParams}` : `/api/archive`
+}
+
+/**
+ * @summary Browse closed Pieces of History
+ */
+export const getArchive = async (params?: GetArchiveParams, options?: Parameters<typeof customFetch>[1]): Promise<ArchiveResponse> => {
+
+  return customFetch<ArchiveResponse>(getGetArchiveUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetArchiveQueryKey = (params?: GetArchiveParams,) => {
+    return [
+    `/api/archive`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetArchiveQueryOptions = <TData = Awaited<ReturnType<typeof getArchive>>, TError = ErrorType<unknown>>(params?: GetArchiveParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getArchive>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetArchiveQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getArchive>>> = ({ signal }) => getArchive(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getArchive>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetArchiveQueryResult = NonNullable<Awaited<ReturnType<typeof getArchive>>>
+export type GetArchiveQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Browse closed Pieces of History
+ */
+
+export function useGetArchive<TData = Awaited<ReturnType<typeof getArchive>>, TError = ErrorType<unknown>>(
+ params?: GetArchiveParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getArchive>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetArchiveQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetArchiveDetailUrl = (date: string,) => {
+
+
+
+
+  return `/api/archive/${date}`
+}
+
+/**
+ * @summary Get a public closed-day archive detail
+ */
+export const getArchiveDetail = async (date: string, options?: Parameters<typeof customFetch>[1]): Promise<ArchiveDetail> => {
+
+  return customFetch<ArchiveDetail>(getGetArchiveDetailUrl(date),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetArchiveDetailQueryKey = (date: string,) => {
+    return [
+    `/api/archive/${date}`
+    ] as const;
+    }
+
+
+export const getGetArchiveDetailQueryOptions = <TData = Awaited<ReturnType<typeof getArchiveDetail>>, TError = ErrorType<void>>(date: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getArchiveDetail>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetArchiveDetailQueryKey(date);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getArchiveDetail>>> = ({ signal }) => getArchiveDetail(date, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: date !== null && date !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getArchiveDetail>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetArchiveDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getArchiveDetail>>>
+export type GetArchiveDetailQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get a public closed-day archive detail
+ */
+
+export function useGetArchiveDetail<TData = Awaited<ReturnType<typeof getArchiveDetail>>, TError = ErrorType<void>>(
+ date: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getArchiveDetail>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetArchiveDetailQueryOptions(date,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetMyHistoryUrl = (params?: GetMyHistoryParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/history?${stringifiedParams}` : `/api/me/history`
+}
+
+/**
+ * @summary Get the authenticated participant's private history
+ */
+export const getMyHistory = async (params?: GetMyHistoryParams, options?: Parameters<typeof customFetch>[1]): Promise<MyHistoryResponse> => {
+
+  return customFetch<MyHistoryResponse>(getGetMyHistoryUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyHistoryQueryKey = (params?: GetMyHistoryParams,) => {
+    return [
+    `/api/me/history`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetMyHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getMyHistory>>, TError = ErrorType<void>>(params?: GetMyHistoryParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyHistoryQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyHistory>>> = ({ signal }) => getMyHistory(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyHistory>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyHistoryQueryResult = NonNullable<Awaited<ReturnType<typeof getMyHistory>>>
+export type GetMyHistoryQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get the authenticated participant's private history
+ */
+
+export function useGetMyHistory<TData = Awaited<ReturnType<typeof getMyHistory>>, TError = ErrorType<void>>(
+ params?: GetMyHistoryParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyHistoryQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetAdminOverviewUrl = (params?: GetAdminOverviewParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/overview?${stringifiedParams}` : `/api/admin/overview`
+}
+
+/**
+ * @summary Get owner-only administration overview
+ */
+export const getAdminOverview = async (params?: GetAdminOverviewParams, options?: Parameters<typeof customFetch>[1]): Promise<AdminOverview> => {
+
+  return customFetch<AdminOverview>(getGetAdminOverviewUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminOverviewQueryKey = (params?: GetAdminOverviewParams,) => {
+    return [
+    `/api/admin/overview`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetAdminOverviewQueryOptions = <TData = Awaited<ReturnType<typeof getAdminOverview>>, TError = ErrorType<void>>(params?: GetAdminOverviewParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminOverview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminOverviewQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminOverview>>> = ({ signal }) => getAdminOverview(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminOverview>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminOverviewQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminOverview>>>
+export type GetAdminOverviewQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get owner-only administration overview
+ */
+
+export function useGetAdminOverview<TData = Awaited<ReturnType<typeof getAdminOverview>>, TError = ErrorType<void>>(
+ params?: GetAdminOverviewParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminOverview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminOverviewQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getHideAdminStoryUrl = (storyId: string,) => {
+
+
+
+
+  return `/api/admin/stories/${storyId}/hide`
+}
+
+/**
+ * @summary Hide a story for abuse moderation
+ */
+export const hideAdminStory = async (storyId: string, options?: Parameters<typeof customFetch>[1]): Promise<HideStoryResponse> => {
+
+  return customFetch<HideStoryResponse>(getHideAdminStoryUrl(storyId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getHideAdminStoryMutationKey = () => ['hideAdminStory'] as const;
+
+export const getHideAdminStoryMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hideAdminStory>>, TError,HideAdminStoryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof hideAdminStory>>, TError,HideAdminStoryMutationVariables, TContext> => {
+
+const mutationKey = getHideAdminStoryMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof hideAdminStory>>, HideAdminStoryMutationVariables> = (props) => {
+          const {storyId} = props ?? {};
+
+          return  hideAdminStory(storyId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type HideAdminStoryMutationResult = NonNullable<Awaited<ReturnType<typeof hideAdminStory>>>
+
+    export type HideAdminStoryMutationError = ErrorType<void>
+    export type HideAdminStoryMutationVariables = {storyId: string}
+
+    /**
+ * @summary Hide a story for abuse moderation
+ */
+export const useHideAdminStory = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hideAdminStory>>, TError,HideAdminStoryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof hideAdminStory>>,
+        TError,
+        HideAdminStoryMutationVariables,
+        TContext
+      > => {
+      return useMutation(getHideAdminStoryMutationOptions(options));
     }
 

@@ -162,3 +162,196 @@ export const ReceiveRazorpayWebhookBody = zod.record(zod.string(), zod.unknown()
 export const ReceiveRazorpayWebhookResponse = zod.unknown()
 
 
+/**
+ * @summary Browse closed Pieces of History
+ */
+export const getArchiveQueryPageDefault = 1;
+
+export const getArchiveQueryPageSizeDefault = 20;
+export const getArchiveQueryPageSizeMax = 100;
+
+
+
+export const GetArchiveQueryParams = zod.object({
+  "page": zod.coerce.number().int().min(1).default(getArchiveQueryPageDefault),
+  "pageSize": zod.coerce.number().int().min(1).max(getArchiveQueryPageSizeMax).default(getArchiveQueryPageSizeDefault)
+})
+
+export const getArchiveResponseItemsItemWinningStandingCentsMin = 0;
+
+export const getArchiveResponseItemsItemParticipantCountMin = 0;
+
+export const getArchiveResponsePaginationTotalMin = 0;
+
+
+
+export const getArchiveResponsePaginationTotalPagesMin = 0;
+
+
+
+export const GetArchiveResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "date": zod.coerce.date(),
+  "winnerDisplayName": zod.string().nullable(),
+  "winningStandingCents": zod.number().int().min(getArchiveResponseItemsItemWinningStandingCentsMin).nullable(),
+  "participantCount": zod.number().int().min(getArchiveResponseItemsItemParticipantCountMin)
+})),
+  "pagination": zod.object({
+  "total": zod.number().int().min(getArchiveResponsePaginationTotalMin),
+  "page": zod.number().int().min(1),
+  "pageSize": zod.number().int().min(1),
+  "totalPages": zod.number().int().min(getArchiveResponsePaginationTotalPagesMin)
+})
+})
+
+
+/**
+ * @summary Get a public closed-day archive detail
+ */
+export const GetArchiveDetailParams = zod.object({
+  "date": zod.date()
+})
+
+export const getArchiveDetailResponseWinningStandingCentsMin = 0;
+
+export const getArchiveDetailResponseParticipantCountMin = 0;
+
+
+
+export const GetArchiveDetailResponse = zod.object({
+  "id": zod.string().uuid(),
+  "date": zod.coerce.date(),
+  "winnerDisplayName": zod.string(),
+  "winningStory": zod.string(),
+  "winningStandingCents": zod.number().int().min(getArchiveDetailResponseWinningStandingCentsMin).nullable(),
+  "participantCount": zod.number().int().min(getArchiveDetailResponseParticipantCountMin),
+  "winnerWebsiteUrl": zod.string().url().nullable()
+})
+
+
+/**
+ * @summary Get the authenticated participant's private history
+ */
+export const getMyHistoryQueryPageDefault = 1;
+
+export const getMyHistoryQueryPageSizeDefault = 20;
+export const getMyHistoryQueryPageSizeMax = 100;
+
+
+
+export const GetMyHistoryQueryParams = zod.object({
+  "page": zod.coerce.number().int().min(1).default(getMyHistoryQueryPageDefault),
+  "pageSize": zod.coerce.number().int().min(1).max(getMyHistoryQueryPageSizeMax).default(getMyHistoryQueryPageSizeDefault)
+})
+
+
+export const getMyHistoryResponseItemsItemFinalRunningTotalCentsMin = 0;
+
+
+export const getMyHistoryResponsePaginationTotalMin = 0;
+
+
+
+export const getMyHistoryResponsePaginationTotalPagesMin = 0;
+
+
+
+export const GetMyHistoryResponse = zod.object({
+  "items": zod.array(zod.object({
+  "dayId": zod.string().uuid(),
+  "date": zod.coerce.date(),
+  "status": zod.enum(['active', 'closed']),
+  "storyText": zod.string().nullable(),
+  "displayName": zod.string().nullable(),
+  "websiteUrl": zod.string().url().nullable(),
+  "storyStatus": zod.union([zod.literal('visible'),zod.literal('hidden'),zod.literal('moderated'),zod.literal(null)]).nullable(),
+  "payments": zod.array(zod.object({
+  "amountCents": zod.number().int().min(1),
+  "capturedAt": zod.coerce.date(),
+  "paymentReference": zod.string()
+})),
+  "finalRunningTotalCents": zod.number().int().min(getMyHistoryResponseItemsItemFinalRunningTotalCentsMin),
+  "finalRank": zod.number().int().min(1).nullable(),
+  "result": zod.enum(['won', 'lost', 'in_progress'])
+})),
+  "pagination": zod.object({
+  "total": zod.number().int().min(getMyHistoryResponsePaginationTotalMin),
+  "page": zod.number().int().min(1),
+  "pageSize": zod.number().int().min(1),
+  "totalPages": zod.number().int().min(getMyHistoryResponsePaginationTotalPagesMin)
+})
+})
+
+
+/**
+ * @summary Get owner-only administration overview
+ */
+export const getAdminOverviewQueryPageDefault = 1;
+
+export const getAdminOverviewQueryPageSizeDefault = 20;
+export const getAdminOverviewQueryPageSizeMax = 100;
+
+
+
+export const GetAdminOverviewQueryParams = zod.object({
+  "page": zod.coerce.number().int().min(1).default(getAdminOverviewQueryPageDefault),
+  "pageSize": zod.coerce.number().int().min(1).max(getAdminOverviewQueryPageSizeMax).default(getAdminOverviewQueryPageSizeDefault)
+})
+
+export const getAdminOverviewResponseTotalUsersMin = 0;
+
+export const getAdminOverviewResponseTotalPiecesOfHistoryMin = 0;
+
+
+export const getAdminOverviewResponseCapturedPaymentsPaginationTotalMin = 0;
+
+
+
+export const getAdminOverviewResponseCapturedPaymentsPaginationTotalPagesMin = 0;
+
+export const getAdminOverviewResponseClosedDaysItemWinningStandingCentsMin = 0;
+
+
+
+export const GetAdminOverviewResponse = zod.object({
+  "totalUsers": zod.number().int().min(getAdminOverviewResponseTotalUsersMin),
+  "totalPiecesOfHistory": zod.number().int().min(getAdminOverviewResponseTotalPiecesOfHistoryMin),
+  "capturedPayments": zod.array(zod.object({
+  "storyId": zod.string().uuid(),
+  "userDisplayName": zod.string(),
+  "dayDate": zod.coerce.date(),
+  "amountCents": zod.number().int().min(1),
+  "paymentReference": zod.string(),
+  "status": zod.enum(['captured']),
+  "capturedAt": zod.coerce.date()
+})),
+  "capturedPaymentsPagination": zod.object({
+  "total": zod.number().int().min(getAdminOverviewResponseCapturedPaymentsPaginationTotalMin),
+  "page": zod.number().int().min(1),
+  "pageSize": zod.number().int().min(1),
+  "totalPages": zod.number().int().min(getAdminOverviewResponseCapturedPaymentsPaginationTotalPagesMin)
+}),
+  "closedDays": zod.array(zod.object({
+  "dayId": zod.string().uuid(),
+  "date": zod.coerce.date(),
+  "winnerDisplayName": zod.string().nullable(),
+  "winningStandingCents": zod.number().int().min(getAdminOverviewResponseClosedDaysItemWinningStandingCentsMin).nullable(),
+  "closedAt": zod.coerce.date().nullable()
+}))
+})
+
+
+/**
+ * @summary Hide a story for abuse moderation
+ */
+export const HideAdminStoryParams = zod.object({
+  "storyId": zod.coerce.string().uuid()
+})
+
+export const HideAdminStoryResponse = zod.object({
+  "storyId": zod.string().uuid(),
+  "status": zod.enum(['hidden'])
+})
+
+

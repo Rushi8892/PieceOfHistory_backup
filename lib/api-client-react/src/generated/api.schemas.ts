@@ -131,3 +131,207 @@ export interface PaymentOrder {
 
 export interface RazorpayWebhookPayload { [key: string]: unknown }
 
+export interface Pagination {
+  /** @minimum 0 */
+  total: number;
+  /** @minimum 1 */
+  page: number;
+  /** @minimum 1 */
+  pageSize: number;
+  /** @minimum 0 */
+  totalPages: number;
+}
+
+export interface ArchiveItem {
+  id: string;
+  date: string;
+  /** @nullable */
+  winnerDisplayName: string | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  winningStandingCents: number | null;
+  /** @minimum 0 */
+  participantCount: number;
+}
+
+export interface ArchiveResponse {
+  items: ArchiveItem[];
+  pagination: Pagination;
+}
+
+export interface ArchiveDetail {
+  id: string;
+  date: string;
+  winnerDisplayName: string;
+  winningStory: string;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  winningStandingCents: number | null;
+  /** @minimum 0 */
+  participantCount: number;
+  /** @nullable */
+  winnerWebsiteUrl: string | null;
+}
+
+export interface HistoryPayment {
+  /** @minimum 1 */
+  amountCents: number;
+  capturedAt: string;
+  paymentReference: string;
+}
+
+export type MyHistoryItemStatus = typeof MyHistoryItemStatus[keyof typeof MyHistoryItemStatus];
+
+
+export const MyHistoryItemStatus = {
+  active: 'active',
+  closed: 'closed',
+} as const;
+
+/**
+ * @nullable
+ */
+export type MyHistoryItemStoryStatus = typeof MyHistoryItemStoryStatus[keyof typeof MyHistoryItemStoryStatus] | null;
+
+
+export const MyHistoryItemStoryStatus = {
+  visible: 'visible',
+  hidden: 'hidden',
+  moderated: 'moderated',
+} as const;
+
+export type MyHistoryItemResult = typeof MyHistoryItemResult[keyof typeof MyHistoryItemResult];
+
+
+export const MyHistoryItemResult = {
+  won: 'won',
+  lost: 'lost',
+  in_progress: 'in_progress',
+} as const;
+
+export interface MyHistoryItem {
+  dayId: string;
+  date: string;
+  status: MyHistoryItemStatus;
+  /** @nullable */
+  storyText: string | null;
+  /** @nullable */
+  displayName: string | null;
+  /** @nullable */
+  websiteUrl: string | null;
+  /** @nullable */
+  storyStatus: MyHistoryItemStoryStatus;
+  payments: HistoryPayment[];
+  /** @minimum 0 */
+  finalRunningTotalCents: number;
+  /**
+     * @minimum 1
+     * @nullable
+     */
+  finalRank: number | null;
+  result: MyHistoryItemResult;
+}
+
+export interface MyHistoryResponse {
+  items: MyHistoryItem[];
+  pagination: Pagination;
+}
+
+export type AdminPaymentStatus = typeof AdminPaymentStatus[keyof typeof AdminPaymentStatus];
+
+
+export const AdminPaymentStatus = {
+  captured: 'captured',
+} as const;
+
+export interface AdminPayment {
+  storyId: string;
+  userDisplayName: string;
+  dayDate: string;
+  /** @minimum 1 */
+  amountCents: number;
+  paymentReference: string;
+  status: AdminPaymentStatus;
+  capturedAt: string;
+}
+
+export interface AdminClosedDay {
+  dayId: string;
+  date: string;
+  /** @nullable */
+  winnerDisplayName: string | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  winningStandingCents: number | null;
+  /** @nullable */
+  closedAt: string | null;
+}
+
+export interface AdminOverview {
+  /** @minimum 0 */
+  totalUsers: number;
+  /** @minimum 0 */
+  totalPiecesOfHistory: number;
+  capturedPayments: AdminPayment[];
+  capturedPaymentsPagination: Pagination;
+  closedDays: AdminClosedDay[];
+}
+
+export type HideStoryResponseStatus = typeof HideStoryResponseStatus[keyof typeof HideStoryResponseStatus];
+
+
+export const HideStoryResponseStatus = {
+  hidden: 'hidden',
+} as const;
+
+export interface HideStoryResponse {
+  storyId: string;
+  status: HideStoryResponseStatus;
+}
+
+export type PageParameter = number;
+
+export type PageSizeParameter = number;
+
+export type GetArchiveParams = {
+/**
+ * @minimum 1
+ */
+page?: PageParameter;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+pageSize?: PageSizeParameter;
+};
+
+export type GetMyHistoryParams = {
+/**
+ * @minimum 1
+ */
+page?: PageParameter;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+pageSize?: PageSizeParameter;
+};
+
+export type GetAdminOverviewParams = {
+/**
+ * @minimum 1
+ */
+page?: PageParameter;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+pageSize?: PageSizeParameter;
+};
+

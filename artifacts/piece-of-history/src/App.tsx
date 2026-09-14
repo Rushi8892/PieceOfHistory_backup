@@ -11,6 +11,9 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { CompetitionPage, ExplorePage, HowItWorksPage, LandingPage } from '@/pages/public-pages';
+import { ArchivePage, ArchiveDetailPage } from '@/pages/archive-pages';
+import { MyHistoryPage } from '@/pages/my-history-page';
+import { AdminPage } from '@/pages/admin-page';
 import { SignInPage, SignUpPage } from '@/pages/auth-pages';
 import { ParticipatePage } from '@/pages/participate-page';
 import { PaymentPage } from '@/pages/payment-page';
@@ -92,9 +95,21 @@ function Router() {
       <Switch>
         <Route path="/" component={LandingPage} />
         <Route path="/explore" component={ExplorePage} />
+        <Route path="/archive" component={ArchivePage} />
+        <Route path="/archive/:date" component={ArchiveDetailPage} />
         <Route path="/competition" component={CompetitionPage} />
         <Route path="/how-it-works" component={HowItWorksPage} />
         
+        <Route path="/my-history">
+          <Show when="signed-in"><MyHistoryPage /></Show>
+          <Show when="signed-out"><Redirect to="/sign-in" /></Show>
+        </Route>
+
+        <Route path="/admin">
+          <Show when="signed-in"><AdminPage /></Show>
+          <Show when="signed-out"><Redirect to="/sign-in" /></Show>
+        </Route>
+
         <Route path="/participate">
           <Show when="signed-in"><ParticipatePage /></Show>
           <Show when="signed-out"><Redirect to="/sign-in" /></Show>
