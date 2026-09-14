@@ -153,7 +153,7 @@ export function SiteFooter({ stats }: { stats?: SiteStats }) {
           <div>
             <Logo light />
             <p className="mt-7 max-w-xs text-sm leading-6 text-primary-foreground/65">
-              A tiny side project for the days that changed you. One story, every day, forever.
+              A tiny side project — one story wins the day, every day, frozen in the archive forever.
             </p>
           </div>
           <div>
@@ -186,7 +186,7 @@ export function SiteFooter({ stats }: { stats?: SiteStats }) {
         </div>
         <div className="mt-16 flex flex-col justify-between gap-3 border-t border-primary-foreground/15 pt-5 text-xs text-primary-foreground/45 sm:flex-row">
           <span>© {new Date().getFullYear()} Piece of History</span>
-           <span>A side project by Piece of History · Made for the days worth remembering.</span>
+          <span>A side project · Built by something curious · For the days worth remembering.</span>
         </div>
       </div>
     </footer>

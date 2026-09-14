@@ -13,7 +13,7 @@ export function LandingPage() {
     <div className="paper-grain min-h-[100dvh] overflow-hidden">
       <SiteNav />
       <main>
-        <section className="relative mx-auto grid max-w-7xl gap-14 px-5 pb-20 pt-16 sm:px-8 md:grid-cols-[1.03fr_.97fr] md:items-center md:gap-8 md:pb-28 md:pt-24 lg:px-12">
+        <section className="frost-hero relative mx-auto grid max-w-7xl gap-14 px-5 pb-20 pt-16 sm:px-8 md:grid-cols-[1.03fr_.97fr] md:items-center md:gap-8 md:pb-28 md:pt-24 lg:px-12">
           <div className="animate-rise-in">
             <SectionKicker>Every day is a chapter</SectionKicker>
             <h1 className="mt-6 max-w-2xl font-display text-[clamp(4.4rem,9vw,8.8rem)] leading-[.84] tracking-[-.045em] text-primary">
