@@ -6,11 +6,15 @@
  * OpenAPI spec version: 0.1.0
  */
 import {
+  useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
@@ -18,12 +22,17 @@ import type {
 import type {
   CurrentUser,
   HealthStatus,
+  PaymentOrder,
+  PaymentOrderInput,
+  RazorpayWebhookPayload,
   SiteStats,
+  StoryInput,
+  StoryPaymentContext,
   TodayCompetition
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
-import type { ErrorType } from '../custom-fetch';
+import type { ErrorType , BodyType } from '../custom-fetch';
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
@@ -360,4 +369,345 @@ export function useGetTodayCompetition<TData = Awaited<ReturnType<typeof getToda
 
 
 
+
+export const getCreateStoryUrl = () => {
+
+
+
+
+  return `/api/stories`
+}
+
+/**
+ * @summary Create the signed-in user's story for today's piece
+ */
+export const createStory = async (storyInput: StoryInput, options?: Parameters<typeof customFetch>[1]): Promise<StoryPaymentContext> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<StoryPaymentContext>(getCreateStoryUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(storyInput)
+  }
+);}
+
+
+
+
+
+export const getCreateStoryMutationKey = () => ['createStory'] as const;
+
+export const getCreateStoryMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStory>>, TError,CreateStoryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createStory>>, TError,CreateStoryMutationVariables, TContext> => {
+
+const mutationKey = getCreateStoryMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createStory>>, CreateStoryMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createStory(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateStoryMutationResult = NonNullable<Awaited<ReturnType<typeof createStory>>>
+    export type CreateStoryMutationBody = BodyType<StoryInput>
+    export type CreateStoryMutationError = ErrorType<void>
+    export type CreateStoryMutationVariables = {data: BodyType<StoryInput>}
+
+    /**
+ * @summary Create the signed-in user's story for today's piece
+ */
+export const useCreateStory = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStory>>, TError,CreateStoryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createStory>>,
+        TError,
+        CreateStoryMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateStoryMutationOptions(options));
+    }
+
+export const getGetStoryPaymentUrl = (storyId: string,) => {
+
+
+
+
+  return `/api/stories/${storyId}/payment`
+}
+
+/**
+ * @summary Get the signed-in owner's payment context for a story
+ */
+export const getStoryPayment = async (storyId: string, options?: Parameters<typeof customFetch>[1]): Promise<StoryPaymentContext> => {
+
+  return customFetch<StoryPaymentContext>(getGetStoryPaymentUrl(storyId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetStoryPaymentQueryKey = (storyId: string,) => {
+    return [
+    `/api/stories/${storyId}/payment`
+    ] as const;
+    }
+
+
+export const getGetStoryPaymentQueryOptions = <TData = Awaited<ReturnType<typeof getStoryPayment>>, TError = ErrorType<void>>(storyId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getStoryPayment>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetStoryPaymentQueryKey(storyId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStoryPayment>>> = ({ signal }) => getStoryPayment(storyId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: storyId !== null && storyId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getStoryPayment>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetStoryPaymentQueryResult = NonNullable<Awaited<ReturnType<typeof getStoryPayment>>>
+export type GetStoryPaymentQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get the signed-in owner's payment context for a story
+ */
+
+export function useGetStoryPayment<TData = Awaited<ReturnType<typeof getStoryPayment>>, TError = ErrorType<void>>(
+ storyId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getStoryPayment>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetStoryPaymentQueryOptions(storyId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreatePaymentOrderUrl = () => {
+
+
+
+
+  return `/api/payments/orders`
+}
+
+/**
+ * @summary Create a server-side Razorpay USD order
+ */
+export const createPaymentOrder = async (paymentOrderInput: PaymentOrderInput, options?: Parameters<typeof customFetch>[1]): Promise<PaymentOrder> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<PaymentOrder>(getCreatePaymentOrderUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(paymentOrderInput)
+  }
+);}
+
+
+
+
+
+export const getCreatePaymentOrderMutationKey = () => ['createPaymentOrder'] as const;
+
+export const getCreatePaymentOrderMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPaymentOrder>>, TError,CreatePaymentOrderMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createPaymentOrder>>, TError,CreatePaymentOrderMutationVariables, TContext> => {
+
+const mutationKey = getCreatePaymentOrderMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createPaymentOrder>>, CreatePaymentOrderMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createPaymentOrder(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreatePaymentOrderMutationResult = NonNullable<Awaited<ReturnType<typeof createPaymentOrder>>>
+    export type CreatePaymentOrderMutationBody = BodyType<PaymentOrderInput>
+    export type CreatePaymentOrderMutationError = ErrorType<void>
+    export type CreatePaymentOrderMutationVariables = {data: BodyType<PaymentOrderInput>}
+
+    /**
+ * @summary Create a server-side Razorpay USD order
+ */
+export const useCreatePaymentOrder = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPaymentOrder>>, TError,CreatePaymentOrderMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createPaymentOrder>>,
+        TError,
+        CreatePaymentOrderMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreatePaymentOrderMutationOptions(options));
+    }
+
+export const getReceiveRazorpayWebhookUrl = () => {
+
+
+
+
+  return `/api/payments/razorpay/webhook`
+}
+
+/**
+ * @summary Receive a verified Razorpay webhook
+ */
+export const receiveRazorpayWebhook = async (razorpayWebhookPayload: RazorpayWebhookPayload, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<void>(getReceiveRazorpayWebhookUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(razorpayWebhookPayload)
+  }
+);}
+
+
+
+
+
+export const getReceiveRazorpayWebhookMutationKey = () => ['receiveRazorpayWebhook'] as const;
+
+export const getReceiveRazorpayWebhookMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof receiveRazorpayWebhook>>, TError,ReceiveRazorpayWebhookMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof receiveRazorpayWebhook>>, TError,ReceiveRazorpayWebhookMutationVariables, TContext> => {
+
+const mutationKey = getReceiveRazorpayWebhookMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof receiveRazorpayWebhook>>, ReceiveRazorpayWebhookMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  receiveRazorpayWebhook(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReceiveRazorpayWebhookMutationResult = NonNullable<Awaited<ReturnType<typeof receiveRazorpayWebhook>>>
+    export type ReceiveRazorpayWebhookMutationBody = BodyType<RazorpayWebhookPayload>
+    export type ReceiveRazorpayWebhookMutationError = ErrorType<void>
+    export type ReceiveRazorpayWebhookMutationVariables = {data: BodyType<RazorpayWebhookPayload>}
+
+    /**
+ * @summary Receive a verified Razorpay webhook
+ */
+export const useReceiveRazorpayWebhook = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof receiveRazorpayWebhook>>, TError,ReceiveRazorpayWebhookMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof receiveRazorpayWebhook>>,
+        TError,
+        ReceiveRazorpayWebhookMutationVariables,
+        TContext
+      > => {
+      return useMutation(getReceiveRazorpayWebhookMutationOptions(options));
+    }
 

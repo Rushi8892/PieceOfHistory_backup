@@ -3,5 +3,7 @@ export * from "./bids";
 export * from "./daily-pieces";
 export * from "./enums";
 export * from "./participant-standings";
+export * from "./payment-orders";
+export * from "./payment-webhook-events";
 export * from "./stories";
 export * from "./users";

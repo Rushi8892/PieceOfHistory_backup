@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ClerkProvider, useAuth } from '@clerk/react';
+import { ClerkProvider, useAuth, Show } from '@clerk/react';
 import { publishableKeyFromHost } from '@clerk/react/internal';
 import { shadcn } from '@clerk/themes';
 import {
@@ -12,12 +12,15 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { CompetitionPage, ExplorePage, HowItWorksPage, LandingPage } from '@/pages/public-pages';
 import { SignInPage, SignUpPage } from '@/pages/auth-pages';
+import { ParticipatePage } from '@/pages/participate-page';
+import { PaymentPage } from '@/pages/payment-page';
 import NotFound from '@/pages/not-found';
 import {
   Route,
   Switch,
   useLocation,
   Router as WouterRouter,
+  Redirect,
 } from 'wouter';
 
 const queryClient = new QueryClient();
@@ -91,6 +94,17 @@ function Router() {
         <Route path="/explore" component={ExplorePage} />
         <Route path="/competition" component={CompetitionPage} />
         <Route path="/how-it-works" component={HowItWorksPage} />
+        
+        <Route path="/participate">
+          <Show when="signed-in"><ParticipatePage /></Show>
+          <Show when="signed-out"><Redirect to="/sign-in" /></Show>
+        </Route>
+        
+        <Route path="/participate/payment/:storyId">
+          <Show when="signed-in"><PaymentPage /></Show>
+          <Show when="signed-out"><Redirect to="/sign-in" /></Show>
+        </Route>
+
         <Route path="/sign-in/*?" component={SignInPage} />
         <Route path="/sign-up/*?" component={SignUpPage} />
         <Route component={NotFound} />

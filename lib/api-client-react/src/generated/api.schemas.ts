@@ -56,3 +56,77 @@ export interface CurrentUser {
   role: CurrentUserRole;
 }
 
+export interface StoryInput {
+  /** @minLength 1 */
+  displayName: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  storyText: string;
+  /** @nullable */
+  websiteUrl?: string | null;
+}
+
+export type StoryPaymentContextStatus = typeof StoryPaymentContextStatus[keyof typeof StoryPaymentContextStatus];
+
+
+export const StoryPaymentContextStatus = {
+  pending_payment: 'pending_payment',
+  visible: 'visible',
+} as const;
+
+export type StoryPaymentContextPaymentStatus = typeof StoryPaymentContextPaymentStatus[keyof typeof StoryPaymentContextPaymentStatus];
+
+
+export const StoryPaymentContextPaymentStatus = {
+  pending: 'pending',
+  captured: 'captured',
+  failed: 'failed',
+} as const;
+
+export type StoryPaymentContextCurrency = typeof StoryPaymentContextCurrency[keyof typeof StoryPaymentContextCurrency];
+
+
+export const StoryPaymentContextCurrency = {
+  USD: 'USD',
+} as const;
+
+export interface StoryPaymentContext {
+  storyId: string;
+  dailyPieceId: string;
+  status: StoryPaymentContextStatus;
+  paymentStatus: StoryPaymentContextPaymentStatus;
+  /** @minimum 1 */
+  minimumPaymentCents: number;
+  /**
+     * @minimum 1
+     * @nullable
+     */
+  amountCents: number | null;
+  currency: StoryPaymentContextCurrency;
+}
+
+export interface PaymentOrderInput {
+  storyId: string;
+  /** @minimum 1 */
+  amountCents: number;
+}
+
+export type PaymentOrderCurrency = typeof PaymentOrderCurrency[keyof typeof PaymentOrderCurrency];
+
+
+export const PaymentOrderCurrency = {
+  USD: 'USD',
+} as const;
+
+export interface PaymentOrder {
+  orderId: string;
+  /** @minimum 1 */
+  amountCents: number;
+  currency: PaymentOrderCurrency;
+  keyId: string;
+}
+
+export interface RazorpayWebhookPayload { [key: string]: unknown }
+

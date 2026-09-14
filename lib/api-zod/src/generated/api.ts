@@ -75,3 +75,89 @@ export const GetTodayCompetitionResponse = zod.object({
 })
 
 
+/**
+ * @summary Create the signed-in user's story for today's piece
+ */
+
+export const createStoryBodyStoryTextMax = 500;
+
+
+
+export const CreateStoryBody = zod.object({
+  "displayName": zod.string().min(1),
+  "storyText": zod.string().min(1).max(createStoryBodyStoryTextMax),
+  "websiteUrl": zod.string().url().nullish()
+})
+
+
+
+
+
+export const CreateStoryResponse = zod.object({
+  "storyId": zod.string().uuid(),
+  "dailyPieceId": zod.string().uuid(),
+  "status": zod.enum(['pending_payment', 'visible']),
+  "paymentStatus": zod.enum(['pending', 'captured', 'failed']),
+  "minimumPaymentCents": zod.number().int().min(1),
+  "amountCents": zod.number().int().min(1).nullable(),
+  "currency": zod.enum(['USD'])
+})
+
+
+/**
+ * @summary Get the signed-in owner's payment context for a story
+ */
+export const GetStoryPaymentParams = zod.object({
+  "storyId": zod.coerce.string().uuid()
+})
+
+
+
+
+
+export const GetStoryPaymentResponse = zod.object({
+  "storyId": zod.string().uuid(),
+  "dailyPieceId": zod.string().uuid(),
+  "status": zod.enum(['pending_payment', 'visible']),
+  "paymentStatus": zod.enum(['pending', 'captured', 'failed']),
+  "minimumPaymentCents": zod.number().int().min(1),
+  "amountCents": zod.number().int().min(1).nullable(),
+  "currency": zod.enum(['USD'])
+})
+
+
+/**
+ * @summary Create a server-side Razorpay USD order
+ */
+
+
+
+export const CreatePaymentOrderBody = zod.object({
+  "storyId": zod.string().uuid(),
+  "amountCents": zod.number().int().min(1)
+})
+
+
+
+
+export const CreatePaymentOrderResponse = zod.object({
+  "orderId": zod.string(),
+  "amountCents": zod.number().int().min(1),
+  "currency": zod.enum(['USD']),
+  "keyId": zod.string()
+})
+
+
+/**
+ * @summary Receive a verified Razorpay webhook
+ */
+export const ReceiveRazorpayWebhookHeader = zod.object({
+  "X-Razorpay-Signature": zod.string(),
+  "x-razorpay-event-id": zod.string()
+})
+
+export const ReceiveRazorpayWebhookBody = zod.record(zod.string(), zod.unknown())
+
+export const ReceiveRazorpayWebhookResponse = zod.unknown()
+
+

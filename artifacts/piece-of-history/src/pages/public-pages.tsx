@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowUpRight, BookOpen, Coins, Feather, Heart, Sparkles } from 'lucide-react';
 import { Link } from 'wouter';
+import { Show } from '@clerk/react';
 import { useGetSiteStats, useGetTodayCompetition } from '@workspace/api-client-react';
 import { CheckLine, Countdown, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, StatStrip, StoryCard, StoryMark, TodayData, formatDate, formatMoney } from '@/components/site';
 
@@ -22,7 +23,12 @@ export function LandingPage() {
               Piece of History is a daily storytelling competition for the moments you almost forgot. Write yours down. Let people back it. See what stays.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
-              <PrimaryButton href="/sign-up" testId="button-hero-start-writing">Write your piece <ArrowUpRight size={17} /></PrimaryButton>
+              <Show when="signed-out">
+                <PrimaryButton href="/sign-up" testId="button-hero-start-writing">Write your piece <ArrowUpRight size={17} /></PrimaryButton>
+              </Show>
+              <Show when="signed-in">
+                <PrimaryButton href="/participate" testId="button-hero-participate">Write your piece <ArrowUpRight size={17} /></PrimaryButton>
+              </Show>
               <Link href="/explore" className="inline-flex items-center gap-2 rounded-full px-3 py-3 text-sm font-bold text-primary transition-colors hover:text-accent" data-testid="link-hero-explore">
                 Read what&apos;s here <ArrowDown size={16} />
               </Link>
@@ -106,7 +112,12 @@ export function LandingPage() {
             ))}
           </div>
           <div className="mt-10 text-center">
-            <PrimaryButton href="/sign-up" testId="button-bottom-start-writing">Start with today <ArrowUpRight size={16} /></PrimaryButton>
+            <Show when="signed-out">
+              <PrimaryButton href="/sign-up" testId="button-bottom-start-writing">Start with today <ArrowUpRight size={16} /></PrimaryButton>
+            </Show>
+            <Show when="signed-in">
+              <PrimaryButton href="/participate" testId="button-bottom-participate">Start with today <ArrowUpRight size={16} /></PrimaryButton>
+            </Show>
           </div>
         </section>
       </main>
@@ -133,7 +144,12 @@ export function ExplorePage() {
             <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-secondary">Today&apos;s page</p>
             <p className="mt-5 font-display text-4xl">{todayQuery.data ? formatDate(todayQuery.data.date) : 'Loading today'}</p>
             {todayQuery.data && <div className="mt-7 border-t border-primary-foreground/15 pt-5"><Countdown closingTimestamp={todayQuery.data.closingTimestamp} /></div>}
-            <PrimaryButton href="/sign-up" variant="light" className="mt-8 w-full" testId="button-explore-write">Write on this page <ArrowUpRight size={16} /></PrimaryButton>
+            <Show when="signed-out">
+              <PrimaryButton href="/sign-up" variant="light" className="mt-8 w-full" testId="button-explore-write">Write on this page <ArrowUpRight size={16} /></PrimaryButton>
+            </Show>
+            <Show when="signed-in">
+              <PrimaryButton href="/participate" variant="light" className="mt-8 w-full" testId="button-explore-participate">Write on this page <ArrowUpRight size={16} /></PrimaryButton>
+            </Show>
           </aside>
           <div>
             {todayQuery.isLoading ? <TodayData competition={undefined} loading error={false} onRetry={() => void todayQuery.refetch()} /> : todayQuery.error ? <TodayData competition={undefined} loading={false} error onRetry={() => void todayQuery.refetch()} /> : participants.length ? <div className="grid gap-5">{participants.map((participant) => <StoryCard key={participant.id} participant={participant} featured={participant.rank === 1} />)}</div> : <TodayData competition={todayQuery.data} loading={false} error={false} onRetry={() => void todayQuery.refetch()} />}
@@ -177,7 +193,12 @@ export function CompetitionPage() {
             <SectionKicker>Ready when you are</SectionKicker>
             <h2 className="mt-5 font-display text-4xl leading-[.95] text-primary">Your day belongs here, too.</h2>
             <ul className="mt-7 space-y-4"><CheckLine>Write from memory, not performance.</CheckLine><CheckLine>Choose a day that still has a pulse.</CheckLine><CheckLine>Let the room decide what resonates.</CheckLine></ul>
-            <PrimaryButton href="/sign-up" className="mt-8 w-full" testId="button-competition-sign-up">Write your piece <ArrowUpRight size={16} /></PrimaryButton>
+            <Show when="signed-out">
+              <PrimaryButton href="/sign-up" className="mt-8 w-full" testId="button-competition-sign-up">Write your piece <ArrowUpRight size={16} /></PrimaryButton>
+            </Show>
+            <Show when="signed-in">
+              <PrimaryButton href="/participate" className="mt-8 w-full" testId="button-competition-participate">Write your piece <ArrowUpRight size={16} /></PrimaryButton>
+            </Show>
           </div>
         </div>
       </main>
@@ -221,7 +242,12 @@ export function HowItWorksPage() {
         <section className="border-t border-primary/10 bg-muted/50">
           <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-20 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-12">
             <div><SectionKicker>The archive is alive</SectionKicker><p className="mt-3 font-display text-4xl text-primary">{statsQuery.data?.piecesOfHistory.toLocaleString() ?? '—'} days worth of remembering.</p></div>
-            <PrimaryButton href="/sign-up" testId="button-how-start-writing">Write the next one <ArrowUpRight size={16} /></PrimaryButton>
+            <Show when="signed-out">
+              <PrimaryButton href="/sign-up" testId="button-how-start-writing">Write the next one <ArrowUpRight size={16} /></PrimaryButton>
+            </Show>
+            <Show when="signed-in">
+              <PrimaryButton href="/participate" testId="button-how-participate">Write the next one <ArrowUpRight size={16} /></PrimaryButton>
+            </Show>
           </div>
         </section>
       </main>

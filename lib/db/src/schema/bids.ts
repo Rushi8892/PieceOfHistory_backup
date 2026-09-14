@@ -14,6 +14,7 @@ import { z } from "zod/v4";
 import { paymentStatusEnum } from "./enums";
 import { dailyPiecesTable } from "./daily-pieces";
 import { usersTable } from "./users";
+import { paymentOrdersTable } from "./payment-orders";
 
 export const bidsTable = pgTable(
   "bids",
@@ -30,6 +31,7 @@ export const bidsTable = pgTable(
       .notNull()
       .defaultNow(),
     paymentReference: text("payment_reference").notNull(),
+    paymentOrderId: uuid("payment_order_id").references(() => paymentOrdersTable.id),
     paymentStatus: paymentStatusEnum("payment_status")
       .notNull()
       .default("pending"),
@@ -37,6 +39,7 @@ export const bidsTable = pgTable(
   },
   (table) => [
     uniqueIndex("bids_payment_reference_idx").on(table.paymentReference),
+    uniqueIndex("bids_payment_order_idx").on(table.paymentOrderId),
     index("bids_user_daily_piece_idx").on(
       table.userId,
       table.dailyPieceId,

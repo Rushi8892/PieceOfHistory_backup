@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { ArrowUpRight, Check, Clock3, ExternalLink, Menu, PenLine, X } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import type { CompetitionParticipant, SiteStats, TodayCompetition } from '@workspace/api-client-react';
+import { Show } from '@clerk/react';
 
 export function Logo({ light = false }: { light?: boolean }) {
   return (
@@ -29,6 +30,7 @@ export function PrimaryButton({
   variant = 'primary',
   className = '',
   testId,
+  disabled = false,
 }: {
   children: ReactNode;
   href?: string;
@@ -37,19 +39,20 @@ export function PrimaryButton({
   variant?: 'primary' | 'quiet' | 'light';
   className?: string;
   testId: string;
+  disabled?: boolean;
 }) {
   const styles = {
-    primary: 'bg-primary text-primary-foreground shadow-[4px_4px_0_hsl(var(--secondary))] hover:-translate-y-0.5 hover:shadow-[5px_6px_0_hsl(var(--secondary))]',
-    quiet: 'border border-primary/15 bg-card text-primary hover:border-primary/40 hover:bg-muted',
-    light: 'bg-secondary text-primary shadow-[4px_4px_0_hsl(var(--primary)/.25)] hover:-translate-y-0.5',
+    primary: 'bg-primary text-primary-foreground shadow-[4px_4px_0_hsl(var(--secondary))] hover:-translate-y-0.5 hover:shadow-[5px_6px_0_hsl(var(--secondary))] disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0_hsl(var(--secondary))]',
+    quiet: 'border border-primary/15 bg-card text-primary hover:border-primary/40 hover:bg-muted disabled:hover:border-primary/15 disabled:hover:bg-card',
+    light: 'bg-secondary text-primary shadow-[4px_4px_0_hsl(var(--primary)/.25)] hover:-translate-y-0.5 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0_hsl(var(--primary)/.25)]',
   }[variant];
-  const classes = `inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-sm font-bold tracking-[-.01em] transition-all duration-200 ${styles} ${className}`;
+  const classes = `inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-sm font-bold tracking-[-.01em] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${styles} ${className}`;
 
   if (href) {
     return <Link href={href} className={classes} data-testid={testId}>{children}</Link>;
   }
 
-  return <button type={type} onClick={onClick} className={classes} data-testid={testId}>{children}</button>;
+  return <button type={type} onClick={onClick} disabled={disabled} className={classes} data-testid={testId}>{children}</button>;
 }
 
 export function SiteNav() {
@@ -74,10 +77,15 @@ export function SiteNav() {
           ))}
         </nav>
         <div className="hidden items-center gap-3 md:flex">
-          <Link href="/sign-in" className="rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary" data-testid="link-sign-in">
-            Sign in
-          </Link>
-          <PrimaryButton href="/sign-up" testId="button-start-writing">Start writing <ArrowUpRight size={16} /></PrimaryButton>
+          <Show when="signed-out">
+            <Link href="/sign-in" className="rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary" data-testid="link-sign-in">
+              Sign in
+            </Link>
+            <PrimaryButton href="/sign-up" testId="button-start-writing">Start writing <ArrowUpRight size={16} /></PrimaryButton>
+          </Show>
+          <Show when="signed-in">
+            <PrimaryButton href="/participate" testId="button-start-writing-auth">Start writing <ArrowUpRight size={16} /></PrimaryButton>
+          </Show>
         </div>
         <button type="button" className="grid h-11 w-11 place-items-center rounded-full border border-primary/15 text-primary md:hidden" onClick={() => setOpen((value) => !value)} aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
           {open ? <X size={20} /> : <Menu size={20} />}
@@ -92,8 +100,13 @@ export function SiteNav() {
               </Link>
             ))}
             <div className="mt-3 grid grid-cols-2 gap-2 border-t border-primary/10 pt-4">
-              <Link href="/sign-in" className="rounded-full border border-primary/15 px-4 py-3 text-center text-sm font-semibold text-primary" data-testid="link-mobile-sign-in">Sign in</Link>
-              <Link href="/sign-up" className="rounded-full bg-primary px-4 py-3 text-center text-sm font-bold text-primary-foreground" data-testid="link-mobile-sign-up">Start writing</Link>
+              <Show when="signed-out">
+                <Link href="/sign-in" className="rounded-full border border-primary/15 px-4 py-3 text-center text-sm font-semibold text-primary" data-testid="link-mobile-sign-in">Sign in</Link>
+                <Link href="/sign-up" className="rounded-full bg-primary px-4 py-3 text-center text-sm font-bold text-primary-foreground" data-testid="link-mobile-sign-up">Start writing</Link>
+              </Show>
+              <Show when="signed-in">
+                <Link href="/participate" className="col-span-2 rounded-full bg-primary px-4 py-3 text-center text-sm font-bold text-primary-foreground" data-testid="link-mobile-participate">Start writing</Link>
+              </Show>
             </div>
           </nav>
         </div>
@@ -128,9 +141,16 @@ export function SiteFooter({ stats }: { stats?: SiteStats }) {
                 ? `${stats.daysLaunched.toLocaleString()} days launched · ${stats.users.toLocaleString()} people · ${stats.piecesOfHistory.toLocaleString()} completed pieces`
                 : 'The archive is loading.'}
             </p>
-            <Link href="/sign-up" className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-secondary hover:underline" data-testid="footer-link-join">
-              Add yours <ArrowUpRight size={15} />
-            </Link>
+            <Show when="signed-out">
+              <Link href="/sign-up" className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-secondary hover:underline" data-testid="footer-link-join">
+                Add yours <ArrowUpRight size={15} />
+              </Link>
+            </Show>
+            <Show when="signed-in">
+              <Link href="/participate" className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-secondary hover:underline" data-testid="footer-link-participate">
+                Add yours <ArrowUpRight size={15} />
+              </Link>
+            </Show>
           </div>
         </div>
         <div className="mt-16 flex flex-col justify-between gap-3 border-t border-primary-foreground/15 pt-5 text-xs text-primary-foreground/45 sm:flex-row">
@@ -256,7 +276,12 @@ export function TodayData({
           <PenLine className="mx-auto text-secondary" size={25} />
           <p className="mt-4 font-display text-2xl text-primary">The page is still blank.</p>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">Be the first person to leave a mark on today. The first sentence is always the hardest.</p>
-          <PrimaryButton href="/sign-up" className="mt-5" testId="button-empty-start-writing">Write today&apos;s piece <ArrowUpRight size={16} /></PrimaryButton>
+          <Show when="signed-out">
+            <PrimaryButton href="/sign-up" className="mt-5" testId="button-empty-start-writing">Write today&apos;s piece <ArrowUpRight size={16} /></PrimaryButton>
+          </Show>
+          <Show when="signed-in">
+            <PrimaryButton href="/participate" className="mt-5" testId="button-empty-participate">Write today&apos;s piece <ArrowUpRight size={16} /></PrimaryButton>
+          </Show>
         </div>
       ) : (
         <div className="space-y-4">

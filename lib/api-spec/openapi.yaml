@@ -12,6 +12,10 @@ tags:
     description: Health operations
   - name: public
     description: Public Piece of History content
+  - name: stories
+    description: Authenticated stories and payment setup
+  - name: payments
+    description: Authenticated payment orders and Razorpay webhooks
 paths:
   /healthz:
     get:
@@ -67,7 +71,120 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TodayCompetition"
+  /stories:
+    post:
+      operationId: createStory
+      tags: [stories]
+      summary: Create the signed-in user's story for today's piece
+      security:
+        - clerkSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoryInput"
+      responses:
+        "201":
+          description: Pending-payment story
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoryPaymentContext"
+        "400":
+          description: Invalid story or website URL
+        "401":
+          description: Authentication required
+        "409":
+          description: The user already has a story for today's piece
+        "404":
+          description: No active piece
+  /stories/{storyId}/payment:
+    get:
+      operationId: getStoryPayment
+      tags: [stories]
+      summary: Get the signed-in owner's payment context for a story
+      security:
+        - clerkSession: []
+      parameters:
+        - name: storyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Story payment context
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoryPaymentContext"
+        "401":
+          description: Authentication required
+        "404":
+          description: Story not found
+  /payments/orders:
+    post:
+      operationId: createPaymentOrder
+      tags: [payments]
+      summary: Create a server-side Razorpay USD order
+      security:
+        - clerkSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentOrderInput"
+      responses:
+        "201":
+          description: Razorpay Standard Checkout order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentOrder"
+        "400":
+          description: Invalid amount
+        "401":
+          description: Authentication required
+        "404":
+          description: Story not found
+        "409":
+          description: Story is no longer payable
+  /payments/razorpay/webhook:
+    post:
+      operationId: receiveRazorpayWebhook
+      tags: [payments]
+      summary: Receive a verified Razorpay webhook
+      parameters:
+        - name: X-Razorpay-Signature
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: x-razorpay-event-id
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RazorpayWebhookPayload"
+      responses:
+        "200":
+          description: Event accepted or safely ignored
+        "400":
+          description: Invalid signature or body
 components:
+  securitySchemes:
+    clerkSession:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     HealthStatus:
       type: object
@@ -165,4 +282,85 @@ components:
         - email
         - authProvider
         - role
+    StoryInput:
+      type: object
+      properties:
+        displayName:
+          type: string
+          minLength: 1
+        storyText:
+          type: string
+          minLength: 1
+          maxLength: 500
+        websiteUrl:
+          type: [string, "null"]
+          format: uri
+      required:
+        - displayName
+        - storyText
+    StoryPaymentContext:
+      type: object
+      properties:
+        storyId:
+          type: string
+          format: uuid
+        dailyPieceId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending_payment, visible]
+        paymentStatus:
+          type: string
+          enum: [pending, captured, failed]
+        minimumPaymentCents:
+          type: integer
+          minimum: 1
+        amountCents:
+          type: [integer, "null"]
+          minimum: 1
+        currency:
+          type: string
+          enum: [USD]
+      required:
+        - storyId
+        - dailyPieceId
+        - status
+        - paymentStatus
+        - minimumPaymentCents
+        - amountCents
+        - currency
+    PaymentOrderInput:
+      type: object
+      properties:
+        storyId:
+          type: string
+          format: uuid
+        amountCents:
+          type: integer
+          minimum: 1
+      required:
+        - storyId
+        - amountCents
+    PaymentOrder:
+      type: object
+      properties:
+        orderId:
+          type: string
+        amountCents:
+          type: integer
+          minimum: 1
+        currency:
+          type: string
+          enum: [USD]
+        keyId:
+          type: string
+      required:
+        - orderId
+        - amountCents
+        - currency
+        - keyId
+    RazorpayWebhookPayload:
+      type: object
+      additionalProperties: true
 
