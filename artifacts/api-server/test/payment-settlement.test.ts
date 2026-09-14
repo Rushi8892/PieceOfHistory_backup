@@ -21,6 +21,7 @@ import {
   type CapturedPayment,
 } from "../src/lib/payment-settlement.ts";
 import { createPaymentOrderForStory } from "../src/lib/payment-orders.ts";
+import { closeDailyPiece } from "../src/lib/day-close.ts";
 import {
   capturedPaymentFromEvent,
   settleAndRecordPaymentWebhook,
@@ -485,6 +486,40 @@ test("concurrent equal captures use standingReachedAt as the deterministic tie-b
       .where(eq(dailyPiecesTable.id, scenario.dailyPieceId));
     assert.equal(day.winnerUserId, scenario.userIds[0]);
     assert.equal(day.winningStandingCents, 500);
+  } finally {
+    await cleanupScenario(scenario);
+  }
+});
+
+test("closing a day twice preserves the winner and creates one next active day", async () => {
+  const scenario = await createScenario([
+    { userIndex: 0, amountCents: 500 },
+    { userIndex: 1, amountCents: 1000 },
+  ]);
+  try {
+    await settleCapturedPayment(
+      testDb,
+      capture(scenario, 0, 20, 500, "2099-12-01T00:00:00.000Z"),
+    );
+    await settleCapturedPayment(
+      testDb,
+      capture(scenario, 1, 21, 1000, "2099-12-01T00:00:01.000Z"),
+    );
+
+    const closeTime = new Date("2100-01-01T00:00:00.000Z");
+    const first = await closeDailyPiece(testDb, scenario.dailyPieceId, closeTime);
+    const second = await closeDailyPiece(testDb, scenario.dailyPieceId, closeTime);
+
+    assert.deepEqual(second, first);
+    assert.equal(first?.winnerUserId, scenario.userIds[1]);
+    assert.equal(first?.winningStandingCents, 1000);
+
+    const activeDays = await testDb
+      .select()
+      .from(dailyPiecesTable)
+      .where(eq(dailyPiecesTable.status, "active"));
+    assert.equal(activeDays.length, 1);
+    assert.equal(activeDays[0].id, first?.nextDailyPieceId);
   } finally {
     await cleanupScenario(scenario);
   }

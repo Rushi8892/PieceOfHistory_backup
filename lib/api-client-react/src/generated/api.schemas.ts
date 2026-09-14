@@ -33,6 +33,7 @@ export interface CompetitionParticipant {
 export interface TodayCompetition {
   id: string;
   date: string;
+  serverTime: string;
   closingTimestamp: string;
   /** @minimum 1 */
   minimumPaymentCents: number;

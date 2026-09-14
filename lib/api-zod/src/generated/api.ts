@@ -62,6 +62,7 @@ export const getTodayCompetitionResponseParticipantsItemRunningTotalCentsMin = 0
 export const GetTodayCompetitionResponse = zod.object({
   "id": zod.string().uuid(),
   "date": zod.coerce.date(),
+  "serverTime": zod.coerce.date(),
   "closingTimestamp": zod.coerce.date(),
   "minimumPaymentCents": zod.number().int().min(1),
   "participants": zod.array(zod.object({

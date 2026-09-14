@@ -54,6 +54,7 @@ router.get("/competition/today", async (req, res): Promise<void> => {
   const data = GetTodayCompetitionResponse.parse({
     id: activeDay.id,
     date: activeDay.date,
+    serverTime: new Date(),
     closingTimestamp: activeDay.closingTimestamp,
     minimumPaymentCents: activeDay.minimumPaymentCents,
     participants: participants.map(

@@ -10,6 +10,7 @@ import type { CompetitionParticipant } from './competitionParticipant';
 export interface TodayCompetition {
   id: string;
   date: Date;
+  serverTime: Date;
   closingTimestamp: Date;
   /** @minimum 1 */
   minimumPaymentCents: number;

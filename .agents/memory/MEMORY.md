@@ -1,0 +1,1 @@
+- [Day-close finality](day-close-finality.md) — reconcile pending captures before closing; never rewrite a closed historical winner.

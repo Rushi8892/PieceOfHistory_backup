@@ -191,8 +191,8 @@ export function StoryCard({ participant, featured = false }: { participant: Comp
       <div className="mt-7 flex items-center justify-between gap-3 border-t border-primary/10 pt-4">
         <span className="font-mono-ui text-[10px] uppercase tracking-[.14em] text-muted-foreground">A piece of history</span>
         {hasWebsite && (
-          <a href={participant.websiteUrl ?? undefined} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:text-accent" data-testid={`link-story-website-${participant.id}`}>
-            Visit site <ExternalLink size={13} />
+          <a href={participant.websiteUrl ?? undefined} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center justify-center gap-2 font-bold transition-colors ${featured ? 'min-h-12 rounded-full bg-primary px-6 text-sm text-primary-foreground hover:bg-primary/90' : 'rounded-full border border-primary/15 px-4 py-2 text-xs text-primary hover:border-primary/40'}`} data-testid={`link-story-website-${participant.id}`}>
+            Visit Website <ExternalLink size={featured ? 15 : 13} />
           </a>
         )}
       </div>
@@ -200,13 +200,15 @@ export function StoryCard({ participant, featured = false }: { participant: Comp
   );
 }
 
-export function Countdown({ closingTimestamp }: { closingTimestamp: string }) {
-  const getRemaining = () => Math.max(0, new Date(closingTimestamp).getTime() - Date.now());
+export function Countdown({ closingTimestamp, serverTime }: { closingTimestamp: string; serverTime?: string }) {
+  const getClockSkew = () => serverTime ? new Date(serverTime).getTime() - Date.now() : 0;
+  const getRemaining = () => Math.max(0, new Date(closingTimestamp).getTime() - (Date.now() + getClockSkew()));
   const [remaining, setRemaining] = useState(getRemaining);
   useEffect(() => {
     const interval = window.setInterval(() => setRemaining(getRemaining()), 1000);
+    setRemaining(getRemaining());
     return () => window.clearInterval(interval);
-  }, [closingTimestamp]);
+  }, [closingTimestamp, serverTime]);
   const time = useMemo(() => {
     const totalSeconds = Math.floor(remaining / 1000);
     return {
@@ -267,7 +269,7 @@ export function TodayData({
             <h2 className="mt-2 font-display text-4xl leading-none text-primary">{formatDate(competition.date)}</h2>
           </div>
           <div className="rounded-full bg-primary px-4 py-2">
-            <Countdown closingTimestamp={competition.closingTimestamp} />
+            <Countdown closingTimestamp={competition.closingTimestamp} serverTime={competition.serverTime} />
           </div>
         </div>
       )}

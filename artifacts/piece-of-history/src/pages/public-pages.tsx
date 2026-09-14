@@ -1,7 +1,7 @@
 import { ArrowDown, ArrowUpRight, BookOpen, Coins, Feather, Heart, Sparkles } from 'lucide-react';
 import { Link } from 'wouter';
 import { Show } from '@clerk/react';
-import { useGetSiteStats, useGetTodayCompetition } from '@workspace/api-client-react';
+import { getGetTodayCompetitionQueryKey, useGetSiteStats, useGetTodayCompetition } from '@workspace/api-client-react';
 import { CheckLine, Countdown, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, StatStrip, StoryCard, StoryMark, TodayData, formatDate, formatMoney } from '@/components/site';
 
 export function LandingPage() {
@@ -163,7 +163,13 @@ export function ExplorePage() {
 
 export function CompetitionPage() {
   const statsQuery = useGetSiteStats();
-  const todayQuery = useGetTodayCompetition();
+  const todayQuery = useGetTodayCompetition({
+    query: {
+      queryKey: getGetTodayCompetitionQueryKey(),
+      refetchInterval: 5000,
+      refetchIntervalInBackground: true,
+    },
+  });
   const competition = todayQuery.data;
   return (
     <div className="paper-grain min-h-[100dvh]">
@@ -182,7 +188,7 @@ export function CompetitionPage() {
             </div>
             <div className="mt-12">
               <p className="text-sm text-primary-foreground/55">Closes in</p>
-              {competition && <div className="mt-2 text-3xl"><Countdown closingTimestamp={competition.closingTimestamp} /></div>}
+              {competition && <div className="mt-2 text-3xl"><Countdown closingTimestamp={competition.closingTimestamp} serverTime={competition.serverTime} /></div>}
             </div>
             <p className="mt-8 border-t border-primary-foreground/15 pt-5 text-sm leading-6 text-primary-foreground/65">Every piece starts at {competition ? formatMoney(competition.minimumPaymentCents) : '$1.00'}.</p>
           </div>
@@ -194,10 +200,10 @@ export function CompetitionPage() {
             <h2 className="mt-5 font-display text-4xl leading-[.95] text-primary">Your day belongs here, too.</h2>
             <ul className="mt-7 space-y-4"><CheckLine>Write from memory, not performance.</CheckLine><CheckLine>Choose a day that still has a pulse.</CheckLine><CheckLine>Let the room decide what resonates.</CheckLine></ul>
             <Show when="signed-out">
-              <PrimaryButton href="/sign-up" className="mt-8 w-full" testId="button-competition-sign-up">Write your piece <ArrowUpRight size={16} /></PrimaryButton>
+              <PrimaryButton href="/sign-up" className="mt-8 w-full" testId="button-competition-sign-up">Place a Payment <ArrowUpRight size={16} /></PrimaryButton>
             </Show>
             <Show when="signed-in">
-              <PrimaryButton href="/participate" className="mt-8 w-full" testId="button-competition-participate">Write your piece <ArrowUpRight size={16} /></PrimaryButton>
+              <PrimaryButton href="/participate" className="mt-8 w-full" testId="button-competition-participate">Place a Payment <ArrowUpRight size={16} /></PrimaryButton>
             </Show>
           </div>
         </div>
