@@ -8,16 +8,18 @@ import { Show, useAuth } from '@clerk/react';
 export function Logo({ light = false }: { light?: boolean }) {
   return (
     <Link href="/" className="group inline-flex items-center gap-3" data-testid="link-logo">
-      <span
-        className={`grid h-10 w-10 place-items-center rounded-[13px] border-2 ${
-          light ? 'border-secondary bg-secondary text-primary' : 'border-primary bg-primary text-secondary'
-        } shadow-[3px_3px_0_hsl(var(--secondary)/.8)] transition-transform duration-200 group-hover:-translate-y-0.5`}
-        aria-hidden="true"
-      >
-        <span className="font-display text-[27px] leading-none">P</span>
-      </span>
-      <span className={`font-display text-[25px] leading-none tracking-tight ${light ? 'text-white' : 'text-primary'}`}>
-        Piece of History
+      <img
+        src={`${import.meta.env.BASE_URL}piece-of-history-logo.png`}
+        alt=""
+        className={`h-11 w-11 rounded-[13px] border-2 object-cover shadow-[3px_3px_0_hsl(var(--secondary)/.8)] transition-transform duration-200 group-hover:-translate-y-0.5 ${light ? 'border-secondary' : 'border-primary/20'}`}
+      />
+      <span className="flex flex-col">
+        <span className={`font-display text-[25px] leading-none tracking-tight ${light ? 'text-white' : 'text-primary'}`}>
+          Piece of History
+        </span>
+        <span className={`mt-1 font-mono-ui text-[9px] uppercase tracking-[.16em] ${light ? 'text-primary-foreground/55' : 'text-muted-foreground'}`}>
+          Piece of Internet History
+        </span>
       </span>
     </Link>
   );
@@ -163,6 +165,13 @@ export function SiteFooter({ stats }: { stats?: SiteStats }) {
               <Link href="/archive" className="transition-colors hover:text-secondary" data-testid="footer-link-archive">The Archive</Link>
               <Link href="/competition" className="transition-colors hover:text-secondary" data-testid="footer-link-competition">Today&apos;s competition</Link>
               <Link href="/how-it-works" className="transition-colors hover:text-secondary" data-testid="footer-link-how-it-works">How it works</Link>
+              <div className="flex items-center gap-2 pt-2 text-xs text-primary-foreground/55">
+                <Link href="/terms" className="transition-colors hover:text-secondary" data-testid="footer-link-terms">Terms</Link>
+                <span aria-hidden="true">|</span>
+                <Link href="/terms#privacy" className="transition-colors hover:text-secondary" data-testid="footer-link-privacy">Privacy</Link>
+                <span aria-hidden="true">|</span>
+                <a href="mailto:hello@pieceofhistory.app" className="transition-colors hover:text-secondary" data-testid="footer-link-contact">Contact</a>
+              </div>
             </div>
           </div>
           <div>
@@ -186,7 +195,7 @@ export function SiteFooter({ stats }: { stats?: SiteStats }) {
         </div>
         <div className="mt-16 flex flex-col justify-between gap-3 border-t border-primary-foreground/15 pt-5 text-xs text-primary-foreground/45 sm:flex-row">
           <span>© {new Date().getFullYear()} Piece of History</span>
-          <span>A side project · Built by something curious · For the days worth remembering.</span>
+          <span>A side project · Built by someone who won&apos;t be remembered.</span>
         </div>
       </div>
     </footer>

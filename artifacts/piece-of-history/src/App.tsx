@@ -17,6 +17,7 @@ import { AdminPage } from '@/pages/admin-page';
 import { SignInPage, SignUpPage } from '@/pages/auth-pages';
 import { ParticipatePage } from '@/pages/participate-page';
 import { PaymentPage } from '@/pages/payment-page';
+import { TermsPage } from '@/pages/terms-page';
 import NotFound from '@/pages/not-found';
 import {
   Route,
@@ -44,7 +45,7 @@ const clerkAppearance = {
   options: {
     logoPlacement: 'inside' as const,
     logoLinkUrl: basePath || '/',
-    logoImageUrl: `${window.location.origin}${basePath}/logo.svg`,
+    logoImageUrl: `${window.location.origin}${basePath}/piece-of-history-logo.png`,
   },
   variables: {
     colorPrimary: '#173F51',
@@ -99,6 +100,7 @@ function Router() {
         <Route path="/archive/:date" component={ArchiveDetailPage} />
         <Route path="/competition" component={CompetitionPage} />
         <Route path="/how-it-works" component={HowItWorksPage} />
+        <Route path="/terms" component={TermsPage} />
         
         <Route path="/my-history">
           <Show when="signed-in"><MyHistoryPage /></Show>
