@@ -1,6 +1,6 @@
-# [Project name]
+# Piece of History
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Piece of History is a daily, USD-only cumulative-payment competition where the winning story becomes a permanent public record.
 
 ## Run & Operate
 
@@ -9,6 +9,8 @@ _Replace the heading above with the project's name, and this line with one sente
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
+- `pnpm --filter @workspace/db run generate` — generate a Drizzle migration from the schema
+- `pnpm --filter @workspace/db run seed` — create one idempotent sample active day
 - Required env: `DATABASE_URL` — Postgres connection string
 
 ## Stack
@@ -22,23 +24,33 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `lib/db/src/schema/` — source of truth for the Piece of History PostgreSQL schema
+- `lib/db/scripts/seed.mjs` — idempotent development seed for an active day
+- `artifacts/api-server/` — API service, to be expanded in later build phases
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Use the existing workspace PostgreSQL + Drizzle stack rather than introducing Prisma.
+- Store all USD monetary values as integer cents to avoid floating-point errors.
+- Keep every payment as a ledger row and materialize per-day totals in `participant_standings`.
+- Enforce one active day with a PostgreSQL partial unique index; previous days are represented as closed rows.
+- Preserve display names on stories so a user changing their profile later cannot rewrite historical records.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- One active day accepts stories and cumulative USD payments.
+- Closed days are immutable public history, showing the winner and winning story.
+- Signed-in users will later have a separate private history of their own stories and payments.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Keep the product focused; do not add social-network or gamification features.
+- Use USD-only payments.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Payment and day-closing logic must be transactional and idempotent before real payments are enabled.
+- The minimum payment is currently seeded at 100 cents and should remain configurable per day until the final payment rule is confirmed.
 
 ## Pointers
 
