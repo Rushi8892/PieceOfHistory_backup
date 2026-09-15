@@ -1,127 +1,119 @@
-import { ArrowDown, ArrowUpRight, BookOpen, Coins, Feather, Heart, Sparkles } from 'lucide-react';
+import { ArrowUpRight, BookOpen, Coins, Feather } from 'lucide-react';
 import { Link } from 'wouter';
 import { Show } from '@clerk/react';
-import { getGetTodayCompetitionQueryKey, useGetSiteStats, useGetTodayCompetition } from '@workspace/api-client-react';
-import { CheckLine, Countdown, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, StatStrip, StoryCard, StoryMark, TodayData, formatDate, formatMoney } from '@/components/site';
+import { getGetTodayCompetitionQueryKey, useGetArchive, useGetSiteStats, useGetTodayCompetition } from '@workspace/api-client-react';
+import { CheckLine, Countdown, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, StoryCard, TodayData, formatDate, formatMoney } from '@/components/site';
 
 export function LandingPage() {
-  const statsQuery = useGetSiteStats();
-  const todayQuery = useGetTodayCompetition();
+  const todayQuery = useGetTodayCompetition({
+    query: {
+      queryKey: getGetTodayCompetitionQueryKey(),
+      refetchInterval: 5000,
+      refetchIntervalInBackground: true,
+    },
+  });
+  const archiveQuery = useGetArchive({ page: 1, pageSize: 3 });
   const today = todayQuery.data;
+  const participants = today?.participants ?? [];
+  const leader = participants[0];
+  const recentHistory = archiveQuery.data?.items ?? [];
 
   return (
     <div className="paper-grain min-h-[100dvh] overflow-hidden">
       <SiteNav />
-      <main>
-        <section className="frost-hero relative mx-auto grid max-w-7xl gap-14 px-5 pb-20 pt-16 sm:px-8 md:grid-cols-[1.03fr_.97fr] md:items-center md:gap-8 md:pb-28 md:pt-24 lg:px-12">
-          <div className="animate-rise-in">
-            <SectionKicker>Every day is a chapter</SectionKicker>
-            <h1 className="mt-6 max-w-2xl font-display text-[clamp(4.4rem,9vw,8.8rem)] leading-[.84] tracking-[-.045em] text-primary">
-              Leave one day <span className="text-accent italic">behind.</span>
-            </h1>
-            <p className="mt-8 max-w-lg text-lg leading-8 text-muted-foreground md:text-xl">
-              Piece of History is a small side project for the moments you almost forgot. Write yours down. Let people back it. See what stays.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-4">
-              <Show when="signed-out">
-                <PrimaryButton href="/sign-up" testId="button-hero-start-writing">Write your piece <ArrowUpRight size={17} /></PrimaryButton>
-              </Show>
-              <Show when="signed-in">
-                <PrimaryButton href="/participate" testId="button-hero-participate">Write your piece <ArrowUpRight size={17} /></PrimaryButton>
-              </Show>
-              <Link href="/explore" className="inline-flex items-center gap-2 rounded-full px-3 py-3 text-sm font-bold text-primary transition-colors hover:text-accent" data-testid="link-hero-explore">
-                Read what&apos;s here <ArrowDown size={16} />
-              </Link>
-            </div>
-            <div className="mt-12 flex items-center gap-3 text-xs text-muted-foreground">
-              <span className="flex -space-x-2">
-                {['M', 'S', 'A'].map((letter, index) => <span key={letter} className={`grid h-8 w-8 place-items-center rounded-full border-2 border-background text-xs font-bold ${index === 0 ? 'bg-accent' : index === 1 ? 'bg-secondary' : 'bg-primary text-primary-foreground'}`}>{letter}</span>)}
-              </span>
-              <span>Small moments. Real people. No perfect prose needed.</span>
-            </div>
-          </div>
-          <div className="relative flex items-center justify-center px-6 md:px-10">
-            <StoryMark />
-          </div>
-        </section>
-
-        <section className="bg-primary py-10 text-primary-foreground">
-          <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-            <StatStrip stats={statsQuery.data} loading={statsQuery.isLoading} />
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-12">
-          <div className="grid gap-12 md:grid-cols-[.75fr_1.25fr] md:items-start">
-            <div className="md:sticky md:top-8">
-              <SectionKicker>The daily ritual</SectionKicker>
-              <h2 className="mt-5 max-w-md font-display text-5xl leading-[.92] text-primary md:text-6xl">What happened to you today?</h2>
-              <p className="mt-6 max-w-sm text-base leading-7 text-muted-foreground">Not the highlight reel. The real thing: a sentence someone said, a window you finally opened, the walk home in the rain.</p>
-              <PrimaryButton href="/how-it-works" variant="quiet" className="mt-7" testId="button-learn-how-it-works">See how it works <ArrowUpRight size={16} /></PrimaryButton>
-            </div>
-            <div className="rounded-[30px] bg-muted/60 p-5 sm:p-8">
-              <TodayData competition={today} loading={todayQuery.isLoading} error={Boolean(todayQuery.error)} onRetry={() => void todayQuery.refetch()} compact />
-              <div className="mt-6 flex items-center justify-between border-t border-primary/10 pt-5">
-                <span className="font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground">Today&apos;s page</span>
-                <Link href="/competition" className="inline-flex items-center gap-1 text-sm font-bold text-primary hover:text-accent" data-testid="link-view-full-competition">View the full page <ArrowUpRight size={15} /></Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-y border-primary/10 bg-secondary/35">
-          <div className="mx-auto grid max-w-7xl gap-10 px-5 py-24 sm:px-8 md:grid-cols-[1fr_1.2fr] md:items-end lg:px-12">
+      <main className="mx-auto max-w-5xl px-5 pb-16 sm:px-8 md:pb-24 lg:px-12">
+        <section className="frost-hero relative border-b border-primary/10 pb-10 pt-12 md:pb-14 md:pt-20">
+          <div className="relative z-10 grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
             <div>
-              <SectionKicker>Why this exists</SectionKicker>
-              <h2 className="mt-5 max-w-lg font-display text-5xl leading-[.94] text-primary md:text-6xl">A little weight for the weightless days.</h2>
+              <p className="font-mono-ui text-xs tracking-wide text-accent">pieceofhistory.lol / today</p>
+              <h1 className="mt-4 font-display text-[clamp(4rem,10vw,8rem)] leading-[.82] tracking-[-.05em] text-primary">
+                {today ? formatDate(today.date) : 'Today'}
+              </h1>
+              <p className="mt-5 max-w-lg text-base leading-7 text-muted-foreground md:text-lg">
+                The internet is keeping score of one ordinary day. Nobody knows why.
+              </p>
             </div>
-            <div className="grid gap-8 sm:grid-cols-2">
-              <div>
-                <Heart className="text-accent" size={22} />
-                <h3 className="mt-5 font-display text-3xl text-primary">A soft place to land</h3>
-                <p className="mt-3 text-sm leading-7 text-primary/70">No hot takes. No performance. Just a room of people paying attention to the same small miracle.</p>
+            <div className="border-l border-primary/10 pl-5 md:min-w-[190px]">
+              <p className="text-xs text-muted-foreground">freezes in</p>
+              <div className="mt-2 text-2xl text-primary">
+                {today ? <Countdown closingTimestamp={today.closingTimestamp} serverTime={today.serverTime} /> : '—'}
               </div>
-              <div>
-                <Feather className="text-accent" size={22} />
-                <h3 className="mt-5 font-display text-3xl text-primary">A record that grows</h3>
-                <p className="mt-3 text-sm leading-7 text-primary/70">Every day gets its own page. Over time, the ordinary becomes an archive of how we were here.</p>
-              </div>
+              <p className="mt-5 text-xs text-muted-foreground">highest bid</p>
+              <p className="mt-1 font-display text-3xl text-accent">{leader ? formatMoney(leader.runningTotalCents) : 'No bids yet'}</p>
             </div>
           </div>
-        </section>
 
-        <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-12">
-          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <div>
-              <SectionKicker>Before midnight</SectionKicker>
-              <h2 className="mt-5 max-w-xl font-display text-5xl leading-[.94] text-primary md:text-6xl">There&apos;s still time to make today count.</h2>
+          <div className="relative z-10 mt-10 border-y border-primary/10 py-6 md:flex md:items-center md:justify-between md:gap-8">
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground">currently leading</p>
+              {leader ? (
+                <>
+                  <h2 className="mt-2 truncate font-display text-3xl text-primary md:text-4xl">{leader.displayName}</h2>
+                  <p className="mt-2 max-w-2xl whitespace-pre-line text-sm leading-6 text-muted-foreground">&ldquo;{leader.story}&rdquo;</p>
+                </>
+              ) : (
+                <p className="mt-2 font-display text-3xl text-primary">The first story is still hiding.</p>
+              )}
             </div>
-            {today && <div className="rounded-2xl bg-primary px-5 py-4"><Countdown closingTimestamp={today.closingTimestamp} /></div>}
-          </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {[
-              { icon: <BookOpen size={20} />, title: 'Write one short story', body: 'A few lines about one meaningful day. The only rule is that it happened to you.' },
-              { icon: <Coins size={20} />, title: 'Put a little behind it', body: `A minimum of ${today ? formatMoney(today.minimumPaymentCents) : '$1.00'} keeps the day open to everyone, not just the loudest voice.` },
-              { icon: <Sparkles size={20} />, title: 'Watch it become history', body: 'The running total decides today’s order. Every contribution is part of the story.' },
-            ].map((item, index) => (
-              <div key={item.title} className={`rounded-[24px] border border-primary/10 p-7 ${index === 1 ? 'bg-primary text-primary-foreground' : 'bg-card'}`}>
-                <span className={`grid h-10 w-10 place-items-center rounded-full ${index === 1 ? 'bg-secondary text-primary' : 'bg-secondary/50 text-primary'}`}>{item.icon}</span>
-                <h3 className="mt-8 font-display text-3xl">{item.title}</h3>
-                <p className={`mt-3 text-sm leading-7 ${index === 1 ? 'text-primary-foreground/65' : 'text-muted-foreground'}`}>{item.body}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-10 text-center">
             <Show when="signed-out">
-              <PrimaryButton href="/sign-up" testId="button-bottom-start-writing">Start with today <ArrowUpRight size={16} /></PrimaryButton>
+              <PrimaryButton href="/sign-up" className="mt-6 shrink-0 md:mt-0" testId="button-home-make-bid">Make your bid <ArrowUpRight size={16} /></PrimaryButton>
             </Show>
             <Show when="signed-in">
-              <PrimaryButton href="/participate" testId="button-bottom-participate">Start with today <ArrowUpRight size={16} /></PrimaryButton>
+              <PrimaryButton href="/participate" className="mt-6 shrink-0 md:mt-0" testId="button-home-make-bid-auth">Write your piece <ArrowUpRight size={16} /></PrimaryButton>
             </Show>
+          </div>
+        </section>
+
+        <section className="py-10 md:py-14" data-testid="section-todays-competition">
+          <div className="flex items-baseline justify-between gap-4 border-b border-primary/10 pb-4">
+            <h2 className="font-display text-3xl text-primary md:text-4xl">Today&apos;s Pieces</h2>
+            <Link href="/competition" className="text-xs font-bold text-muted-foreground transition-colors hover:text-primary" data-testid="link-home-todays-competition">full competition →</Link>
+          </div>
+          <div className="mt-2">
+            {todayQuery.isLoading ? (
+              <p className="py-8 text-sm text-muted-foreground">Waiting for today to load…</p>
+            ) : todayQuery.error ? (
+              <div className="py-8 text-sm text-muted-foreground">
+                <p>The pieces are out in the cold.</p>
+                <button type="button" onClick={() => void todayQuery.refetch()} className="mt-2 font-bold text-primary underline underline-offset-4">Try again</button>
+              </div>
+            ) : participants.length ? (
+              participants.map((participant) => (
+                <div key={participant.id} className="grid gap-2 border-b border-primary/10 py-5 md:grid-cols-[48px_150px_1fr_auto] md:items-start md:gap-4" data-testid={`row-home-participant-${participant.id}`}>
+                  <span className="font-mono-ui text-xs text-muted-foreground">#{participant.rank}</span>
+                  <span className="text-sm font-bold text-primary">{participant.displayName}</span>
+                  <p className="line-clamp-2 text-sm leading-6 text-muted-foreground">&ldquo;{participant.story}&rdquo;</p>
+                  <span className="font-mono-ui text-sm font-bold text-accent">{formatMoney(participant.runningTotalCents)}</span>
+                </div>
+              ))
+            ) : (
+              <p className="py-8 text-sm text-muted-foreground">No pieces yet. The page is blank on purpose.</p>
+            )}
+          </div>
+        </section>
+
+        <section className="border-t border-primary/10 py-8" data-testid="section-recent-history">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 className="font-display text-2xl text-primary">Recent History</h2>
+            <Link href="/archive" className="text-xs font-bold text-muted-foreground transition-colors hover:text-primary" data-testid="link-home-archive">see the archive →</Link>
+          </div>
+          <div className="mt-4 divide-y divide-primary/10">
+            {archiveQuery.isLoading ? (
+              <p className="py-4 text-sm text-muted-foreground">Looking backward…</p>
+            ) : recentHistory.length ? (
+              recentHistory.map((item) => (
+                <Link key={item.id} href={`/archive/${item.date}`} className="flex items-center justify-between gap-4 py-4 text-sm transition-colors hover:text-accent" data-testid={`link-home-history-${item.date}`}>
+                  <span className="text-primary">{formatDate(item.date)}</span>
+                  <span className="text-right text-muted-foreground">{item.winnerDisplayName ?? 'No recorded winner'} · {item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : '—'}</span>
+                </Link>
+              ))
+            ) : (
+              <p className="py-4 text-sm text-muted-foreground">The archive is waiting for its first frozen day.</p>
+            )}
           </div>
         </section>
       </main>
-      <SiteFooter stats={statsQuery.data} />
+      <SiteFooter />
     </div>
   );
 }

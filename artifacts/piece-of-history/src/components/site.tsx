@@ -147,55 +147,21 @@ export function SiteNav() {
   );
 }
 
-export function SiteFooter({ stats }: { stats?: SiteStats }) {
+export function SiteFooter({ stats: _stats }: { stats?: SiteStats }) {
   return (
-    <footer className="bg-primary text-primary-foreground">
-      <div className="mx-auto max-w-7xl px-5 pb-8 pt-16 sm:px-8 lg:px-12">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
-          <div>
-            <Logo light />
-            <p className="mt-7 max-w-xs text-sm leading-6 text-primary-foreground/65">
-              A tiny side project — one story wins the day, every day, frozen in the archive forever.
-            </p>
-          </div>
-          <div>
-            <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.22em] text-secondary">Find your way</p>
-            <div className="mt-5 flex flex-col items-start gap-3 text-sm text-primary-foreground/70">
-              <Link href="/explore" className="transition-colors hover:text-secondary" data-testid="footer-link-explore">Explore stories</Link>
-              <Link href="/archive" className="transition-colors hover:text-secondary" data-testid="footer-link-archive">The Archive</Link>
-              <Link href="/competition" className="transition-colors hover:text-secondary" data-testid="footer-link-competition">Today&apos;s competition</Link>
-              <Link href="/how-it-works" className="transition-colors hover:text-secondary" data-testid="footer-link-how-it-works">How it works</Link>
-              <div className="flex items-center gap-2 pt-2 text-xs text-primary-foreground/55">
-                <Link href="/terms" className="transition-colors hover:text-secondary" data-testid="footer-link-terms">Terms</Link>
-                <span aria-hidden="true">|</span>
-                <Link href="/terms#privacy" className="transition-colors hover:text-secondary" data-testid="footer-link-privacy">Privacy</Link>
-                <span aria-hidden="true">|</span>
-                <a href="mailto:hello@pieceofhistory.app" className="transition-colors hover:text-secondary" data-testid="footer-link-contact">Contact</a>
-              </div>
-            </div>
-          </div>
-          <div>
-            <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.22em] text-secondary">The living count</p>
-            <p className="mt-5 text-sm leading-6 text-primary-foreground/70">
-              {stats
-                ? `${stats.daysLaunched.toLocaleString()} days launched · ${stats.users.toLocaleString()} people · ${stats.piecesOfHistory.toLocaleString()} completed pieces`
-                : 'The archive is loading.'}
-            </p>
-            <Show when="signed-out">
-              <Link href="/sign-up" className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-secondary hover:underline" data-testid="footer-link-join">
-                Add yours <ArrowUpRight size={15} />
-              </Link>
-            </Show>
-            <Show when="signed-in">
-              <Link href="/participate" className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-secondary hover:underline" data-testid="footer-link-participate">
-                Add yours <ArrowUpRight size={15} />
-              </Link>
-            </Show>
-          </div>
+    <footer className="border-t border-primary/10">
+      <div className="mx-auto flex max-w-5xl flex-col gap-4 px-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
+        <div className="flex items-center gap-3">
+          <Logo />
+          <span className="hidden text-xs text-muted-foreground sm:inline">Built by someone who won&apos;t be remembered.</span>
         </div>
-        <div className="mt-16 flex flex-col justify-between gap-3 border-t border-primary-foreground/15 pt-5 text-xs text-primary-foreground/45 sm:flex-row">
-          <span>© {new Date().getFullYear()} Piece of History</span>
-          <span>A side project · Built by someone who won&apos;t be remembered.</span>
+        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="sm:hidden">Built by someone who won&apos;t be remembered.</span>
+          <Link href="/terms" className="transition-colors hover:text-primary" data-testid="footer-link-terms">Terms</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/terms#privacy" className="transition-colors hover:text-primary" data-testid="footer-link-privacy">Privacy</Link>
+          <span aria-hidden="true">·</span>
+          <a href="mailto:hello@pieceofhistory.app" className="transition-colors hover:text-primary" data-testid="footer-link-contact">Contact</a>
         </div>
       </div>
     </footer>
