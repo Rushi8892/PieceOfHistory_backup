@@ -150,13 +150,12 @@ export function SiteNav() {
 export function SiteFooter({ stats: _stats }: { stats?: SiteStats }) {
   return (
     <footer className="border-t border-primary/10">
-      <div className="mx-auto flex max-w-5xl flex-col gap-4 px-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
-        <div className="flex items-center gap-3">
+      <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
           <Logo />
-          <span className="hidden text-xs text-muted-foreground sm:inline">Built by someone who won&apos;t be remembered.</span>
+          <span className="text-xs text-muted-foreground">Built by someone who won&apos;t be remembered.</span>
         </div>
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="sm:hidden">Built by someone who won&apos;t be remembered.</span>
           <Link href="/terms" className="transition-colors hover:text-primary" data-testid="footer-link-terms">Terms</Link>
           <span aria-hidden="true">·</span>
           <Link href="/terms#privacy" className="transition-colors hover:text-primary" data-testid="footer-link-privacy">Privacy</Link>
