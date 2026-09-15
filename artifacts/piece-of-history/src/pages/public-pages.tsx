@@ -2,7 +2,7 @@ import { ArrowUpRight, BookOpen, Coins, Feather } from 'lucide-react';
 import { Link } from 'wouter';
 import { Show } from '@clerk/react';
 import { getGetTodayCompetitionQueryKey, useGetArchive, useGetSiteStats, useGetTodayCompetition } from '@workspace/api-client-react';
-import { CheckLine, Countdown, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, StoryCard, TodayData, formatDate, formatMoney } from '@/components/site';
+import { CheckLine, Countdown, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney } from '@/components/site';
 
 export function LandingPage() {
   const todayQuery = useGetTodayCompetition({
@@ -119,42 +119,46 @@ export function LandingPage() {
 }
 
 export function ExplorePage() {
-  const statsQuery = useGetSiteStats();
   const todayQuery = useGetTodayCompetition();
   const participants = todayQuery.data?.participants ?? [];
   return (
     <div className="paper-grain min-h-[100dvh]">
       <SiteNav />
-      <main className="mx-auto max-w-7xl px-5 pb-24 pt-16 sm:px-8 md:pt-24 lg:px-12">
-        <div className="max-w-3xl">
-          <SectionKicker>The open archive</SectionKicker>
-          <h1 className="mt-6 font-display text-[clamp(4rem,8vw,7.5rem)] leading-[.84] tracking-[-.04em] text-primary">Read a day<br /><span className="text-accent italic">someone kept.</span></h1>
-          <p className="mt-8 max-w-xl text-lg leading-8 text-muted-foreground">Today&apos;s page is still being written. Read the pieces already here, then leave one of your own before the clock runs out.</p>
-        </div>
-        <div className="mt-14 grid gap-10 md:grid-cols-[.7fr_1.3fr]">
-          <aside className="h-fit rounded-[24px] bg-primary p-7 text-primary-foreground md:sticky md:top-7" data-testid="panel-explore-today">
-            <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-secondary">Today&apos;s page</p>
-            <p className="mt-5 font-display text-4xl">{todayQuery.data ? formatDate(todayQuery.data.date) : 'Loading today'}</p>
-            {todayQuery.data && <div className="mt-7 border-t border-primary-foreground/15 pt-5"><Countdown closingTimestamp={todayQuery.data.closingTimestamp} /></div>}
-            <Show when="signed-out">
-              <PrimaryButton href="/sign-up" variant="light" className="mt-8 w-full" testId="button-explore-write">Write on this page <ArrowUpRight size={16} /></PrimaryButton>
-            </Show>
-            <Show when="signed-in">
-              <PrimaryButton href="/participate" variant="light" className="mt-8 w-full" testId="button-explore-participate">Write on this page <ArrowUpRight size={16} /></PrimaryButton>
-            </Show>
-          </aside>
-          <div>
-            {todayQuery.isLoading ? <TodayData competition={undefined} loading error={false} onRetry={() => void todayQuery.refetch()} /> : todayQuery.error ? <TodayData competition={undefined} loading={false} error onRetry={() => void todayQuery.refetch()} /> : participants.length ? <div className="grid gap-5">{participants.map((participant) => <StoryCard key={participant.id} participant={participant} featured={participant.rank === 1} />)}</div> : <TodayData competition={todayQuery.data} loading={false} error={false} onRetry={() => void todayQuery.refetch()} />}
+      <main className="mx-auto max-w-4xl px-5 pb-20 pt-12 sm:px-8 md:pt-20">
+        <div className="border-b border-primary/10 pb-8">
+          <SectionKicker>Explore</SectionKicker>
+          <h1 className="mt-5 font-display text-[clamp(3.6rem,8vw,6.5rem)] leading-[.84] tracking-[-.04em] text-primary">Today&apos;s<br /><span className="text-accent italic">pieces.</span></h1>
+          <div className="mt-7 flex flex-wrap items-end justify-between gap-5">
+            <p className="max-w-md text-base leading-7 text-muted-foreground">A small list of things people decided were worth remembering.</p>
+            {todayQuery.data && <div className="text-right text-sm text-muted-foreground"><p>{formatDate(todayQuery.data.date)}</p><Countdown closingTimestamp={todayQuery.data.closingTimestamp} serverTime={todayQuery.data.serverTime} /></div>}
           </div>
         </div>
+        <div className="mt-4">
+          {todayQuery.isLoading ? <p className="py-8 text-sm text-muted-foreground">Waiting for today to load…</p> : todayQuery.error ? <div className="py-8 text-sm text-muted-foreground"><p>The pieces are out in the cold.</p><button type="button" onClick={() => void todayQuery.refetch()} className="mt-2 font-bold text-primary underline underline-offset-4">Try again</button></div> : participants.length ? participants.map((participant) => (
+            <div key={participant.id} className="grid gap-2 border-b border-primary/10 py-6 md:grid-cols-[48px_150px_1fr_auto] md:items-start md:gap-4" data-testid={`row-explore-participant-${participant.id}`}>
+              <span className="font-mono-ui text-xs text-muted-foreground">#{participant.rank}</span>
+              <span className="text-sm font-bold text-primary">{participant.displayName}</span>
+              <p className="text-sm leading-6 text-muted-foreground">&ldquo;{participant.story}&rdquo;</p>
+              <span className="font-mono-ui text-sm font-bold text-accent">{formatMoney(participant.runningTotalCents)}</span>
+            </div>
+          )) : <p className="py-8 text-sm text-muted-foreground">No pieces yet. The page is blank on purpose.</p>}
+        </div>
+        <div className="mt-8 flex flex-wrap gap-4">
+          <Show when="signed-out">
+            <PrimaryButton href="/sign-up" testId="button-explore-write">Write on this page <ArrowUpRight size={16} /></PrimaryButton>
+          </Show>
+          <Show when="signed-in">
+            <PrimaryButton href="/participate" testId="button-explore-participate">Write on this page <ArrowUpRight size={16} /></PrimaryButton>
+          </Show>
+          <Link href="/archive" className="inline-flex items-center gap-2 px-2 py-3 text-sm font-bold text-muted-foreground hover:text-primary">Read the frozen days →</Link>
+        </div>
       </main>
-      <SiteFooter stats={statsQuery.data} />
+      <SiteFooter />
     </div>
   );
 }
 
 export function CompetitionPage() {
-  const statsQuery = useGetSiteStats();
   const todayQuery = useGetTodayCompetition({
     query: {
       queryKey: getGetTodayCompetitionQueryKey(),
@@ -163,93 +167,74 @@ export function CompetitionPage() {
     },
   });
   const competition = todayQuery.data;
+  const participants = competition?.participants ?? [];
+  const leader = participants[0];
   return (
     <div className="paper-grain min-h-[100dvh]">
       <SiteNav />
-      <main className="mx-auto max-w-7xl px-5 pb-24 pt-14 sm:px-8 md:pt-24 lg:px-12">
-        <div className="grid gap-12 md:grid-cols-[.9fr_1.1fr] md:items-end">
-          <div>
-            <SectionKicker>Competition no. {competition?.id.slice(0, 6) ?? 'today'}</SectionKicker>
-            <h1 className="mt-6 font-display text-[clamp(4.2rem,8vw,7.6rem)] leading-[.84] tracking-[-.04em] text-primary">Today&apos;s<br /><span className="text-accent italic">piece.</span></h1>
-            <p className="mt-8 max-w-lg text-lg leading-8 text-muted-foreground">One day. One page. The cumulative support behind each story shapes the order before midnight.</p>
-          </div>
-          <div className="rounded-[28px] bg-primary p-7 text-primary-foreground md:p-9" data-testid="panel-competition-status">
-            <div className="flex items-center justify-between gap-5">
-              <span className="font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-secondary">{competition ? formatDate(competition.date) : 'Loading date'}</span>
-              <span className="rounded-full bg-primary-foreground/10 px-3 py-1.5 font-mono-ui text-[10px] uppercase tracking-wide text-primary-foreground/70">{competition?.participants.length ?? 0} pieces</span>
+      <main className="mx-auto max-w-4xl px-5 pb-20 pt-12 sm:px-8 md:pt-20">
+        <section className="border-b border-primary/10 pb-8">
+          <SectionKicker>Today&apos;s competition</SectionKicker>
+          <div className="mt-5 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <h1 className="font-display text-[clamp(3.8rem,8vw,6.5rem)] leading-[.84] tracking-[-.04em] text-primary">{competition ? formatDate(competition.date) : 'Today'}</h1>
+              <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">One ordinary day, briefly made competitive.</p>
             </div>
-            <div className="mt-12">
-              <p className="text-sm text-primary-foreground/55">Closes in</p>
-              {competition && <div className="mt-2 text-3xl"><Countdown closingTimestamp={competition.closingTimestamp} serverTime={competition.serverTime} /></div>}
+            <div className="border-l border-primary/10 pl-5 text-sm text-muted-foreground">
+              <p>freezes in</p>
+              {competition && <Countdown closingTimestamp={competition.closingTimestamp} serverTime={competition.serverTime} />}
+              <p className="mt-4">highest bid <span className="font-display text-2xl text-accent">{leader ? formatMoney(leader.runningTotalCents) : '—'}</span></p>
             </div>
-            <p className="mt-8 border-t border-primary-foreground/15 pt-5 text-sm leading-6 text-primary-foreground/65">Every piece starts at {competition ? formatMoney(competition.minimumPaymentCents) : '$1.00'}.</p>
           </div>
-        </div>
-        <div className="mt-16 grid gap-10 md:grid-cols-[1.4fr_.6fr]">
-          <TodayData competition={competition} loading={todayQuery.isLoading} error={Boolean(todayQuery.error)} onRetry={() => void todayQuery.refetch()} />
-          <div className="h-fit rounded-[24px] border border-primary/10 bg-card p-7">
-            <SectionKicker>Ready when you are</SectionKicker>
-            <h2 className="mt-5 font-display text-4xl leading-[.95] text-primary">Your day belongs here, too.</h2>
-            <ul className="mt-7 space-y-4"><CheckLine>Write from memory, not performance.</CheckLine><CheckLine>Choose a day that still has a pulse.</CheckLine><CheckLine>Let the room decide what resonates.</CheckLine></ul>
-            <Show when="signed-out">
-              <PrimaryButton href="/sign-up" className="mt-8 w-full" testId="button-competition-sign-up">Place a Payment <ArrowUpRight size={16} /></PrimaryButton>
-            </Show>
-            <Show when="signed-in">
-              <PrimaryButton href="/participate" className="mt-8 w-full" testId="button-competition-participate">Place a Payment <ArrowUpRight size={16} /></PrimaryButton>
-            </Show>
+        </section>
+        <section className="py-8" data-testid="page-competition-list">
+          <div className="flex items-baseline justify-between border-b border-primary/10 pb-4">
+            <h2 className="font-display text-3xl text-primary">The pieces</h2>
+            <span className="text-xs text-muted-foreground">{participants.length} today</span>
           </div>
+          {todayQuery.isLoading ? <p className="py-8 text-sm text-muted-foreground">Waiting for today to load…</p> : todayQuery.error ? <div className="py-8 text-sm text-muted-foreground"><p>The pieces are out in the cold.</p><button type="button" onClick={() => void todayQuery.refetch()} className="mt-2 font-bold text-primary underline underline-offset-4">Try again</button></div> : participants.length ? participants.map((participant) => (
+            <div key={participant.id} className="grid gap-2 border-b border-primary/10 py-6 md:grid-cols-[48px_150px_1fr_auto] md:items-start md:gap-4">
+              <span className="font-mono-ui text-xs text-muted-foreground">#{participant.rank}</span>
+              <span className="text-sm font-bold text-primary">{participant.displayName}</span>
+              <p className="text-sm leading-6 text-muted-foreground">&ldquo;{participant.story}&rdquo;</p>
+              <span className="font-mono-ui text-sm font-bold text-accent">{formatMoney(participant.runningTotalCents)}</span>
+            </div>
+          )) : <p className="py-8 text-sm text-muted-foreground">No pieces yet. The page is blank on purpose.</p>}
+        </section>
+        <div className="flex flex-wrap gap-4 border-t border-primary/10 pt-6">
+          <Show when="signed-out">
+            <PrimaryButton href="/sign-up" testId="button-competition-sign-up">Place a Payment <ArrowUpRight size={16} /></PrimaryButton>
+          </Show>
+          <Show when="signed-in">
+            <PrimaryButton href="/participate" testId="button-competition-participate">Place a Payment <ArrowUpRight size={16} /></PrimaryButton>
+          </Show>
+          <Link href="/how-it-works" className="inline-flex items-center px-2 py-3 text-sm font-bold text-muted-foreground hover:text-primary">How does this work? →</Link>
         </div>
       </main>
-      <SiteFooter stats={statsQuery.data} />
+      <SiteFooter />
     </div>
   );
 }
 
 export function HowItWorksPage() {
-  const statsQuery = useGetSiteStats();
   return (
     <div className="paper-grain min-h-[100dvh]">
       <SiteNav />
-      <main>
-        <section className="mx-auto max-w-7xl px-5 pb-20 pt-16 sm:px-8 md:pb-28 md:pt-24 lg:px-12">
-          <SectionKicker>A very small ceremony</SectionKicker>
-          <div className="mt-6 grid gap-10 md:grid-cols-[1fr_.8fr] md:items-end">
-            <h1 className="font-display text-[clamp(4rem,9vw,8.6rem)] leading-[.84] tracking-[-.045em] text-primary">The rules are<br /><span className="text-accent italic">simple.</span></h1>
-            <p className="max-w-md text-lg leading-8 text-muted-foreground">Piece of History turns the day-to-day into something you can hold onto. Here&apos;s the whole idea, in three gentle steps.</p>
-          </div>
-        </section>
-        <section className="bg-primary py-20 text-primary-foreground">
-          <div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 md:grid-cols-3 lg:px-12">
-            <HowStep number="01" title="Write a day" icon={<Feather size={17} />}>Tell one short story about one meaningful day. It can be tender, funny, unfinished, or completely ordinary.</HowStep>
-            <HowStep number="02" title="Back a story" icon={<Coins size={17} />}>Each piece starts with the same minimum payment. Add to the story that stays with you and move it up the day&apos;s page.</HowStep>
-            <HowStep number="03" title="Make history" icon={<BookOpen size={17} />}>When the day closes, the cumulative totals set the order. Tomorrow begins a new page, and the archive keeps growing.</HowStep>
-          </div>
-        </section>
-        <section className="mx-auto grid max-w-7xl gap-14 px-5 py-24 sm:px-8 md:grid-cols-[1.1fr_.9fr] md:items-center lg:px-12">
-          <div>
-            <SectionKicker>What counts</SectionKicker>
-            <h2 className="mt-5 font-display text-5xl leading-[.92] text-primary md:text-6xl">Not a popularity contest. A little proof of attention.</h2>
-            <p className="mt-7 max-w-lg text-base leading-8 text-muted-foreground">The money is a simple, visible way to say: this mattered to me. We keep the mechanic clear so the meaning stays in the story.</p>
-          </div>
-          <div className="rounded-[28px] bg-secondary/45 p-8 md:p-10">
-            <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-primary/60">The fine print, in plain words</p>
-            <ul className="mt-7 space-y-5"><CheckLine>Every day has one shared closing time.</CheckLine><CheckLine>Stories stay short so more people can be heard.</CheckLine><CheckLine>Payments are charged in USD and are non-refundable, whether your story wins or not.</CheckLine><CheckLine>Totals are cumulative and public.</CheckLine><CheckLine>Tomorrow is a clean page.</CheckLine></ul>
-            <PrimaryButton href="/explore" variant="quiet" className="mt-8" testId="button-how-explore">Read today&apos;s pieces <ArrowUpRight size={16} /></PrimaryButton>
-          </div>
-        </section>
-        <section className="border-t border-primary/10 bg-muted/50">
-          <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-20 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-12">
-            <div><SectionKicker>The archive is alive</SectionKicker><p className="mt-3 font-display text-4xl text-primary">{statsQuery.data?.piecesOfHistory.toLocaleString() ?? '—'} days worth of remembering.</p></div>
-            <Show when="signed-out">
-              <PrimaryButton href="/sign-up" testId="button-how-start-writing">Write the next one <ArrowUpRight size={16} /></PrimaryButton>
-            </Show>
-            <Show when="signed-in">
-              <PrimaryButton href="/participate" testId="button-how-participate">Write the next one <ArrowUpRight size={16} /></PrimaryButton>
-            </Show>
-          </div>
-        </section>
+      <main className="mx-auto max-w-3xl px-5 pb-20 pt-12 sm:px-8 md:pt-20">
+        <SectionKicker>How it works</SectionKicker>
+        <h1 className="mt-5 font-display text-[clamp(3.8rem,8vw,6.5rem)] leading-[.84] tracking-[-.04em] text-primary">One day.<br /><span className="text-accent italic">One story.</span></h1>
+        <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">A strange little daily ritual: write something true, let people back it, and see which memory stays on top.</p>
+        <div className="mt-12 divide-y divide-primary/10 border-y border-primary/10">
+          <HowStep number="01" title="Write a day" icon={<Feather size={17} />}>Tell one short story about one meaningful day. Ordinary is encouraged.</HowStep>
+          <HowStep number="02" title="Back a story" icon={<Coins size={17} />}>Add a voluntary payment to the piece that deserves your attention.</HowStep>
+          <HowStep number="03" title="Make history" icon={<BookOpen size={17} />}>At the closing time, the highest confirmed total wins and the day freezes.</HowStep>
+        </div>
+        <div className="mt-8 flex flex-wrap gap-4">
+          <Link href="/competition" className="text-sm font-bold text-primary hover:text-accent">See today&apos;s competition →</Link>
+          <Link href="/terms" className="text-sm font-bold text-muted-foreground hover:text-primary">Read the terms →</Link>
+        </div>
       </main>
-      <SiteFooter stats={statsQuery.data} />
+      <SiteFooter />
     </div>
   );
 }

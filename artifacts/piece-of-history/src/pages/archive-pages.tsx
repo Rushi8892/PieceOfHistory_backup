@@ -5,7 +5,6 @@ import { SectionKicker, SiteFooter, SiteNav, PrimaryButton, formatMoney, formatD
 import { useState } from 'react';
 
 export function ArchivePage() {
-  const statsQuery = useGetSiteStats();
   const [page, setPage] = useState(1);
   const archiveQuery = useGetArchive({ page, pageSize: 12 });
   
@@ -16,14 +15,14 @@ export function ArchivePage() {
   return (
     <div className="paper-grain min-h-[100dvh]">
       <SiteNav />
-      <main className="mx-auto max-w-7xl px-5 pb-24 pt-16 sm:px-8 md:pt-24 lg:px-12">
-        <div className="max-w-3xl">
+      <main className="mx-auto max-w-4xl px-5 pb-20 pt-12 sm:px-8 md:pt-20">
+        <div className="max-w-2xl">
           <SectionKicker>The Archive</SectionKicker>
-          <h1 className="mt-6 font-display text-[clamp(4rem,8vw,7.5rem)] leading-[.84] tracking-[-.04em] text-primary">All the days<br /><span className="text-accent italic">we kept.</span></h1>
-          <p className="mt-8 max-w-xl text-lg leading-8 text-muted-foreground">Every day that has passed is stored here, forever. Look back at what mattered to someone else, on a day just like today.</p>
+          <h1 className="mt-5 font-display text-[clamp(3.8rem,8vw,6.5rem)] leading-[.84] tracking-[-.04em] text-primary">Frozen<br /><span className="text-accent italic">days.</span></h1>
+          <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">The days that made it through the cold. Each one keeps its winning story.</p>
         </div>
 
-        <div className="mt-16">
+        <div className="mt-12">
           {archiveQuery.isLoading ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-testid="state-archive-loading">
               {[1, 2, 3, 4, 5, 6].map(i => (
@@ -44,26 +43,12 @@ export function ArchivePage() {
             </div>
           ) : (
             <div data-testid="data-archive-list">
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="divide-y divide-primary/10 border-y border-primary/10" data-testid="data-archive-list">
                 {items.map(item => (
-                  <Link key={item.id} href={`/archive/${item.date}`} className="group relative flex flex-col justify-between overflow-hidden rounded-[24px] border border-primary/10 bg-card p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md" data-testid={`link-archive-item-${item.date}`}>
-                    <div>
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground">No. {item.id.slice(0, 6)}</span>
-                        {item.winningStandingCents !== null && (
-                          <span className="rounded-full bg-secondary/35 px-3 py-1 font-mono-ui text-[10px] font-bold tracking-wide text-primary">{formatMoney(item.winningStandingCents)}</span>
-                        )}
-                      </div>
-                      <h3 className="mt-4 font-display text-2xl leading-tight text-primary transition-colors group-hover:text-accent">{formatDate(item.date)}</h3>
-                    </div>
-                    <div className="mt-10 border-t border-primary/10 pt-5 text-sm text-primary/80">
-                      {item.winnerDisplayName ? (
-                        <p className="font-semibold"><span className="text-muted-foreground font-normal">Won by</span> {item.winnerDisplayName}</p>
-                      ) : (
-                        <p className="italic text-muted-foreground">No pieces recorded</p>
-                      )}
-                      <p className="mt-2 text-xs text-muted-foreground">{item.participantCount} piece{item.participantCount !== 1 ? 's' : ''} total</p>
-                    </div>
+                  <Link key={item.id} href={`/archive/${item.date}`} className="group grid gap-2 py-5 transition-colors hover:text-accent sm:grid-cols-[180px_1fr_auto] sm:items-center sm:gap-5" data-testid={`link-archive-item-${item.date}`}>
+                    <span className="font-display text-2xl text-primary group-hover:text-accent">{formatDate(item.date)}</span>
+                    <span className="text-sm text-muted-foreground">{item.winnerDisplayName ? `Won by ${item.winnerDisplayName}` : 'No pieces recorded'} · {item.participantCount} piece{item.participantCount !== 1 ? 's' : ''}</span>
+                    <span className="font-mono-ui text-sm font-bold text-accent">{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : '—'}</span>
                   </Link>
                 ))}
               </div>
@@ -85,7 +70,7 @@ export function ArchivePage() {
           )}
         </div>
       </main>
-      <SiteFooter stats={statsQuery.data} />
+      <SiteFooter />
     </div>
   );
 }
