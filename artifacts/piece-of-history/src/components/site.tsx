@@ -1,9 +1,96 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
-import { ArrowUpRight, Box, Calendar, Check, Crown, ExternalLink, Globe, Hourglass, Menu, PenLine, ScrollText, Snowflake, Sparkles, X } from 'lucide-react';
+import { ArrowUpRight, Check, ExternalLink, Menu, PenLine, Snowflake, Sparkles, X } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import type { CompetitionParticipant, SiteStats, TodayCompetition } from '@workspace/api-client-react';
 import { getGetCurrentUserQueryKey, useGetCurrentUser } from '@workspace/api-client-react';
 import { Show, useAuth } from '@clerk/react';
+
+export type IceGlyphKind = 'calendar' | 'cube' | 'globe' | 'crown' | 'page' | 'lock' | 'book' | 'hourglass' | 'gem' | 'profile';
+
+export function IceGlyph({ kind, size = 18, className = '' }: { kind: IceGlyphKind; size?: number; className?: string }) {
+  const common = {
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.35,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+  };
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      className={className}
+      aria-hidden="true"
+      focusable="false"
+      {...common}
+    >
+      {kind === 'calendar' && (
+        <>
+          <rect x="4.5" y="5.5" width="15" height="15" rx="2" />
+          <path d="M8 3.5v4M16 3.5v4M4.5 10h15" />
+          <path d="M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01" strokeWidth="2.2" />
+        </>
+      )}
+      {kind === 'cube' && (
+        <>
+          <path d="m12 3.5 7.3 4.1v8.8L12 20.5l-7.3-4.1V7.6L12 3.5Z" />
+          <path d="m4.7 7.6 7.3 4.1 7.3-4.1M12 11.7v8.8" />
+        </>
+      )}
+      {kind === 'globe' && (
+        <>
+          <circle cx="12" cy="12" r="8.2" />
+          <path d="M3.8 12h16.4M12 3.8c2.1 2.2 3.1 5 3.1 8.2s-1 6-3.1 8.2M12 3.8c-2.1 2.2-3.1 5-3.1 8.2s1 6 3.1 8.2" />
+        </>
+      )}
+      {kind === 'crown' && (
+        <>
+          <path d="m4 7 4 3 4-6 4 6 4-3-1.3 10H5.3L4 7Z" />
+          <path d="M6 20h12M6.2 14.5h11.6" />
+        </>
+      )}
+      {kind === 'page' && (
+        <>
+          <path d="M6 3.5h8l4 4v13H6z" />
+          <path d="M14 3.5v4h4M8.5 12h7M8.5 15.5h7M8.5 9h2" />
+        </>
+      )}
+      {kind === 'lock' && (
+        <>
+          <rect x="5" y="10" width="14" height="10" rx="2" />
+          <path d="M8 10V7.5a4 4 0 0 1 8 0V10M12 14v2.5" />
+        </>
+      )}
+      {kind === 'book' && (
+        <>
+          <path d="M4.5 5.5a3 3 0 0 1 3-3H12v17H7.5a3 3 0 0 0-3 3v-17Z" />
+          <path d="M19.5 5.5a3 3 0 0 0-3-3H12v17h4.5a3 3 0 0 1 3 3v-17ZM7.5 6.5h2M14.5 6.5h2" />
+        </>
+      )}
+      {kind === 'hourglass' && (
+        <>
+          <path d="M7 4h10M7 20h10M8 4c0 3.2 1.3 4.4 4 6 2.7-1.6 4-2.8 4-6M8 20c0-3.2 1.3-4.4 4-6 2.7 1.6 4 2.8 4 6" />
+          <path d="M10.2 12h3.6" />
+        </>
+      )}
+      {kind === 'gem' && (
+        <>
+          <path d="m4 8 4-4h8l4 4-8 12L4 8Z" />
+          <path d="m4 8h16M8 4l4 4 4-4M8 8l4 12 4-12" />
+        </>
+      )}
+      {kind === 'profile' && (
+        <>
+          <circle cx="12" cy="12" r="8.2" />
+          <circle cx="12" cy="9.2" r="2.1" />
+          <path d="M7.8 17c.9-2.1 2.3-3.1 4.2-3.1s3.3 1 4.2 3.1" />
+        </>
+      )}
+    </svg>
+  );
+}
 
 export function Logo({ light = false }: { light?: boolean }) {
   return (
@@ -18,7 +105,7 @@ export function Logo({ light = false }: { light?: boolean }) {
           Piece of History
         </span>
         <span className={`mt-1 inline-flex items-center gap-1 font-mono-ui text-[9px] uppercase tracking-[.16em] ${light ? 'text-primary-foreground/55' : 'text-muted-foreground'}`}>
-          <Globe size={10} strokeWidth={2} aria-hidden="true" /> Piece of Internet History
+          <IceGlyph kind="globe" size={10} /> Piece of Internet History
         </span>
       </span>
     </Link>
@@ -186,19 +273,19 @@ export function StoryCard({ participant, featured = false }: { participant: Comp
           <span className="grid h-10 w-10 place-items-center rounded-[6px] bg-muted font-mono-ui text-xs font-bold text-primary">{participant.displayName.slice(0, 1).toUpperCase()}</span>
           <div>
             <p className="flex items-center gap-1.5 text-sm font-bold text-primary" data-testid={`text-story-author-${participant.id}`}>
-              {featured && <Crown size={13} className="text-accent" aria-hidden="true" />}
+              {featured && <IceGlyph kind="crown" size={14} className="text-accent" />}
               {participant.displayName}
             </p>
             <p className="font-mono-ui text-[10px] uppercase tracking-[.16em] text-muted-foreground">Rank {participant.rank}</p>
           </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 font-mono-ui text-xs font-bold tracking-wide text-accent"><Box size={12} aria-hidden="true" />{formatMoney(participant.runningTotalCents)}</span>
+        <span className="inline-flex items-center gap-1.5 font-mono-ui text-xs font-bold tracking-wide text-accent"><IceGlyph kind="cube" size={13} />{formatMoney(participant.runningTotalCents)}</span>
       </div>
       <p className={`story-lines mt-6 whitespace-pre-line pb-1 font-display leading-[1.5] text-primary/90 ${featured ? 'text-2xl md:text-[29px]' : 'text-xl'}`} data-testid={`text-story-content-${participant.id}`}>
         “{participant.story}”
       </p>
       <div className="mt-7 flex items-center justify-between gap-3 border-t border-primary/10 pt-4">
-        <span className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] uppercase tracking-[.14em] text-muted-foreground"><ScrollText size={12} aria-hidden="true" />A piece of history</span>
+        <span className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] uppercase tracking-[.14em] text-muted-foreground"><IceGlyph kind="page" size={13} />A piece of history</span>
         {hasWebsite && (
             <a href={participant.websiteUrl ?? undefined} target="_blank" rel="noopener noreferrer" className="quiet-link inline-flex items-center justify-center gap-2 text-xs font-bold text-primary transition-colors" data-testid={`link-story-website-${participant.id}`}>
             Visit Website <ExternalLink size={featured ? 15 : 13} />
@@ -230,7 +317,7 @@ export function Countdown({ closingTimestamp, serverTime, tone = 'dark' }: { clo
 
   return (
     <div className={`flex items-center gap-2 ${tone === 'light' ? 'text-primary-foreground' : 'text-primary'}`} data-testid="countdown-timer">
-      <Hourglass size={14} className={remaining > 0 ? 'text-secondary' : 'text-accent'} aria-hidden="true" />
+      <IceGlyph kind="hourglass" size={15} className={remaining > 0 ? 'text-secondary' : 'text-accent'} />
       <span className="font-mono-ui text-sm font-bold tracking-wide">
         {remaining > 0 ? `${unit(time.hours)}:${unit(time.minutes)}:${unit(time.seconds)}` : 'FROZEN'}
       </span>
@@ -274,7 +361,7 @@ export function TodayData({
       {!compact && (
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground"><Calendar size={11} aria-hidden="true" />Live today</p>
+            <p className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground"><IceGlyph kind="calendar" size={12} />Live today</p>
             <h2 className="mt-2 font-display text-4xl leading-none text-primary">{formatDate(competition.date)}</h2>
           </div>
           <div className="border-l border-primary/20 pl-4">
