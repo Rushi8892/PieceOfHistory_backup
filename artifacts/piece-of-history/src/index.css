@@ -474,23 +474,11 @@
   position: relative;
   isolation: isolate;
   min-height: 100%;
-  background:
-    radial-gradient(ellipse at 14% 8%, hsl(194 86% 99% / .95), transparent 29%),
-    radial-gradient(ellipse at 86% 36%, hsl(191 70% 96% / .72), transparent 34%),
-    linear-gradient(128deg, hsl(204 62% 98% / .88), transparent 41%),
-    linear-gradient(315deg, hsl(196 58% 90% / .58), transparent 65%),
-    hsl(var(--background));
+  background: linear-gradient(180deg, hsl(199 62% 98%), hsl(199 54% 94%));
 }
 
 .paper-grain::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  pointer-events: none;
-   opacity: .035;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+  display: none;
 }
 
 /* Frost shimmer layer — replaces the snowflake text hack */
@@ -498,38 +486,23 @@
   position: relative;
 }
 .frost-hero::before {
-  content: '';
-  position: absolute;
-  inset: -60px -40px 0;
-  pointer-events: none;
-   background: linear-gradient(180deg, hsl(var(--secondary) / .2), hsl(var(--secondary) / 0));
-   border-radius: 0 0 50% 50%;
-   filter: blur(46px);
-  z-index: 0;
+  display: none;
 }
 
 .ice-shell {
   position: relative;
   overflow: hidden;
-  background:
-    linear-gradient(135deg, hsl(var(--card) / .94), hsl(var(--secondary) / .15)),
-    linear-gradient(155deg, transparent 0 58%, hsl(193 84% 91% / .22) 58.2% 58.8%, transparent 59%),
-    hsl(var(--card));
-  border: 1px solid hsl(194 56% 75% / .62);
+  background: hsl(var(--card) / .78);
+  border: 1px solid hsl(194 42% 78% / .7);
   box-shadow:
-    0 26px 52px -34px hsl(var(--primary) / .62),
-    inset 0 1px 0 hsl(var(--card) / .95),
-    inset 0 -1px 0 hsl(var(--secondary) / .42),
-    0 0 0 5px hsl(var(--secondary) / .05);
-  backdrop-filter: blur(10px);
+    0 12px 28px -24px hsl(var(--primary) / .4),
+    inset 0 1px 0 hsl(var(--card) / .96);
+  backdrop-filter: blur(7px);
 }
 
 .ice-shell::before,
 .ice-shell::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  opacity: .6;
+  display: none;
 }
 
 .ice-shell::before {
@@ -551,13 +524,12 @@
 }
 
 .ice-panel {
-  border: 1px solid hsl(199 38% 75% / .48);
-  background:
-    linear-gradient(145deg, hsl(var(--card) / .75), hsl(var(--secondary) / .08)),
-    hsl(var(--card) / .62);
+  border: 1px solid hsl(199 34% 78% / .56);
+  background: hsl(var(--card) / .5);
   box-shadow:
-    inset 0 1px 0 hsl(var(--card) / .95),
-    0 16px 30px -28px hsl(var(--primary) / .68);
+    inset 0 1px 0 hsl(var(--card) / .82),
+    0 8px 20px -18px hsl(var(--primary) / .38);
+  backdrop-filter: blur(6px);
 }
 
 .ice-stat {
@@ -701,13 +673,10 @@
 .history-ribbon {
   min-height: 68px;
   overflow: hidden;
-  background:
-    linear-gradient(110deg, hsl(var(--secondary) / .18), hsl(var(--card) / .2) 54%, hsl(var(--secondary) / .12)),
-    hsl(var(--secondary) / .1);
+  background: hsl(var(--card) / .42);
   box-shadow:
-    inset 0 1px 0 hsl(var(--card) / .85),
-    inset 0 -1px 0 hsl(var(--secondary) / .22),
-    0 12px 24px -22px hsl(var(--primary) / .45);
+    inset 0 1px 0 hsl(var(--card) / .82),
+    0 8px 18px -18px hsl(var(--primary) / .28);
 }
 
 .history-ice-cluster {

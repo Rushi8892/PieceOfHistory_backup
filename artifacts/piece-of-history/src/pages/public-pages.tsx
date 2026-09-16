@@ -2,7 +2,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'wouter';
 import { Show } from '@clerk/react';
 import { getGetTodayCompetitionQueryKey, useGetArchive, useGetTodayCompetition } from '@workspace/api-client-react';
-import { Countdown, FrostAsset, FrostDetail, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney } from '@/components/site';
+import { Countdown, FrostAsset, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney } from '@/components/site';
 
 function formatHeroDate(date?: string) {
   if (!date) return 'Today';
@@ -34,10 +34,7 @@ export function LandingPage() {
       <SiteNav />
       <main className="mx-auto max-w-[1120px] px-4 pb-14 sm:px-6 md:pb-20 lg:px-8">
         <section className="frost-hero relative pb-5 pt-5 md:pb-7 md:pt-7">
-          <FrostDetail kind="snowflake" className="right-[8%] top-10 hidden rotate-12 md:block" />
-          <FrostDetail className="right-[2%] top-36 hidden md:block" />
           <div className="ice-shell hero-shell relative z-10 rounded-[14px] p-3 sm:p-4 md:p-5">
-            <FrostAsset name="crystal" size={28} className="hero-crystal frost-asset-plain" />
             <div className="hero-primary-grid relative z-10 grid gap-4 sm:grid-cols-[128px_1fr] sm:items-center sm:gap-5">
               <div className="hero-calendar-slot flex justify-center sm:justify-start">
                 <div className="hero-calendar-wrap hero-calendar-compact">
@@ -96,7 +93,6 @@ export function LandingPage() {
 
         <section className="grid gap-5 sm:grid-cols-[2fr_1fr]" data-testid="section-todays-competition">
           <div className="ice-panel competition-focus relative rounded-[14px] p-4 sm:p-5">
-            <FrostAsset name="crystal" size={30} className="competition-crystal frost-asset-plain" />
             <div className="flex items-baseline justify-between gap-3 border-b border-primary/10 pb-3">
               <h2 className="inline-flex items-center gap-2 font-display text-[1.5rem] text-primary sm:text-[1.7rem]"><FrostAsset name="crown" size={23} className="frost-asset-warm" />Today&apos;s competition</h2>
               <p className="hidden text-[8px] text-muted-foreground sm:block">Real people. Real stories. Live bids.</p>
@@ -136,11 +132,6 @@ export function LandingPage() {
               <p className="font-display text-lg leading-none text-primary">Internet History</p>
               <p className="mt-1 text-[10px] text-muted-foreground">One day. One winner. One tiny piece of history.</p>
             </div>
-          </div>
-          <div className="history-ice-cluster" aria-hidden="true">
-            <span /><span /><span />
-            <FrostAsset name="iceMountain" size={76} className="frost-asset-plain history-mountain-asset" />
-            <FrostAsset name="penguin" size={23} className="frost-asset-plain history-penguin-asset" />
           </div>
           <p className="relative z-10 hidden max-w-[118px] text-right font-display text-[10px] italic leading-4 text-primary/60 sm:block">Some stories just deserve to stay →</p>
         </section>
