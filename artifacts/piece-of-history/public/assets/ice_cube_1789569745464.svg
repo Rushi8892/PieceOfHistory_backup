@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <title>Ice Cube</title>
+  <g fill="none" stroke="#1597D4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    
+<path d="M22 30l28-14 29 14-29 16z" fill="#DDF5FF"/>
+<path d="M22 30v36l28 18V46z" fill="#C9EEFF"/>
+<path d="M79 30v36L50 84V46z" fill="#EAF9FF"/>
+<path d="M36 25l14 8 15-8"/>
+<path d="M39 48l-8 5M61 50l9-5"/>
+
+  </g>
+</svg>

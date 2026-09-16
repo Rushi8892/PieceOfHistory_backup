@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <title>Archive Book</title>
+  <g fill="none" stroke="#1597D4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    
+<path d="M18 23c12-7 22-6 32 1v55c-10-7-20-8-32-1z" fill="#EAF8FF"/>
+<path d="M82 23c-12-7-22-6-32 1v55c10-7 20-8 32-1z" fill="#F3FBFF"/>
+<path d="M50 24v55"/>
+<path d="M27 36h14M27 47h14M59 36h14M59 47h14"/>
+
+  </g>
+</svg>
