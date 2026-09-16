@@ -1,8 +1,8 @@
-import { ArrowUpRight, BookOpen, Box, Calendar, Coins, Crown, Feather, Globe, Hourglass, Sparkles } from 'lucide-react';
+import { ArrowUpRight, BookOpen, Coins, Feather } from 'lucide-react';
 import { Link } from 'wouter';
 import { Show } from '@clerk/react';
 import { getGetTodayCompetitionQueryKey, useGetArchive, useGetTodayCompetition } from '@workspace/api-client-react';
-import { Countdown, FrostDetail, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney } from '@/components/site';
+import { Countdown, FrostDetail, HowStep, IceGlyph, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney } from '@/components/site';
 
 export function LandingPage() {
   const todayQuery = useGetTodayCompetition({
@@ -27,9 +27,9 @@ export function LandingPage() {
           <FrostDetail className="right-[4%] top-28 hidden md:block" />
           <div className="relative z-10 grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
             <div>
-               <p className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] font-bold uppercase tracking-[.24em] text-accent"><Globe size={11} aria-hidden="true" />A live page from the internet</p>
+               <p className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] font-bold uppercase tracking-[.24em] text-accent"><IceGlyph kind="globe" size={13} />A live page from the internet</p>
                <h1 className="mt-5 flex max-w-4xl items-baseline gap-4 font-display text-[clamp(4.25rem,11vw,8.8rem)] leading-[.8] tracking-[-.06em] text-primary">
-                <Calendar className="hidden shrink-0 text-secondary md:block" size={44} strokeWidth={1.5} aria-hidden="true" />
+                <span className="ice-glyph-halo shrink-0 text-secondary"><IceGlyph kind="calendar" size={32} /></span>
                 {today ? formatDate(today.date) : 'Today'}
               </h1>
               <p className="mt-5 max-w-lg text-base leading-7 text-muted-foreground md:text-lg">
@@ -38,11 +38,11 @@ export function LandingPage() {
             </div>
             <div className="relative border-l border-primary/10 pl-5 md:min-w-[190px]">
               <FrostDetail kind="snowflake" className="-right-2 -top-5" />
-               <p className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground"><Hourglass size={11} aria-hidden="true" />freezes in</p>
+               <p className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground"><IceGlyph kind="hourglass" size={12} />freezes in</p>
               <div className="mt-2 text-2xl text-primary">
                 {today ? <Countdown closingTimestamp={today.closingTimestamp} serverTime={today.serverTime} /> : '—'}
               </div>
-               <p className="mt-5 inline-flex items-center gap-1.5 font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground"><Box size={11} aria-hidden="true" />highest standing</p>
+               <p className="mt-5 inline-flex items-center gap-1.5 font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground"><IceGlyph kind="cube" size={12} />highest standing</p>
               <p className="mt-1 font-display text-3xl text-accent">{leader ? formatMoney(leader.runningTotalCents) : 'No bids yet'}</p>
             </div>
           </div>
@@ -50,7 +50,7 @@ export function LandingPage() {
           <div className="frost-leader relative z-10 mt-10 border-y border-primary/10 py-6 md:flex md:items-center md:justify-between md:gap-8">
             <FrostDetail className="right-3 top-3" />
             <div className="min-w-0">
-              <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground"><Crown size={12} className="text-secondary" aria-hidden="true" />currently leading</p>
+              <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground"><IceGlyph kind="crown" size={14} className="text-secondary" />currently leading</p>
               {leader ? (
                 <>
                   <h2 className="mt-2 truncate font-display text-3xl text-primary md:text-4xl">{leader.displayName}</h2>
@@ -136,7 +136,7 @@ export function ExplorePage() {
       <main className="mx-auto max-w-4xl px-5 pb-20 pt-12 sm:px-8 md:pt-20">
         <div className="border-b border-primary/10 pb-8">
           <SectionKicker>Explore</SectionKicker>
-          <h1 className="mt-5 font-display text-[clamp(3.8rem,9vw,7rem)] leading-[.8] tracking-[-.05em] text-primary">Today&apos;s<br /><span className="inline-flex items-center gap-3 text-accent italic">evidence.<Sparkles size={26} strokeWidth={1.5} className="hidden text-secondary md:inline" aria-hidden="true" /></span></h1>
+          <h1 className="mt-5 font-display text-[clamp(3.8rem,9vw,7rem)] leading-[.8] tracking-[-.05em] text-primary">Today&apos;s<br /><span className="inline-flex items-center gap-3 text-accent italic">evidence.<span className="ice-glyph-halo text-secondary"><IceGlyph kind="gem" size={22} /></span></span></h1>
           <div className="mt-7 flex flex-wrap items-end justify-between gap-5">
              <p className="max-w-md text-base leading-7 text-muted-foreground">A running list of things people decided were worth leaving behind.</p>
             {todayQuery.data && <div className="text-right text-sm text-muted-foreground"><p>{formatDate(todayQuery.data.date)}</p><Countdown closingTimestamp={todayQuery.data.closingTimestamp} serverTime={todayQuery.data.serverTime} /></div>}
@@ -190,9 +190,9 @@ export function CompetitionPage() {
               <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">A small contest about what deserves to survive the day.</p>
             </div>
             <div className="border-l border-primary/10 pl-5 text-sm text-muted-foreground">
-              <p className="inline-flex items-center gap-1.5"><Hourglass size={12} aria-hidden="true" />freezes in</p>
+              <p className="inline-flex items-center gap-1.5"><IceGlyph kind="hourglass" size={13} />freezes in</p>
               {competition && <Countdown closingTimestamp={competition.closingTimestamp} serverTime={competition.serverTime} />}
-               <p className="mt-4 inline-flex items-center gap-1.5"><Box size={12} aria-hidden="true" />highest standing <span className="font-display text-2xl text-accent">{leader ? formatMoney(leader.runningTotalCents) : '—'}</span></p>
+               <p className="mt-4 inline-flex items-center gap-1.5"><IceGlyph kind="cube" size={13} />highest standing <span className="font-display text-2xl text-accent">{leader ? formatMoney(leader.runningTotalCents) : '—'}</span></p>
             </div>
           </div>
         </section>

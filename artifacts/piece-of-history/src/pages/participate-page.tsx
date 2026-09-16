@@ -4,12 +4,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useCreateStory, useGetSiteStats } from '@workspace/api-client-react';
-import { PrimaryButton, SectionKicker, SiteNav, SiteFooter } from '@/components/site';
+import { IceGlyph, PrimaryButton, SectionKicker, SiteNav, SiteFooter } from '@/components/site';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowRight, Globe, Loader2, PenLine, User } from 'lucide-react';
+import { ArrowRight, Loader2, PenLine } from 'lucide-react';
 
 const participateSchema = z.object({
   displayName: z.string().min(1, 'Please enter a display name').max(50, 'Display name is too long'),
@@ -92,7 +92,7 @@ export function ParticipatePage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2 text-primary font-bold">
-                      <User size={16} className="text-secondary" />
+                      <IceGlyph kind="profile" size={17} className="text-secondary" />
                       How should we call you?
                     </FormLabel>
                     <FormControl>
@@ -142,7 +142,7 @@ export function ParticipatePage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2 text-primary font-bold">
-                      <Globe size={16} className="text-secondary" />
+                      <IceGlyph kind="globe" size={17} className="text-secondary" />
                       Website <span className="font-normal text-muted-foreground ml-1">(Optional)</span>
                     </FormLabel>
                     <FormControl>

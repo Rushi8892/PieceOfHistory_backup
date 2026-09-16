@@ -270,7 +270,9 @@ export function StoryCard({ participant, featured = false }: { participant: Comp
     <article className={`group relative overflow-hidden border-y border-primary/10 bg-card/40 px-0 py-6 transition-colors duration-300 hover:bg-secondary/10 ${featured ? 'md:px-3 md:py-8' : ''}`} data-testid={`card-story-${participant.id}`}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-[6px] bg-muted font-mono-ui text-xs font-bold text-primary">{participant.displayName.slice(0, 1).toUpperCase()}</span>
+          <span className="grid h-10 w-10 place-items-center rounded-[6px] bg-muted text-secondary">
+            <IceGlyph kind="profile" size={19} />
+          </span>
           <div>
             <p className="flex items-center gap-1.5 text-sm font-bold text-primary" data-testid={`text-story-author-${participant.id}`}>
               {featured && <IceGlyph kind="crown" size={14} className="text-accent" />}

@@ -1,7 +1,7 @@
 import { Link, useRoute } from 'wouter';
-import { Calendar, ArrowLeft, BookOpen, Globe, ChevronLeft, ChevronRight, LockKeyhole, Snowflake } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useGetArchive, useGetArchiveDetail, useGetSiteStats } from '@workspace/api-client-react';
-import { SectionKicker, SiteFooter, SiteNav, formatMoney, formatDate } from '@/components/site';
+import { IceGlyph, SectionKicker, SiteFooter, SiteNav, formatMoney, formatDate } from '@/components/site';
 import { useState } from 'react';
 
 export function ArchivePage() {
@@ -18,7 +18,7 @@ export function ArchivePage() {
       <main className="mx-auto max-w-4xl px-5 pb-20 pt-12 sm:px-8 md:pt-20">
         <div className="max-w-2xl">
           <SectionKicker>The Archive</SectionKicker>
-          <h1 className="mt-5 font-display text-[clamp(3.8rem,8vw,6.5rem)] leading-[.84] tracking-[-.04em] text-primary"><BookOpen className="mr-3 hidden -translate-y-2 align-middle text-secondary md:inline" size={36} strokeWidth={1.5} aria-hidden="true" />Frozen<br /><span className="text-accent italic">days.</span></h1>
+          <h1 className="mt-5 font-display text-[clamp(3.8rem,8vw,6.5rem)] leading-[.84] tracking-[-.04em] text-primary"><IceGlyph kind="book" size={34} className="mr-3 inline-block -translate-y-2 align-middle text-secondary" />Frozen<br /><span className="text-accent italic">days.</span></h1>
           <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">The days that made it through the cold. Each one keeps the sentence someone thought should outlast midnight.</p>
         </div>
 
@@ -37,7 +37,7 @@ export function ArchivePage() {
             </div>
           ) : items.length === 0 ? (
             <div className="border-y border-dashed border-primary/20 py-12 text-center" data-testid="state-archive-empty">
-              <Calendar className="mx-auto text-secondary" size={32} />
+              <IceGlyph kind="calendar" size={36} className="mx-auto text-secondary" />
               <p className="mt-4 font-display text-3xl text-primary">No days have frozen yet.</p>
               <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">Every archive begins with a blank page and somebody willing to mark it.</p>
             </div>
@@ -46,9 +46,9 @@ export function ArchivePage() {
               <div className="divide-y divide-primary/10 border-y border-primary/10">
                 {items.map(item => (
                   <Link key={item.id} href={`/archive/${item.date}`} className="list-row group grid gap-3 py-6 transition-colors sm:grid-cols-[180px_1fr_auto] sm:items-center sm:gap-5" data-testid={`link-archive-item-${item.date}`}>
-                    <span className="flex items-center gap-2 font-display text-2xl text-primary group-hover:text-accent"><Snowflake size={15} className="text-secondary" aria-hidden="true" />{formatDate(item.date)}</span>
+                    <span className="flex items-center gap-2 font-display text-2xl text-primary group-hover:text-accent"><IceGlyph kind="calendar" size={17} className="text-secondary" />{formatDate(item.date)}</span>
                     <span className="text-sm text-muted-foreground">{item.winnerDisplayName ? `Won by ${item.winnerDisplayName}` : 'No pieces recorded'} <span className="text-primary/30">/</span> {item.participantCount} piece{item.participantCount !== 1 ? 's' : ''}</span>
-                    <span className="flex items-center gap-2 font-mono-ui text-sm font-bold text-accent"><LockKeyhole size={13} aria-hidden="true" />{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : '—'}</span>
+                    <span className="flex items-center gap-2 font-mono-ui text-sm font-bold text-accent"><IceGlyph kind="lock" size={14} />{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : '—'}</span>
                   </Link>
                 ))}
               </div>
@@ -134,7 +134,7 @@ export function ArchiveDetailPage() {
               {detail.winnerWebsiteUrl && (
                 <div className="mt-12 text-center">
                    <a href={detail.winnerWebsiteUrl} target="_blank" rel="noopener noreferrer" className="quiet-link inline-flex min-h-12 items-center justify-center gap-2 text-sm font-bold tracking-tight text-primary" data-testid="link-archive-winner-website">
-                    <Globe size={16} /> Visit the winner&apos;s website
+                     <IceGlyph kind="globe" size={17} /> Visit the winner&apos;s website
                   </a>
                 </div>
               )}
