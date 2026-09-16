@@ -5,7 +5,7 @@ import type { CompetitionParticipant, SiteStats, TodayCompetition } from '@works
 import { getGetCurrentUserQueryKey, useGetCurrentUser } from '@workspace/api-client-react';
 import { Show, useAuth } from '@clerk/react';
 
-export type IceGlyphKind = 'calendar' | 'cube' | 'globe' | 'crown' | 'page' | 'lock' | 'book' | 'hourglass' | 'gem' | 'profile';
+export type IceGlyphKind = 'calendar' | 'cube' | 'globe' | 'crown' | 'page' | 'lock' | 'book' | 'hourglass' | 'clock' | 'snowflake' | 'gem' | 'profile';
 
 export function IceGlyph({ kind, size = 18, className = '' }: { kind: IceGlyphKind; size?: number; className?: string }) {
   const common = {
@@ -75,6 +75,18 @@ export function IceGlyph({ kind, size = 18, className = '' }: { kind: IceGlyphKi
           <path d="M10.2 12h3.6" />
         </>
       )}
+      {kind === 'clock' && (
+        <>
+          <circle cx="12" cy="12" r="8.2" />
+          <path d="M12 7.5v5l3.3 2" />
+        </>
+      )}
+      {kind === 'snowflake' && (
+        <>
+          <path d="M12 3v18M4.2 7.5 19.8 16.5M4.2 16.5 19.8 7.5" />
+          <path d="m12 3-1.8 2M12 3l1.8 2M12 21l-1.8-2M12 21l1.8-2M4.2 7.5l2.5.2M4.2 7.5l.9 2.4M19.8 16.5l-2.5-.2M19.8 16.5l-.9-2.4M4.2 16.5l2.5-.2M4.2 16.5l.9-2.4M19.8 7.5l-2.5.2M19.8 7.5l-.9 2.4" />
+        </>
+      )}
       {kind === 'gem' && (
         <>
           <path d="m4 8 4-4h8l4 4-8 12L4 8Z" />
@@ -98,13 +110,13 @@ export function Logo({ light = false }: { light?: boolean }) {
       <img
         src={`${import.meta.env.BASE_URL}piece-of-history-logo.png`}
         alt=""
-        className={`h-10 w-10 rounded-[10px] border-2 object-cover shadow-[3px_3px_0_hsl(var(--secondary)/.8)] transition-transform duration-200 group-hover:-translate-y-0.5 ${light ? 'border-secondary' : 'border-primary/20'}`}
+        className={`h-9 w-9 rounded-[9px] border-2 object-cover shadow-[3px_3px_0_hsl(var(--secondary)/.8)] transition-transform duration-200 group-hover:-translate-y-0.5 ${light ? 'border-secondary' : 'border-primary/20'}`}
       />
       <span className="flex flex-col">
-        <span className={`font-display text-[25px] leading-none tracking-tight ${light ? 'text-white' : 'text-primary'}`}>
+        <span className={`font-display text-[20px] leading-none tracking-tight ${light ? 'text-white' : 'text-primary'}`}>
           Piece of History
         </span>
-        <span className={`mt-1 inline-flex items-center gap-1 font-mono-ui text-[9px] uppercase tracking-[.16em] ${light ? 'text-primary-foreground/55' : 'text-muted-foreground'}`}>
+        <span className={`mt-1 inline-flex whitespace-nowrap items-center gap-1 font-mono-ui text-[8px] uppercase tracking-[.16em] ${light ? 'text-primary-foreground/55' : 'text-muted-foreground'}`}>
           <IceGlyph kind="globe" size={10} /> Piece of Internet History
         </span>
       </span>
@@ -136,7 +148,7 @@ export function PrimaryButton({
     quiet: 'border border-primary/15 bg-card text-primary hover:border-primary/40 hover:bg-muted disabled:hover:border-primary/15 disabled:hover:bg-card',
     light: 'bg-secondary text-primary shadow-[4px_4px_0_hsl(var(--primary)/.25)] hover:-translate-y-0.5 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0_hsl(var(--primary)/.25)]',
   }[variant];
-  const classes = `inline-flex min-h-11 items-center justify-center gap-2 rounded-[6px] px-5 text-sm font-bold tracking-[-.01em] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${styles} ${className}`;
+  const classes = `inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-[6px] px-5 text-sm font-bold tracking-[-.01em] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${styles} ${className}`;
 
   if (href) {
     return <Link href={href} className={classes} data-testid={testId}>{children}</Link>;
@@ -166,52 +178,49 @@ export function SiteNav() {
 
   return (
     <header className="nav-ice relative z-20 border-b border-primary/10">
-      <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
+      <div className="mx-auto flex h-[60px] max-w-[1120px] items-center justify-between px-4 sm:px-6 lg:px-8">
         <Logo />
-          <nav className="hidden items-center gap-7 md:flex" aria-label="Main navigation">
+          <nav className="hidden items-center gap-4 sm:flex" aria-label="Main navigation">
           {links.map((link) => (
-            <Link key={link.href} href={link.href} className="nav-link text-sm font-semibold" data-active={isActive(link.href)} data-testid={`link-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`}>
+            <Link key={link.href} href={link.href} className="nav-link text-[11px] font-semibold" data-active={link.href === '/competition' ? location === '/' || isActive(link.href) : isActive(link.href)} data-testid={`link-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`}>
               {link.label}
             </Link>
           ))}
+          <Link href="/my-history" className="nav-link text-[11px] font-semibold" data-active={isActive('/my-history')} data-testid="link-nav-my-history">
+            My History
+          </Link>
           <Show when="signed-in">
-            <Link href="/my-history" className="nav-link text-sm font-semibold" data-active={isActive('/my-history')} data-testid="link-nav-my-history">
-              My History
-            </Link>
             {user?.role === 'admin' && (
-              <Link href="/admin" className="nav-link text-sm font-semibold" data-active={isActive('/admin')} data-testid="link-nav-admin">
+              <Link href="/admin" className="nav-link text-[11px] font-semibold" data-active={isActive('/admin')} data-testid="link-nav-admin">
                 Admin
               </Link>
             )}
           </Show>
         </nav>
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-2 sm:flex">
           <Show when="signed-out">
-            <Link href="/sign-in" className="rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary" data-testid="link-sign-in">
-              Sign in
-            </Link>
             <PrimaryButton href="/sign-up" testId="button-start-writing">Start writing <ArrowUpRight size={16} /></PrimaryButton>
           </Show>
           <Show when="signed-in">
             <PrimaryButton href="/participate" testId="button-start-writing-auth">Start writing <ArrowUpRight size={16} /></PrimaryButton>
           </Show>
         </div>
-        <button type="button" className="grid h-11 w-11 place-items-center rounded-[6px] border border-primary/15 text-primary md:hidden" onClick={() => setOpen((value) => !value)} aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
+        <button type="button" className="grid h-10 w-10 place-items-center rounded-[6px] border border-primary/15 text-primary sm:hidden" onClick={() => setOpen((value) => !value)} aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
       {open && (
-         <div className="absolute inset-x-0 top-full border-b border-primary/10 bg-card/95 px-5 pb-5 shadow-[0_18px_30px_-24px_hsl(var(--primary)/.55)] backdrop-blur-xl md:hidden">
+          <div className="absolute inset-x-0 top-full border-b border-primary/10 bg-card/95 px-5 pb-5 shadow-[0_18px_30px_-24px_hsl(var(--primary)/.55)] backdrop-blur-xl sm:hidden">
           <nav className="flex flex-col gap-1 pt-2" aria-label="Mobile navigation">
             {links.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-xl px-4 py-3 text-sm font-semibold text-primary hover:bg-muted" data-testid={`link-mobile-${link.label.toLowerCase().replaceAll(' ', '-')}`}>
                 {link.label}
               </Link>
             ))}
-            <Show when="signed-in">
-              <Link href="/my-history" onClick={() => setOpen(false)} className="rounded-xl px-4 py-3 text-sm font-semibold text-primary hover:bg-muted" data-testid="link-mobile-my-history">
-                My History
-              </Link>
+             <Link href="/my-history" onClick={() => setOpen(false)} className="rounded-xl px-4 py-3 text-sm font-semibold text-primary hover:bg-muted" data-testid="link-mobile-my-history">
+               My History
+             </Link>
+             <Show when="signed-in">
               {user?.role === 'admin' && (
                 <Link href="/admin" onClick={() => setOpen(false)} className="rounded-xl px-4 py-3 text-sm font-semibold text-primary hover:bg-muted" data-testid="link-mobile-admin">
                   Admin
@@ -240,7 +249,7 @@ export function SiteFooter({ stats: _stats }: { stats?: SiteStats }) {
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-6 px-5 py-10 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
           <Logo light />
-          <span className="max-w-[22rem] text-xs leading-5 text-primary-foreground/60">A public record of ordinary days, kept by people who happened to be here.</span>
+          <span className="max-w-[22rem] text-xs leading-5 text-primary-foreground/60">Built by someone who won&apos;t be remembered.</span>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-xs text-primary-foreground/65">
           <Link href="/terms" className="transition-colors hover:text-secondary" data-testid="footer-link-terms">Terms</Link>

@@ -1,1 +1,2 @@
 - [Day-close finality](day-close-finality.md) — reconcile pending captures before closing; never rewrite a closed historical winner.
+- [Piece of History reference sizing](piece-of-history-reference-sizing.md) — the supplied 683px reference behaves like compact desktop; reserve the mobile composition for ~402px.

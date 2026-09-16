@@ -4,6 +4,13 @@ import { Show } from '@clerk/react';
 import { getGetTodayCompetitionQueryKey, useGetArchive, useGetTodayCompetition } from '@workspace/api-client-react';
 import { Countdown, FrostDetail, HowStep, IceGlyph, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney } from '@/components/site';
 
+function formatHeroDate(date?: string) {
+  if (!date) return 'Today';
+  const parsedDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? new Date(`${date}T12:00:00`) : new Date(date);
+  if (Number.isNaN(parsedDate.getTime())) return 'Today';
+  return new Intl.DateTimeFormat(undefined, { month: 'long', day: 'numeric', year: 'numeric' }).format(parsedDate);
+}
+
 export function LandingPage() {
   const todayQuery = useGetTodayCompetition({
     query: {
@@ -25,76 +32,111 @@ export function LandingPage() {
   return (
     <div className="paper-grain min-h-[100dvh] overflow-hidden">
       <SiteNav />
-      <main className="mx-auto max-w-6xl px-4 pb-16 sm:px-8 md:pb-24 lg:px-12">
-        <section className="frost-hero relative pb-10 pt-8 md:pb-14 md:pt-14">
+      <main className="mx-auto max-w-[1120px] px-4 pb-14 sm:px-6 md:pb-20 lg:px-8">
+        <section className="frost-hero relative pb-7 pt-8 md:pb-10 md:pt-9">
           <FrostDetail kind="snowflake" className="right-[8%] top-10 hidden rotate-12 md:block" />
           <FrostDetail className="right-[2%] top-36 hidden md:block" />
-          <div className="ice-shell relative z-10 rounded-[26px] p-5 sm:p-8 md:p-10">
-            <div className="relative z-10 grid gap-8 md:grid-cols-[190px_1fr] md:items-center">
-              <div className="flex justify-center md:justify-start">
-                <div className="hero-calendar">
-                  <IceGlyph kind="calendar" size={34} className="absolute top-8 text-primary/70" />
-                  <span className="mt-7 font-display text-6xl leading-none text-primary">{hasValidCalendarDate ? calendarDate?.getDate() : '—'}</span>
-                  <span className="absolute bottom-7 font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-primary/70">{hasValidCalendarDate ? new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' }).format(calendarDate) : 'loading'}</span>
+          <div className="ice-shell relative z-10 rounded-[14px] p-4 sm:p-6 md:p-7">
+            <div className="relative z-10 grid gap-6 sm:grid-cols-[185px_1fr] sm:items-center sm:gap-7">
+              <div className="flex justify-center sm:justify-start">
+                <div className="hero-calendar-wrap">
+                  <span className="hero-ice-cube hero-ice-cube-left" aria-hidden="true" />
+                  <span className="hero-ice-cube hero-ice-cube-right" aria-hidden="true" />
+                  <span className="hero-ice-shard" aria-hidden="true" />
+                  <div className="hero-calendar">
+                  <IceGlyph kind="calendar" size={29} className="absolute top-6 text-primary/70" />
+                  <span className="mt-6 font-display text-5xl leading-none text-primary">{hasValidCalendarDate ? calendarDate?.getDate() : '—'}</span>
+                  <span className="absolute bottom-5 font-mono-ui text-[9px] font-bold uppercase tracking-[.2em] text-primary/70">{hasValidCalendarDate ? new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' }).format(calendarDate) : 'loading'}</span>
+                  </div>
                 </div>
               </div>
               <div>
-                <p className="inline-flex items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[.22em] text-accent"><IceGlyph kind="calendar" size={13} />Today</p>
-                <h1 className="mt-3 max-w-3xl font-display text-[clamp(3.5rem,8vw,7rem)] leading-[.82] tracking-[-.055em] text-primary">{hasValidCalendarDate && today?.date ? formatDate(today.date) : 'Today'}</h1>
-                <p className="mt-5 max-w-xl font-display text-lg italic leading-7 text-primary/70 md:text-xl">Who knows… this could be the day someone finally does it.</p>
-                <div className="mt-8 grid gap-5 border-t border-primary/10 pt-5 sm:grid-cols-3">
-                  <div className="ice-stat">
-                    <p className="font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] text-muted-foreground">Current bid</p>
-                    <p className="mt-2 font-display text-2xl text-primary">{leader ? formatMoney(leader.runningTotalCents) : '—'}</p>
+                <p className="inline-flex items-center gap-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.22em] text-accent"><IceGlyph kind="calendar" size={12} />Today</p>
+                <h1 className="mt-2 max-w-3xl font-display text-[clamp(2.8rem,5vw,4.5rem)] leading-[.9] tracking-[-.04em] text-primary">{hasValidCalendarDate && today?.date ? formatHeroDate(today.date) : 'Today'}</h1>
+                <p className="mt-4 max-w-xl font-display text-base italic leading-6 text-primary/70 md:text-lg">Who knows… this could be the day someone finally does it.</p>
+                <div className="mt-6 grid gap-3 border-t border-primary/10 pt-4 sm:grid-cols-3 sm:gap-0">
+                  <div className="ice-stat flex items-start gap-2">
+                    <IceGlyph kind="cube" size={19} className="mt-0.5 shrink-0 text-secondary" />
+                    <div>
+                      <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.12em] text-muted-foreground">Current bid</p>
+                      <p className="mt-1 font-display text-xl text-primary">{leader ? formatMoney(leader.runningTotalCents) : '—'}</p>
+                    </div>
                   </div>
-                  <div className="ice-stat">
-                    <p className="font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] text-muted-foreground">Currently leading</p>
-                    <p className="mt-2 truncate text-sm font-semibold text-primary">{leader?.displayName ?? 'No one yet'}</p>
+                  <div className="ice-stat flex items-start gap-2">
+                    <IceGlyph kind="profile" size={19} className="mt-0.5 shrink-0 text-secondary" />
+                    <div className="min-w-0">
+                      <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.12em] text-muted-foreground">Currently leading</p>
+                      <p className="mt-1 truncate text-xs font-semibold text-primary">{leader?.displayName ?? 'No one yet'}</p>
+                    </div>
                   </div>
-                  <div className="ice-stat">
-                    <p className="font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] text-muted-foreground">Freezes in</p>
-                    <div className="mt-2"><Countdown closingTimestamp={today?.closingTimestamp ?? new Date().toISOString()} serverTime={today?.serverTime} /></div>
+                  <div className="ice-stat flex items-start gap-2">
+                    <IceGlyph kind="clock" size={19} className="mt-0.5 shrink-0 text-secondary" />
+                    <div>
+                      <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.12em] text-muted-foreground">Freezes in</p>
+                      <div className="mt-1"><Countdown closingTimestamp={today?.closingTimestamp ?? new Date().toISOString()} serverTime={today?.serverTime} /></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="relative z-10 mt-8 grid gap-6 border-t border-primary/10 pt-6 md:grid-cols-[1fr_auto] md:items-center">
+            <div className="relative z-10 mt-6 grid gap-5 border-t border-primary/10 pt-5 sm:grid-cols-[1fr_auto] sm:items-center">
               <div className="min-w-0">
                 <p className="inline-flex items-center gap-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.18em] text-muted-foreground"><IceGlyph kind="page" size={14} className="text-secondary" />Current piece</p>
-                {leader ? <p className="mt-2 max-w-2xl font-display text-xl leading-8 text-primary/85">&ldquo;{leader.story}&rdquo;</p> : <p className="mt-2 font-display text-xl text-primary">The first story is still hiding.</p>}
-                <p className="mt-2 text-xs italic text-muted-foreground">{leader ? `— ${leader.displayName}` : 'A blank page is still a kind of record.'}</p>
+                {leader ? <p className="mt-2 max-w-2xl font-display text-lg leading-7 text-primary/85">&ldquo;{leader.story}&rdquo;</p> : <p className="mt-2 font-display text-lg text-primary">The first story is still hiding.</p>}
+                <p className="mt-1 text-[11px] italic text-muted-foreground">{leader ? `— ${leader.displayName}` : 'A blank page is still a kind of record.'}</p>
               </div>
               <div>
-                <Show when="signed-out"><PrimaryButton href="/sign-up" className="w-full md:w-auto" testId="button-home-make-bid">Make your bid <ArrowUpRight size={16} /></PrimaryButton></Show>
-                <Show when="signed-in"><PrimaryButton href="/participate" className="w-full md:w-auto" testId="button-home-make-bid-auth">Write your piece <ArrowUpRight size={16} /></PrimaryButton></Show>
+                <Show when="signed-out"><PrimaryButton href="/sign-up" className="w-full sm:w-auto" testId="button-home-make-bid"><IceGlyph kind="cube" size={14} />Make your bid <ArrowUpRight size={14} /></PrimaryButton></Show>
+                <Show when="signed-in"><PrimaryButton href="/participate" className="w-full sm:w-auto" testId="button-home-make-bid-auth"><IceGlyph kind="cube" size={14} />Write your piece <ArrowUpRight size={14} /></PrimaryButton></Show>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="grid gap-7 lg:grid-cols-[1.6fr_1fr]" data-testid="section-todays-competition">
-          <div className="ice-panel rounded-[20px] p-5 sm:p-7">
-            <div className="flex items-baseline justify-between gap-4 border-b border-primary/10 pb-4">
-              <h2 className="inline-flex items-center gap-2 font-display text-3xl text-primary md:text-4xl"><IceGlyph kind="crown" size={22} className="text-secondary" />Today&apos;s competition</h2>
-              <Link href="/competition" className="quiet-link hidden text-xs font-bold text-muted-foreground sm:inline" data-testid="link-home-todays-competition">open full page →</Link>
+        <section className="grid gap-5 sm:grid-cols-[2fr_1fr]" data-testid="section-todays-competition">
+          <div className="ice-panel rounded-[14px] p-4 sm:p-5">
+            <div className="flex items-baseline justify-between gap-3 border-b border-primary/10 pb-3">
+              <h2 className="inline-flex items-center gap-2 font-display text-[1.35rem] text-primary sm:text-[1.55rem]"><IceGlyph kind="crown" size={19} className="text-secondary" />Today&apos;s competition</h2>
+              <p className="hidden text-[8px] text-muted-foreground sm:block">Real people. Real stories. Live bids.</p>
+              <Link href="/competition" className="quiet-link text-[9px] font-bold text-muted-foreground" data-testid="link-home-todays-competition">view all →</Link>
             </div>
             <div className="mt-2">
-              {todayQuery.isLoading ? <div className="space-y-3 py-8"><div className="h-5 w-28 animate-pulse rounded bg-muted" /><div className="h-14 animate-pulse rounded bg-muted/60" /><div className="h-14 animate-pulse rounded bg-muted/60" /></div> : todayQuery.error ? <div className="py-8 text-sm text-muted-foreground"><p className="font-display text-2xl text-primary">The live page is out in the cold.</p><button type="button" onClick={() => void todayQuery.refetch()} className="mt-2 font-bold text-primary underline underline-offset-4">Try again</button></div> : participants.length ? <div className="divide-y divide-primary/10">{participants.map((participant) => <div key={participant.id} className="list-row grid gap-2 py-4 sm:grid-cols-[32px_105px_1fr_auto] sm:items-center sm:gap-3" data-testid={`row-home-participant-${participant.id}`}><span className="font-mono-ui text-[10px] font-bold text-muted-foreground">#{participant.rank}</span><span className="text-sm font-bold text-primary">{participant.displayName}</span><p className="line-clamp-2 text-sm leading-5 text-muted-foreground">&ldquo;{participant.story}&rdquo;</p><span className="font-mono-ui text-sm font-bold text-accent sm:text-right">{formatMoney(participant.runningTotalCents)}</span></div>)}</div> : <div className="border-y border-dashed border-primary/15 py-10"><p className="font-display text-2xl text-primary">Nothing has been written into today yet.</p><p className="mt-2 text-sm leading-6 text-muted-foreground">A blank page is still a kind of record.</p></div>}
+              {todayQuery.isLoading ? <div className="space-y-3 py-8"><div className="h-5 w-28 animate-pulse rounded bg-muted" /><div className="h-14 animate-pulse rounded bg-muted/60" /><div className="h-14 animate-pulse rounded bg-muted/60" /></div> : todayQuery.error ? <div className="py-8 text-sm text-muted-foreground"><p className="font-display text-2xl text-primary">The live page is out in the cold.</p><button type="button" onClick={() => void todayQuery.refetch()} className="mt-2 font-bold text-primary underline underline-offset-4">Try again</button></div> : (
+                <>
+                  <div className="competition-table-head grid grid-cols-[22px_62px_86px_1fr_18px] gap-2 px-2 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.12em] text-muted-foreground">
+                    <span>#</span><span>Bid</span><span>User</span><span>Story</span><span />
+                  </div>
+                  {participants.length ? <div className="divide-y divide-primary/10">{participants.map((participant) => <div key={participant.id} className={`list-row grid grid-cols-[22px_62px_86px_1fr_18px] items-center gap-2 px-2 py-3 ${participant.rank === 1 ? 'frost-leader rounded-[7px]' : ''}`} data-testid={`row-home-participant-${participant.id}`}>
+                    <span className="font-mono-ui text-[10px] font-bold text-muted-foreground">{participant.rank}</span>
+                    <span className="font-mono-ui text-[10px] font-bold text-primary">{formatMoney(participant.runningTotalCents)}</span>
+                    <span className="flex min-w-0 items-center gap-1 text-[10px] font-semibold text-primary"><IceGlyph kind="profile" size={11} className="shrink-0 text-muted-foreground" /><span className="truncate">{participant.displayName}</span></span>
+                    <p className="line-clamp-2 text-[10px] leading-4 text-muted-foreground">&ldquo;{participant.story}&rdquo;</p>
+                    <IceGlyph kind={participant.rank === 1 ? 'crown' : participant.rank === 2 ? 'cube' : 'snowflake'} size={13} className={participant.rank === 1 ? 'text-accent' : 'text-secondary'} />
+                  </div>)}</div> : <div className="border-y border-dashed border-primary/15 py-8"><p className="font-display text-xl text-primary">Nothing has been written into today yet.</p><p className="mt-2 text-xs leading-5 text-muted-foreground">A blank page is still a kind of record.</p></div>}
+                </>
+              )}
             </div>
           </div>
-          <div className="ice-panel rounded-[20px] p-5 sm:p-7" data-testid="section-recent-history">
-            <div className="flex items-baseline justify-between gap-3 border-b border-primary/10 pb-4">
-              <h2 className="inline-flex items-center gap-2 font-display text-2xl text-primary"><BookOpen size={18} className="text-secondary" />Recently frozen</h2>
-              <Link href="/archive" className="quiet-link text-xs font-bold text-muted-foreground" data-testid="link-home-archive">view all →</Link>
+          <div className="ice-panel rounded-[14px] p-4 sm:p-5" data-testid="section-recent-history">
+            <div className="flex items-baseline justify-between gap-3 border-b border-primary/10 pb-3">
+              <h2 className="inline-flex items-center gap-2 font-display text-[1.35rem] text-primary"><BookOpen size={18} className="text-secondary" />Recently frozen</h2>
+              <Link href="/archive" className="quiet-link text-[9px] font-bold text-muted-foreground" data-testid="link-home-archive">View all →</Link>
             </div>
             <div className="mt-3 space-y-3">
-              {archiveQuery.isLoading ? [1, 2, 3].map((item) => <div key={item} className="h-[68px] animate-pulse rounded-xl bg-muted/50" />) : recentHistory.length ? recentHistory.map((item) => <Link key={item.id} href={`/archive/${item.date}`} className="frozen-card block rounded-xl p-4 transition-transform duration-200 hover:-translate-y-0.5" data-testid={`link-home-history-${item.date}`}><div className="flex items-start justify-between gap-3"><span className="font-mono-ui text-[9px] font-bold uppercase tracking-[.12em] text-muted-foreground">{formatDate(item.date)}</span><IceGlyph kind="lock" size={13} className="text-secondary" /></div><p className="mt-2 line-clamp-1 font-display text-base text-primary">{item.winnerDisplayName ?? 'No recorded winner'}</p><p className="mt-1 text-xs text-muted-foreground">{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : 'No standing recorded'}</p></Link>) : <p className="py-8 text-sm leading-6 text-muted-foreground">The archive is still waiting for its first frozen day.</p>}
+              {archiveQuery.isLoading ? [1, 2, 3].map((item) => <div key={item} className="h-[68px] animate-pulse rounded-xl bg-muted/50" />) : recentHistory.length ? recentHistory.map((item) => <Link key={item.id} href={`/archive/${item.date}`} className="frozen-card block rounded-[9px] p-3 transition-transform duration-200 hover:-translate-y-0.5" data-testid={`link-home-history-${item.date}`}><div className="flex items-start justify-between gap-2"><span className="font-mono-ui text-[8px] font-bold uppercase tracking-[.1em] text-muted-foreground">{formatDate(item.date)}</span><span className="inline-flex items-center gap-1 font-mono-ui text-[7px] font-bold uppercase tracking-[.12em] text-secondary"><IceGlyph kind="lock" size={10} />Frozen</span></div><p className="mt-2 line-clamp-1 font-display text-sm text-primary">{item.winnerDisplayName ?? 'No recorded winner'}</p><p className="mt-1 text-[10px] text-muted-foreground">{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : 'No standing recorded'}</p></Link>) : <div className="frozen-card rounded-[9px] px-3 py-7"><p className="font-display text-base text-primary">No frozen days yet.</p><p className="mt-1 text-[10px] leading-4 text-muted-foreground">The archive will collect each winner here.</p></div>}
             </div>
           </div>
         </section>
-        <section className="mt-8 flex items-center justify-between gap-5 rounded-[20px] border border-secondary/35 bg-secondary/15 px-5 py-5 sm:px-7">
-          <div><p className="font-mono-ui text-[9px] font-bold uppercase tracking-[.2em] text-accent">Internet history</p><p className="mt-1 font-display text-xl text-primary">One day. One winner. One tiny piece of forever.</p></div>
-          <IceGlyph kind="globe" size={30} className="hidden text-secondary sm:block" />
+        <section className="history-ribbon relative mt-6 flex items-center justify-between gap-4 rounded-[12px] border border-secondary/35 bg-secondary/15 px-4 py-4 sm:px-6" data-testid="section-internet-history">
+          <div className="relative z-10 flex items-center gap-3">
+            <IceGlyph kind="globe" size={25} className="shrink-0 text-secondary" />
+            <div>
+              <p className="font-display text-lg leading-none text-primary">Internet History</p>
+              <p className="mt-1 text-[10px] text-muted-foreground">One day. One winner. One tiny piece of history.</p>
+            </div>
+          </div>
+          <div className="history-ice-cluster" aria-hidden="true"><span /><span /><span /></div>
+          <p className="relative z-10 hidden max-w-[118px] text-right font-display text-[10px] italic leading-4 text-primary/60 sm:block">Some stories just deserve to stay →</p>
         </section>
       </main>
       <SiteFooter />

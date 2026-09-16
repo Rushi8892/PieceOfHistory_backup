@@ -605,6 +605,57 @@
   transform: rotate(-5deg);
 }
 
+.hero-calendar-wrap {
+  position: relative;
+  width: clamp(150px, 18vw, 184px);
+  aspect-ratio: .86;
+}
+
+.hero-calendar-wrap .hero-calendar {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-ice-cube,
+.hero-ice-shard {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  border: 1px solid hsl(var(--secondary) / .65);
+  background: linear-gradient(145deg, hsl(var(--card) / .92), hsl(var(--secondary) / .52));
+  box-shadow: inset 3px 3px 0 hsl(var(--card) / .65), 4px 7px 0 hsl(var(--secondary) / .2);
+}
+
+.hero-ice-cube {
+  width: 26px;
+  height: 26px;
+  bottom: 5px;
+  transform: rotate(14deg) skewY(-5deg);
+  clip-path: polygon(50% 0, 100% 23%, 91% 82%, 50% 100%, 8% 82%, 0 23%);
+}
+
+.hero-ice-cube-left {
+  left: -17px;
+}
+
+.hero-ice-cube-right {
+  right: -12px;
+  width: 20px;
+  height: 20px;
+  bottom: 23px;
+  transform: rotate(-18deg);
+}
+
+.hero-ice-shard {
+  width: 17px;
+  height: 47px;
+  left: -22px;
+  bottom: 21px;
+  border-radius: 70% 18% 55% 25%;
+  transform: rotate(27deg);
+  opacity: .8;
+}
+
 .hero-calendar::before {
   content: '';
   position: absolute;
@@ -620,6 +671,53 @@
   right: 10%;
   top: 25%;
   border-top: 1px solid hsl(var(--primary) / .2);
+}
+
+.history-ribbon {
+  min-height: 68px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 hsl(var(--card) / .75), 0 12px 24px -22px hsl(var(--primary) / .45);
+}
+
+.history-ice-cluster {
+  position: absolute;
+  right: 18%;
+  bottom: -19px;
+  width: 116px;
+  height: 67px;
+  opacity: .74;
+  transform: rotate(-4deg);
+}
+
+.history-ice-cluster span {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  width: 0;
+  height: 0;
+  border-right: 17px solid transparent;
+  border-bottom: 51px solid hsl(var(--secondary) / .35);
+  border-left: 17px solid transparent;
+  filter: drop-shadow(2px 2px 0 hsl(var(--card) / .65));
+}
+
+.history-ice-cluster span:nth-child(1) {
+  left: 4px;
+  border-bottom-width: 35px;
+  border-right-width: 13px;
+  border-left-width: 13px;
+}
+
+.history-ice-cluster span:nth-child(2) {
+  left: 34px;
+  border-bottom-color: hsl(var(--secondary) / .52);
+}
+
+.history-ice-cluster span:nth-child(3) {
+  left: 74px;
+  border-bottom-width: 41px;
+  border-right-width: 15px;
+  border-left-width: 15px;
 }
 
 .frost-detail {
@@ -666,6 +764,7 @@
 
 .nav-link {
   position: relative;
+  white-space: nowrap;
   color: hsl(var(--muted-foreground));
   transition: color 180ms ease;
 }
