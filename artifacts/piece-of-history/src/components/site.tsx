@@ -1,11 +1,62 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
-import { ArrowUpRight, Check, ExternalLink, Menu, PenLine, Snowflake, Sparkles, X } from 'lucide-react';
+import { ArrowUpRight, Check, ExternalLink, PenLine, X } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import type { CompetitionParticipant, SiteStats, TodayCompetition } from '@workspace/api-client-react';
 import { getGetCurrentUserQueryKey, useGetCurrentUser } from '@workspace/api-client-react';
 import { Show, useAuth } from '@clerk/react';
 
 export type IceGlyphKind = 'calendar' | 'cube' | 'globe' | 'crown' | 'page' | 'lock' | 'book' | 'hourglass' | 'clock' | 'snowflake' | 'gem' | 'profile';
+
+const frostAssetFiles = {
+  book: 'book_1789569663662.svg',
+  calendar: 'calendar_1789569670561.svg',
+  clock: 'clock_1789569676137.svg',
+  crown: 'crown_1789569683497.svg',
+  crystal: 'crystal_1789569692135.svg',
+  document: 'document_1789569699588.svg',
+  externalLink: 'external_link_1789569709686.svg',
+  frozenBadge: 'frozen_badge_1789569718333.svg',
+  globe: 'globe_1789569727549.svg',
+  heart: 'heart_1789569735189.svg',
+  iceCube: 'ice_cube_1789569745464.svg',
+  iceMountain: 'ice_mountain_1789569646561.svg',
+  leadingBadge: 'leading_badge_1789569760296.svg',
+  lock: 'lock_1789569772042.svg',
+  menu: 'menu_1789569780812.svg',
+  penguin: 'penguin_1789569791624.svg',
+  profile: 'profile_1789569802781.svg',
+  search: 'search_1789569814424.svg',
+  share: 'share_1789569899744.svg',
+  snowflake: 'snowflake_1789569899793.svg',
+  sparkle: 'sparkle_1789569899833.svg',
+  trophy: 'trophy_1789569899875.svg',
+  yourPieceBadge: 'your_piece_badge_1789569899932.svg',
+} as const;
+
+export function FrostAsset({
+  name,
+  size = 18,
+  className = '',
+  alt = '',
+}: {
+  name: keyof typeof frostAssetFiles;
+  size?: number;
+  className?: string;
+  alt?: string;
+}) {
+  return (
+    <span
+      className={`frost-asset ${className}`}
+      style={{ width: size, height: size }}
+      aria-hidden={alt ? undefined : true}
+    >
+      <img
+        src={`${import.meta.env.BASE_URL}assets/${frostAssetFiles[name]}`}
+        alt={alt}
+      />
+    </span>
+  );
+}
 
 export function IceGlyph({ kind, size = 18, className = '' }: { kind: IceGlyphKind; size?: number; className?: string }) {
   const common = {
@@ -117,7 +168,7 @@ export function Logo({ light = false }: { light?: boolean }) {
           Piece of History
         </span>
         <span className={`mt-1 inline-flex whitespace-nowrap items-center gap-1 font-mono-ui text-[8px] uppercase tracking-[.16em] ${light ? 'text-primary-foreground/55' : 'text-muted-foreground'}`}>
-          <IceGlyph kind="globe" size={10} /> Piece of Internet History
+          <FrostAsset name="globe" size={12} className="frost-asset-plain frost-asset-inline" /> Piece of Internet History
         </span>
       </span>
     </Link>
@@ -205,8 +256,8 @@ export function SiteNav() {
             <PrimaryButton href="/participate" testId="button-start-writing-auth">Start writing <ArrowUpRight size={16} /></PrimaryButton>
           </Show>
         </div>
-        <button type="button" className="grid h-10 w-10 place-items-center rounded-[6px] border border-primary/15 text-primary sm:hidden" onClick={() => setOpen((value) => !value)} aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
-          {open ? <X size={20} /> : <Menu size={20} />}
+          <button type="button" className="grid h-10 w-10 place-items-center rounded-[6px] border border-primary/15 text-primary sm:hidden" onClick={() => setOpen((value) => !value)} aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
+          {open ? <X size={20} /> : <FrostAsset name="menu" size={21} className="frost-asset-plain" />}
         </button>
       </div>
       {open && (
@@ -329,7 +380,7 @@ export function Countdown({ closingTimestamp, serverTime, tone = 'dark' }: { clo
 
   return (
     <div className={`flex items-center gap-2 ${tone === 'light' ? 'text-primary-foreground' : 'text-primary'}`} data-testid="countdown-timer">
-      <IceGlyph kind="hourglass" size={15} className={remaining > 0 ? 'text-secondary' : 'text-accent'} />
+      <FrostAsset name="clock" size={17} className={remaining > 0 ? 'frost-asset-quiet' : 'frost-asset-warm'} />
       <span className="font-mono-ui text-sm font-bold tracking-wide">
         {remaining > 0 ? `${unit(time.hours)}:${unit(time.minutes)}:${unit(time.seconds)}` : 'FROZEN'}
       </span>
@@ -407,10 +458,9 @@ export function SectionKicker({ children }: { children: ReactNode }) {
 }
 
 export function FrostDetail({ kind = 'sparkle', className = '' }: { kind?: 'sparkle' | 'snowflake'; className?: string }) {
-  const Icon = kind === 'snowflake' ? Snowflake : Sparkles;
   return (
     <span className={`frost-detail pointer-events-none absolute text-secondary/75 ${className}`} aria-hidden="true">
-      <Icon size={16} strokeWidth={1.5} />
+      <FrostAsset name={kind} size={20} className="frost-asset-plain" />
     </span>
   );
 }
