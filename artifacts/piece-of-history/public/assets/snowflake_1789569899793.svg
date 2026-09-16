@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <title>Snowflake</title>
+  <g fill="none" stroke="#1597D4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    
+<path d="M50 12v76M17 31l66 38M83 31L17 69"/>
+<path d="M50 22l-7 7M50 22l7 7M50 78l-7-7M50 78l7-7"/>
+<path d="M26 36l10 1M26 36l3 9M74 64l-10-1M74 64l-3-9M74 36l-10 1M74 36l-3 9M26 64l10-1M26 64l3-9"/>
+
+  </g>
+</svg>

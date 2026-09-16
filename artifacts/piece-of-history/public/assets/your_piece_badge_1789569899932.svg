@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <title>Your Piece Badge</title>
+  <g fill="none" stroke="#1597D4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    
+<rect x="10" y="30" width="80" height="40" rx="20" fill="#EAF8FF"/>
+<path d="M50 22l5 16 16 5-16 5-5 16-5-16-16-5 16-5z"/>
+
+  </g>
+</svg>
