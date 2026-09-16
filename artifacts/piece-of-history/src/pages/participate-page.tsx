@@ -4,12 +4,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useCreateStory, useGetSiteStats } from '@workspace/api-client-react';
-import { IceGlyph, PrimaryButton, SectionKicker, SiteNav, SiteFooter } from '@/components/site';
+import { FrostAsset, PrimaryButton, SectionKicker, SiteNav, SiteFooter } from '@/components/site';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowRight, Loader2, PenLine } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 
 const participateSchema = z.object({
   displayName: z.string().min(1, 'Please enter a display name').max(50, 'Display name is too long'),
@@ -93,7 +93,7 @@ export function ParticipatePage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2 text-primary font-bold">
-                      <IceGlyph kind="profile" size={17} className="text-secondary" />
+                      <FrostAsset name="profile" size={19} className="frost-asset-quiet" />
                       How should we call you?
                     </FormLabel>
                     <FormControl>
@@ -117,7 +117,7 @@ export function ParticipatePage() {
                   <FormItem>
                     <FormLabel className="flex items-center justify-between text-primary font-bold">
                       <div className="flex items-center gap-2">
-                        <PenLine size={16} className="text-secondary" />
+                        <FrostAsset name="yourPieceBadge" size={18} className="frost-asset-quiet" />
                         Today's Piece
                       </div>
                       <span className={`font-mono-ui text-[10px] uppercase tracking-wider ${remainingChars < 0 ? 'text-destructive' : 'text-muted-foreground'}`}>
@@ -143,7 +143,7 @@ export function ParticipatePage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2 text-primary font-bold">
-                      <IceGlyph kind="globe" size={17} className="text-secondary" />
+                      <FrostAsset name="globe" size={19} className="frost-asset-quiet" />
                       Website <span className="font-normal text-muted-foreground ml-1">(Optional)</span>
                     </FormLabel>
                     <FormControl>

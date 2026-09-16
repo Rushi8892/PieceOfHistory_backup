@@ -1,8 +1,8 @@
-import { ArrowUpRight, BookOpen, Coins, Feather } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'wouter';
 import { Show } from '@clerk/react';
 import { getGetTodayCompetitionQueryKey, useGetArchive, useGetTodayCompetition } from '@workspace/api-client-react';
-import { Countdown, FrostDetail, HowStep, IceGlyph, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney } from '@/components/site';
+import { Countdown, FrostAsset, FrostDetail, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney } from '@/components/site';
 
 function formatHeroDate(date?: string) {
   if (!date) return 'Today';
@@ -44,33 +44,33 @@ export function LandingPage() {
                   <span className="hero-ice-cube hero-ice-cube-right" aria-hidden="true" />
                   <span className="hero-ice-shard" aria-hidden="true" />
                   <div className="hero-calendar">
-                  <IceGlyph kind="calendar" size={29} className="absolute top-6 text-primary/70" />
+                   <FrostAsset name="calendar" size={34} className="absolute top-5 frost-asset-plain frost-asset-calendar" />
                   <span className="mt-6 font-display text-5xl leading-none text-primary">{hasValidCalendarDate ? calendarDate?.getDate() : '—'}</span>
                   <span className="absolute bottom-5 font-mono-ui text-[9px] font-bold uppercase tracking-[.2em] text-primary/70">{hasValidCalendarDate ? new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' }).format(calendarDate) : 'loading'}</span>
                   </div>
                 </div>
               </div>
               <div>
-                <p className="inline-flex items-center gap-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.22em] text-accent"><IceGlyph kind="calendar" size={12} />Today</p>
+                <p className="inline-flex items-center gap-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.22em] text-accent"><FrostAsset name="calendar" size={14} className="frost-asset-plain" />Today</p>
                 <h1 className="mt-2 max-w-3xl font-display text-[clamp(2.8rem,5vw,4.5rem)] leading-[.9] tracking-[-.04em] text-primary">{hasValidCalendarDate && today?.date ? formatHeroDate(today.date) : 'Today'}</h1>
                 <p className="mt-4 max-w-xl font-display text-base italic leading-6 text-primary/70 md:text-lg">Who knows… this could be the day someone finally does it.</p>
                 <div className="mt-6 grid gap-3 border-t border-primary/10 pt-4 sm:grid-cols-3 sm:gap-0">
                   <div className="ice-stat flex items-start gap-2">
-                    <IceGlyph kind="cube" size={19} className="mt-0.5 shrink-0 text-secondary" />
+                     <FrostAsset name="iceCube" size={21} className="mt-0.5 shrink-0 frost-asset-quiet" />
                     <div>
                       <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.12em] text-muted-foreground">Current bid</p>
                       <p className="mt-1 font-display text-xl text-primary">{leader ? formatMoney(leader.runningTotalCents) : '—'}</p>
                     </div>
                   </div>
                   <div className="ice-stat flex items-start gap-2">
-                    <IceGlyph kind="profile" size={19} className="mt-0.5 shrink-0 text-secondary" />
+                     <FrostAsset name="profile" size={21} className="mt-0.5 shrink-0 frost-asset-quiet" />
                     <div className="min-w-0">
                       <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.12em] text-muted-foreground">Currently leading</p>
                       <p className="mt-1 truncate text-xs font-semibold text-primary">{leader?.displayName ?? 'No one yet'}</p>
                     </div>
                   </div>
                   <div className="ice-stat flex items-start gap-2">
-                    <IceGlyph kind="clock" size={19} className="mt-0.5 shrink-0 text-secondary" />
+                     <FrostAsset name="clock" size={21} className="mt-0.5 shrink-0 frost-asset-quiet" />
                     <div>
                       <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.12em] text-muted-foreground">Freezes in</p>
                       <div className="mt-1"><Countdown closingTimestamp={today?.closingTimestamp ?? new Date().toISOString()} serverTime={today?.serverTime} /></div>
@@ -81,13 +81,13 @@ export function LandingPage() {
             </div>
             <div className="relative z-10 mt-6 grid gap-5 border-t border-primary/10 pt-5 sm:grid-cols-[1fr_auto] sm:items-center">
               <div className="min-w-0">
-                <p className="inline-flex items-center gap-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.18em] text-muted-foreground"><IceGlyph kind="page" size={14} className="text-secondary" />Current piece</p>
+                 <p className="inline-flex items-center gap-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.18em] text-muted-foreground"><FrostAsset name="document" size={16} className="frost-asset-quiet" />Current piece</p>
                 {leader ? <p className="mt-2 max-w-2xl font-display text-lg leading-7 text-primary/85">&ldquo;{leader.story}&rdquo;</p> : <p className="mt-2 font-display text-lg text-primary">The first story is still hiding.</p>}
                 <p className="mt-1 text-[11px] italic text-muted-foreground">{leader ? `— ${leader.displayName}` : 'A blank page is still a kind of record.'}</p>
               </div>
               <div>
-                <Show when="signed-out"><PrimaryButton href="/sign-up" className="w-full sm:w-auto" testId="button-home-make-bid"><IceGlyph kind="cube" size={14} />Make your bid <ArrowUpRight size={14} /></PrimaryButton></Show>
-                <Show when="signed-in"><PrimaryButton href="/participate" className="w-full sm:w-auto" testId="button-home-make-bid-auth"><IceGlyph kind="cube" size={14} />Write your piece <ArrowUpRight size={14} /></PrimaryButton></Show>
+                <Show when="signed-out"><PrimaryButton href="/sign-up" className="w-full sm:w-auto" testId="button-home-make-bid"><FrostAsset name="iceCube" size={16} className="frost-asset-quiet" />Make your bid <ArrowUpRight size={14} /></PrimaryButton></Show>
+                <Show when="signed-in"><PrimaryButton href="/participate" className="w-full sm:w-auto" testId="button-home-make-bid-auth"><FrostAsset name="iceCube" size={16} className="frost-asset-quiet" />Write your piece <ArrowUpRight size={14} /></PrimaryButton></Show>
               </div>
             </div>
           </div>
@@ -96,7 +96,7 @@ export function LandingPage() {
         <section className="grid gap-5 sm:grid-cols-[2fr_1fr]" data-testid="section-todays-competition">
           <div className="ice-panel rounded-[14px] p-4 sm:p-5">
             <div className="flex items-baseline justify-between gap-3 border-b border-primary/10 pb-3">
-              <h2 className="inline-flex items-center gap-2 font-display text-[1.35rem] text-primary sm:text-[1.55rem]"><IceGlyph kind="crown" size={19} className="text-secondary" />Today&apos;s competition</h2>
+              <h2 className="inline-flex items-center gap-2 font-display text-[1.35rem] text-primary sm:text-[1.55rem]"><FrostAsset name="crown" size={21} className="frost-asset-quiet" />Today&apos;s competition</h2>
               <p className="hidden text-[8px] text-muted-foreground sm:block">Real people. Real stories. Live bids.</p>
               <Link href="/competition" className="quiet-link text-[9px] font-bold text-muted-foreground" data-testid="link-home-todays-competition">view all →</Link>
             </div>
@@ -109,9 +109,9 @@ export function LandingPage() {
                   {participants.length ? <div className="divide-y divide-primary/10">{participants.map((participant) => <div key={participant.id} className={`list-row grid grid-cols-[22px_62px_86px_1fr_18px] items-center gap-2 px-2 py-3 ${participant.rank === 1 ? 'frost-leader rounded-[7px]' : ''}`} data-testid={`row-home-participant-${participant.id}`}>
                     <span className="font-mono-ui text-[10px] font-bold text-muted-foreground">{participant.rank}</span>
                     <span className="font-mono-ui text-[10px] font-bold text-primary">{formatMoney(participant.runningTotalCents)}</span>
-                    <span className="flex min-w-0 items-center gap-1 text-[10px] font-semibold text-primary"><IceGlyph kind="profile" size={11} className="shrink-0 text-muted-foreground" /><span className="truncate">{participant.displayName}</span></span>
+                    <span className="flex min-w-0 items-center gap-1 text-[10px] font-semibold text-primary"><FrostAsset name="profile" size={13} className="shrink-0 frost-asset-compact" /><span className="truncate">{participant.displayName}</span></span>
                     <p className="line-clamp-2 text-[10px] leading-4 text-muted-foreground">&ldquo;{participant.story}&rdquo;</p>
-                    <IceGlyph kind={participant.rank === 1 ? 'crown' : participant.rank === 2 ? 'cube' : 'snowflake'} size={13} className={participant.rank === 1 ? 'text-accent' : 'text-secondary'} />
+                    <FrostAsset name={participant.rank === 1 ? 'leadingBadge' : participant.rank === 2 ? 'iceCube' : 'snowflake'} size={15} className={participant.rank === 1 ? 'frost-asset-warm' : 'frost-asset-compact'} />
                   </div>)}</div> : <div className="border-y border-dashed border-primary/15 py-8"><p className="font-display text-xl text-primary">Nothing has been written into today yet.</p><p className="mt-2 text-xs leading-5 text-muted-foreground">A blank page is still a kind of record.</p></div>}
                 </>
               )}
@@ -119,23 +119,27 @@ export function LandingPage() {
           </div>
           <div className="ice-panel rounded-[14px] p-4 sm:p-5" data-testid="section-recent-history">
             <div className="flex items-baseline justify-between gap-3 border-b border-primary/10 pb-3">
-              <h2 className="inline-flex items-center gap-2 font-display text-[1.35rem] text-primary"><BookOpen size={18} className="text-secondary" />Recently frozen</h2>
+              <h2 className="inline-flex items-center gap-2 font-display text-[1.35rem] text-primary"><FrostAsset name="book" size={20} className="frost-asset-quiet" />Recently frozen</h2>
               <Link href="/archive" className="quiet-link text-[9px] font-bold text-muted-foreground" data-testid="link-home-archive">View all →</Link>
             </div>
             <div className="mt-3 space-y-3">
-              {archiveQuery.isLoading ? [1, 2, 3].map((item) => <div key={item} className="h-[68px] animate-pulse rounded-xl bg-muted/50" />) : recentHistory.length ? recentHistory.map((item) => <Link key={item.id} href={`/archive/${item.date}`} className="frozen-card block rounded-[9px] p-3 transition-transform duration-200 hover:-translate-y-0.5" data-testid={`link-home-history-${item.date}`}><div className="flex items-start justify-between gap-2"><span className="font-mono-ui text-[8px] font-bold uppercase tracking-[.1em] text-muted-foreground">{formatDate(item.date)}</span><span className="inline-flex items-center gap-1 font-mono-ui text-[7px] font-bold uppercase tracking-[.12em] text-secondary"><IceGlyph kind="lock" size={10} />Frozen</span></div><p className="mt-2 line-clamp-1 font-display text-sm text-primary">{item.winnerDisplayName ?? 'No recorded winner'}</p><p className="mt-1 text-[10px] text-muted-foreground">{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : 'No standing recorded'}</p></Link>) : <div className="frozen-card rounded-[9px] px-3 py-7"><p className="font-display text-base text-primary">No frozen days yet.</p><p className="mt-1 text-[10px] leading-4 text-muted-foreground">The archive will collect each winner here.</p></div>}
+              {archiveQuery.isLoading ? [1, 2, 3].map((item) => <div key={item} className="h-[68px] animate-pulse rounded-xl bg-muted/50" />) : recentHistory.length ? recentHistory.map((item) => <Link key={item.id} href={`/archive/${item.date}`} className="frozen-card block rounded-[9px] p-3 transition-transform duration-200 hover:-translate-y-0.5" data-testid={`link-home-history-${item.date}`}><div className="flex items-start justify-between gap-2"><span className="font-mono-ui text-[8px] font-bold uppercase tracking-[.1em] text-muted-foreground">{formatDate(item.date)}</span><span className="inline-flex items-center gap-1 font-mono-ui text-[7px] font-bold uppercase tracking-[.12em] text-secondary"><FrostAsset name="lock" size={12} className="frost-asset-compact" />Frozen</span></div><p className="mt-2 line-clamp-1 font-display text-sm text-primary">{item.winnerDisplayName ?? 'No recorded winner'}</p><p className="mt-1 text-[10px] text-muted-foreground">{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : 'No standing recorded'}</p></Link>) : <div className="frozen-card rounded-[9px] px-3 py-7"><p className="font-display text-base text-primary">No frozen days yet.</p><p className="mt-1 text-[10px] leading-4 text-muted-foreground">The archive will collect each winner here.</p></div>}
             </div>
           </div>
         </section>
         <section className="history-ribbon relative mt-6 flex items-center justify-between gap-4 rounded-[12px] border border-secondary/35 bg-secondary/15 px-4 py-4 sm:px-6" data-testid="section-internet-history">
           <div className="relative z-10 flex items-center gap-3">
-            <IceGlyph kind="globe" size={25} className="shrink-0 text-secondary" />
+            <FrostAsset name="globe" size={29} className="shrink-0 frost-asset-quiet" />
             <div>
               <p className="font-display text-lg leading-none text-primary">Internet History</p>
               <p className="mt-1 text-[10px] text-muted-foreground">One day. One winner. One tiny piece of history.</p>
             </div>
           </div>
-          <div className="history-ice-cluster" aria-hidden="true"><span /><span /><span /></div>
+          <div className="history-ice-cluster" aria-hidden="true">
+            <span /><span /><span />
+            <FrostAsset name="iceMountain" size={76} className="frost-asset-plain history-mountain-asset" />
+            <FrostAsset name="penguin" size={23} className="frost-asset-plain history-penguin-asset" />
+          </div>
           <p className="relative z-10 hidden max-w-[118px] text-right font-display text-[10px] italic leading-4 text-primary/60 sm:block">Some stories just deserve to stay →</p>
         </section>
       </main>
@@ -153,7 +157,7 @@ export function ExplorePage() {
       <main className="mx-auto max-w-4xl px-5 pb-20 pt-12 sm:px-8 md:pt-20">
         <div className="border-b border-primary/10 pb-8">
           <SectionKicker>Explore</SectionKicker>
-          <h1 className="mt-5 font-display text-[clamp(3.8rem,9vw,7rem)] leading-[.8] tracking-[-.05em] text-primary">Today&apos;s<br /><span className="inline-flex items-center gap-3 text-accent italic">evidence.<span className="ice-glyph-halo text-secondary"><IceGlyph kind="gem" size={22} /></span></span></h1>
+          <h1 className="mt-5 font-display text-[clamp(3.8rem,9vw,7rem)] leading-[.8] tracking-[-.05em] text-primary">Today&apos;s<br /><span className="inline-flex items-center gap-3 text-accent italic">evidence.<span className="ice-glyph-halo text-secondary"><FrostAsset name="crystal" size={25} className="frost-asset-plain" /></span></span></h1>
           <div className="mt-7 flex flex-wrap items-end justify-between gap-5">
              <p className="max-w-md text-base leading-7 text-muted-foreground">A running list of things people decided were worth leaving behind.</p>
             {todayQuery.data && <div className="text-right text-sm text-muted-foreground"><p>{formatDate(todayQuery.data.date)}</p><Countdown closingTimestamp={todayQuery.data.closingTimestamp} serverTime={todayQuery.data.serverTime} /></div>}
@@ -207,9 +211,9 @@ export function CompetitionPage() {
               <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">A small contest about what deserves to survive the day.</p>
             </div>
             <div className="border-l border-primary/10 pl-5 text-sm text-muted-foreground">
-              <p className="inline-flex items-center gap-1.5"><IceGlyph kind="hourglass" size={13} />freezes in</p>
+              <p className="inline-flex items-center gap-1.5"><FrostAsset name="clock" size={15} className="frost-asset-compact" />freezes in</p>
               {competition && <Countdown closingTimestamp={competition.closingTimestamp} serverTime={competition.serverTime} />}
-               <p className="mt-4 inline-flex items-center gap-1.5"><IceGlyph kind="cube" size={13} />highest standing <span className="font-display text-2xl text-accent">{leader ? formatMoney(leader.runningTotalCents) : '—'}</span></p>
+               <p className="mt-4 inline-flex items-center gap-1.5"><FrostAsset name="iceCube" size={15} className="frost-asset-compact" />highest standing <span className="font-display text-2xl text-accent">{leader ? formatMoney(leader.runningTotalCents) : '—'}</span></p>
             </div>
           </div>
         </section>
@@ -251,9 +255,9 @@ export function HowItWorksPage() {
         <h1 className="mt-5 font-display text-[clamp(3.8rem,8vw,6.5rem)] leading-[.84] tracking-[-.04em] text-primary">One day.<br /><span className="text-accent italic">One story.</span></h1>
         <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">A strange little daily ritual: write something true, let people back it, and see which memory stays on top.</p>
         <div className="mt-12 divide-y divide-primary/10 border-y border-primary/10">
-          <HowStep number="01" title="Write a day" icon={<Feather size={17} />}>Tell one short story about one meaningful day. Ordinary is encouraged.</HowStep>
-          <HowStep number="02" title="Back a story" icon={<Coins size={17} />}>Add a voluntary payment to the piece that deserves your attention.</HowStep>
-          <HowStep number="03" title="Make history" icon={<BookOpen size={17} />}>At the closing time, the highest confirmed total wins and the day freezes.</HowStep>
+          <HowStep number="01" title="Write a day" icon={<FrostAsset name="document" size={19} className="frost-asset-plain" />}>Tell one short story about one meaningful day. Ordinary is encouraged.</HowStep>
+          <HowStep number="02" title="Back a story" icon={<FrostAsset name="heart" size={19} className="frost-asset-plain" />}>Add a voluntary payment to the piece that deserves your attention.</HowStep>
+          <HowStep number="03" title="Make history" icon={<FrostAsset name="trophy" size={19} className="frost-asset-plain" />}>At the closing time, the highest confirmed total wins and the day freezes.</HowStep>
         </div>
         <div className="mt-8 flex flex-wrap gap-4">
           <Link href="/competition" className="text-sm font-bold text-primary hover:text-accent">See today&apos;s competition →</Link>

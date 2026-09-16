@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
-import { ArrowUpRight, Check, ExternalLink, PenLine, X } from 'lucide-react';
+import { ArrowUpRight, Check, PenLine, X } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import type { CompetitionParticipant, SiteStats, TodayCompetition } from '@workspace/api-client-react';
 import { getGetCurrentUserQueryKey, useGetCurrentUser } from '@workspace/api-client-react';
@@ -332,26 +332,26 @@ export function StoryCard({ participant, featured = false }: { participant: Comp
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <span className="grid h-10 w-10 place-items-center rounded-[6px] bg-muted text-secondary">
-            <IceGlyph kind="profile" size={19} />
+            <FrostAsset name="profile" size={21} className="frost-asset-quiet" />
           </span>
           <div>
             <p className="flex items-center gap-1.5 text-sm font-bold text-primary" data-testid={`text-story-author-${participant.id}`}>
-              {featured && <IceGlyph kind="crown" size={14} className="text-accent" />}
+              {featured && <FrostAsset name="leadingBadge" size={16} className="frost-asset-warm" />}
               {participant.displayName}
             </p>
             <p className="font-mono-ui text-[10px] uppercase tracking-[.16em] text-muted-foreground">Rank {participant.rank}</p>
           </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 font-mono-ui text-xs font-bold tracking-wide text-accent"><IceGlyph kind="cube" size={13} />{formatMoney(participant.runningTotalCents)}</span>
+        <span className="inline-flex items-center gap-1.5 font-mono-ui text-xs font-bold tracking-wide text-accent"><FrostAsset name="iceCube" size={15} className="frost-asset-compact" />{formatMoney(participant.runningTotalCents)}</span>
       </div>
       <p className={`story-lines mt-6 whitespace-pre-line pb-1 font-display leading-[1.5] text-primary/90 ${featured ? 'text-2xl md:text-[29px]' : 'text-xl'}`} data-testid={`text-story-content-${participant.id}`}>
         “{participant.story}”
       </p>
       <div className="mt-7 flex items-center justify-between gap-3 border-t border-primary/10 pt-4">
-        <span className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] uppercase tracking-[.14em] text-muted-foreground"><IceGlyph kind="page" size={13} />A piece of history</span>
+        <span className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] uppercase tracking-[.14em] text-muted-foreground"><FrostAsset name="document" size={15} className="frost-asset-compact" />A piece of history</span>
         {hasWebsite && (
             <a href={participant.websiteUrl ?? undefined} target="_blank" rel="noopener noreferrer" className="quiet-link inline-flex items-center justify-center gap-2 text-xs font-bold text-primary transition-colors" data-testid={`link-story-website-${participant.id}`}>
-            Visit Website <ExternalLink size={featured ? 15 : 13} />
+            Visit Website <FrostAsset name="externalLink" size={featured ? 16 : 14} className="frost-asset-plain" />
           </a>
         )}
       </div>
@@ -424,7 +424,7 @@ export function TodayData({
       {!compact && (
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground"><IceGlyph kind="calendar" size={12} />Live today</p>
+            <p className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground"><FrostAsset name="calendar" size={14} className="frost-asset-compact" />Live today</p>
             <h2 className="mt-2 font-display text-4xl leading-none text-primary">{formatDate(competition.date)}</h2>
           </div>
           <div className="border-l border-primary/20 pl-4">
