@@ -33,13 +33,14 @@ export function LandingPage() {
     <div className="paper-grain min-h-[100dvh] overflow-hidden">
       <SiteNav />
       <main className="mx-auto max-w-[1120px] px-4 pb-14 sm:px-6 md:pb-20 lg:px-8">
-        <section className="frost-hero relative pb-7 pt-8 md:pb-10 md:pt-9">
+        <section className="frost-hero relative pb-5 pt-5 md:pb-7 md:pt-7">
           <FrostDetail kind="snowflake" className="right-[8%] top-10 hidden rotate-12 md:block" />
           <FrostDetail className="right-[2%] top-36 hidden md:block" />
-          <div className="ice-shell relative z-10 rounded-[14px] p-4 sm:p-6 md:p-7">
-            <div className="relative z-10 grid gap-6 sm:grid-cols-[185px_1fr] sm:items-center sm:gap-7">
-              <div className="flex justify-center sm:justify-start">
-                <div className="hero-calendar-wrap">
+          <div className="ice-shell hero-shell relative z-10 rounded-[14px] p-3 sm:p-4 md:p-5">
+            <FrostAsset name="crystal" size={28} className="hero-crystal frost-asset-plain" />
+            <div className="hero-primary-grid relative z-10 grid gap-4 sm:grid-cols-[128px_1fr] sm:items-center sm:gap-5">
+              <div className="hero-calendar-slot flex justify-center sm:justify-start">
+                <div className="hero-calendar-wrap hero-calendar-compact">
                   <span className="hero-ice-cube hero-ice-cube-left" aria-hidden="true" />
                   <span className="hero-ice-cube hero-ice-cube-right" aria-hidden="true" />
                   <span className="hero-ice-shard" aria-hidden="true" />
@@ -50,36 +51,36 @@ export function LandingPage() {
                   </div>
                 </div>
               </div>
-              <div>
-                <p className="inline-flex items-center gap-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.22em] text-accent"><FrostAsset name="calendar" size={14} className="frost-asset-plain" />Today</p>
-                <h1 className="mt-2 max-w-3xl font-display text-[clamp(2.8rem,5vw,4.5rem)] leading-[.9] tracking-[-.04em] text-primary">{hasValidCalendarDate && today?.date ? formatHeroDate(today.date) : 'Today'}</h1>
-                <p className="mt-4 max-w-xl font-display text-base italic leading-6 text-primary/70 md:text-lg">Who knows… this could be the day someone finally does it.</p>
-                <div className="mt-6 grid gap-3 border-t border-primary/10 pt-4 sm:grid-cols-3 sm:gap-0">
+              <div className="today-copy">
+                <p className="today-kicker inline-flex items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[.24em] text-primary"><FrostAsset name="calendar" size={14} className="frost-asset-plain" />TODAY <span className="hidden font-normal tracking-[.12em] text-muted-foreground sm:inline">/ leave a mark</span></p>
+                <h1 className="mt-1 max-w-3xl font-display text-[clamp(3rem,6vw,5.2rem)] leading-[.86] tracking-[-.045em] text-primary">{hasValidCalendarDate && today?.date ? formatHeroDate(today.date) : 'Today'}</h1>
+                <p className="mt-2 max-w-xl font-display text-base italic leading-6 text-primary/70 md:text-lg">Who knows… this could be the day someone finally does it.</p>
+                <div className="today-stats mt-4 grid gap-2 border-t border-primary/15 pt-3 sm:grid-cols-3 sm:gap-0">
                   <div className="ice-stat flex items-start gap-2">
                      <FrostAsset name="iceCube" size={21} className="mt-0.5 shrink-0 frost-asset-quiet" />
                     <div>
                       <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.12em] text-muted-foreground">Current bid</p>
-                      <p className="mt-1 font-display text-xl text-primary">{leader ? formatMoney(leader.runningTotalCents) : '—'}</p>
+                      <p className="mt-0.5 font-display text-2xl leading-none text-primary">{leader ? formatMoney(leader.runningTotalCents) : '—'}</p>
                     </div>
                   </div>
                   <div className="ice-stat flex items-start gap-2">
                      <FrostAsset name="profile" size={21} className="mt-0.5 shrink-0 frost-asset-quiet" />
                     <div className="min-w-0">
                       <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.12em] text-muted-foreground">Currently leading</p>
-                      <p className="mt-1 truncate text-xs font-semibold text-primary">{leader?.displayName ?? 'No one yet'}</p>
+                      <p className="mt-0.5 truncate text-sm font-semibold text-primary">{leader?.displayName ?? 'No one yet'}</p>
                     </div>
                   </div>
                   <div className="ice-stat flex items-start gap-2">
                      <FrostAsset name="clock" size={21} className="mt-0.5 shrink-0 frost-asset-quiet" />
                     <div>
                       <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.12em] text-muted-foreground">Freezes in</p>
-                      <div className="mt-1"><Countdown closingTimestamp={today?.closingTimestamp ?? new Date().toISOString()} serverTime={today?.serverTime} /></div>
+                      <div className="mt-0.5"><Countdown closingTimestamp={today?.closingTimestamp ?? new Date().toISOString()} serverTime={today?.serverTime} /></div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="relative z-10 mt-6 grid gap-5 border-t border-primary/10 pt-5 sm:grid-cols-[1fr_auto] sm:items-center">
+            <div className="relative z-10 mt-4 grid gap-4 border-t border-primary/10 pt-4 sm:grid-cols-[1fr_auto] sm:items-center">
               <div className="min-w-0">
                  <p className="inline-flex items-center gap-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.18em] text-muted-foreground"><FrostAsset name="document" size={16} className="frost-asset-quiet" />Current piece</p>
                 {leader ? <p className="mt-2 max-w-2xl font-display text-lg leading-7 text-primary/85">&ldquo;{leader.story}&rdquo;</p> : <p className="mt-2 font-display text-lg text-primary">The first story is still hiding.</p>}
@@ -94,9 +95,10 @@ export function LandingPage() {
         </section>
 
         <section className="grid gap-5 sm:grid-cols-[2fr_1fr]" data-testid="section-todays-competition">
-          <div className="ice-panel rounded-[14px] p-4 sm:p-5">
+          <div className="ice-panel competition-focus relative rounded-[14px] p-4 sm:p-5">
+            <FrostAsset name="crystal" size={30} className="competition-crystal frost-asset-plain" />
             <div className="flex items-baseline justify-between gap-3 border-b border-primary/10 pb-3">
-              <h2 className="inline-flex items-center gap-2 font-display text-[1.35rem] text-primary sm:text-[1.55rem]"><FrostAsset name="crown" size={21} className="frost-asset-quiet" />Today&apos;s competition</h2>
+              <h2 className="inline-flex items-center gap-2 font-display text-[1.5rem] text-primary sm:text-[1.7rem]"><FrostAsset name="crown" size={23} className="frost-asset-warm" />Today&apos;s competition</h2>
               <p className="hidden text-[8px] text-muted-foreground sm:block">Real people. Real stories. Live bids.</p>
               <Link href="/competition" className="quiet-link text-[9px] font-bold text-muted-foreground" data-testid="link-home-todays-competition">view all →</Link>
             </div>
@@ -117,7 +119,7 @@ export function LandingPage() {
               )}
             </div>
           </div>
-          <div className="ice-panel rounded-[14px] p-4 sm:p-5" data-testid="section-recent-history">
+          <div className="ice-panel recent-panel rounded-[14px] p-4 sm:p-5" data-testid="section-recent-history">
             <div className="flex items-baseline justify-between gap-3 border-b border-primary/10 pb-3">
               <h2 className="inline-flex items-center gap-2 font-display text-[1.35rem] text-primary"><FrostAsset name="book" size={20} className="frost-asset-quiet" />Recently frozen</h2>
               <Link href="/archive" className="quiet-link text-[9px] font-bold text-muted-foreground" data-testid="link-home-archive">View all →</Link>
