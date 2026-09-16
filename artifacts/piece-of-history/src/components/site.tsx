@@ -11,7 +11,7 @@ export function Logo({ light = false }: { light?: boolean }) {
       <img
         src={`${import.meta.env.BASE_URL}piece-of-history-logo.png`}
         alt=""
-        className={`h-11 w-11 rounded-[13px] border-2 object-cover shadow-[3px_3px_0_hsl(var(--secondary)/.8)] transition-transform duration-200 group-hover:-translate-y-0.5 ${light ? 'border-secondary' : 'border-primary/20'}`}
+        className={`h-10 w-10 rounded-[10px] border-2 object-cover shadow-[3px_3px_0_hsl(var(--secondary)/.8)] transition-transform duration-200 group-hover:-translate-y-0.5 ${light ? 'border-secondary' : 'border-primary/20'}`}
       />
       <span className="flex flex-col">
         <span className={`font-display text-[25px] leading-none tracking-tight ${light ? 'text-white' : 'text-primary'}`}>
@@ -49,7 +49,7 @@ export function PrimaryButton({
     quiet: 'border border-primary/15 bg-card text-primary hover:border-primary/40 hover:bg-muted disabled:hover:border-primary/15 disabled:hover:bg-card',
     light: 'bg-secondary text-primary shadow-[4px_4px_0_hsl(var(--primary)/.25)] hover:-translate-y-0.5 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0_hsl(var(--primary)/.25)]',
   }[variant];
-  const classes = `inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] px-5 text-sm font-bold tracking-[-.01em] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${styles} ${className}`;
+  const classes = `inline-flex min-h-11 items-center justify-center gap-2 rounded-[6px] px-5 text-sm font-bold tracking-[-.01em] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${styles} ${className}`;
 
   if (href) {
     return <Link href={href} className={classes} data-testid={testId}>{children}</Link>;
@@ -78,10 +78,10 @@ export function SiteNav() {
   ];
 
   return (
-    <header className="relative z-20 border-b border-primary/10 bg-background/95 backdrop-blur-md">
+    <header className="relative z-20 border-b border-primary/10 bg-background">
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
         <Logo />
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
+          <nav className="hidden items-center gap-7 md:flex" aria-label="Main navigation">
           {links.map((link) => (
             <Link key={link.href} href={link.href} className="nav-link text-sm font-semibold" data-active={isActive(link.href)} data-testid={`link-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`}>
               {link.label}
@@ -109,12 +109,12 @@ export function SiteNav() {
             <PrimaryButton href="/participate" testId="button-start-writing-auth">Start writing <ArrowUpRight size={16} /></PrimaryButton>
           </Show>
         </div>
-        <button type="button" className="grid h-11 w-11 place-items-center rounded-full border border-primary/15 text-primary md:hidden" onClick={() => setOpen((value) => !value)} aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
+        <button type="button" className="grid h-11 w-11 place-items-center rounded-[6px] border border-primary/15 text-primary md:hidden" onClick={() => setOpen((value) => !value)} aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
       {open && (
-        <div className="absolute inset-x-0 top-full border-b border-primary/10 bg-background px-5 pb-5 shadow-lg md:hidden">
+        <div className="absolute inset-x-0 top-full border-b border-primary/10 bg-background px-5 pb-5 shadow-[0_18px_30px_-24px_hsl(var(--primary)/.55)] md:hidden">
           <nav className="flex flex-col gap-1 pt-2" aria-label="Mobile navigation">
             {links.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-xl px-4 py-3 text-sm font-semibold text-primary hover:bg-muted" data-testid={`link-mobile-${link.label.toLowerCase().replaceAll(' ', '-')}`}>
@@ -133,11 +133,11 @@ export function SiteNav() {
             </Show>
             <div className="mt-3 grid grid-cols-2 gap-2 border-t border-primary/10 pt-4">
               <Show when="signed-out">
-                <Link href="/sign-in" className="rounded-full border border-primary/15 px-4 py-3 text-center text-sm font-semibold text-primary" data-testid="link-mobile-sign-in">Sign in</Link>
-                <Link href="/sign-up" className="rounded-full bg-primary px-4 py-3 text-center text-sm font-bold text-primary-foreground" data-testid="link-mobile-sign-up">Start writing</Link>
+                <Link href="/sign-in" className="rounded-[6px] border border-primary/15 px-4 py-3 text-center text-sm font-semibold text-primary" data-testid="link-mobile-sign-in">Sign in</Link>
+                <Link href="/sign-up" className="rounded-[6px] bg-primary px-4 py-3 text-center text-sm font-bold text-primary-foreground" data-testid="link-mobile-sign-up">Start writing</Link>
               </Show>
               <Show when="signed-in">
-                <Link href="/participate" className="col-span-2 rounded-full bg-primary px-4 py-3 text-center text-sm font-bold text-primary-foreground" data-testid="link-mobile-participate">Start writing</Link>
+                <Link href="/participate" className="col-span-2 rounded-[6px] bg-primary px-4 py-3 text-center text-sm font-bold text-primary-foreground" data-testid="link-mobile-participate">Start writing</Link>
               </Show>
             </div>
           </nav>
@@ -153,7 +153,7 @@ export function SiteFooter({ stats: _stats }: { stats?: SiteStats }) {
       <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
           <Logo />
-          <span className="text-xs text-muted-foreground">Built by someone who won&apos;t be remembered.</span>
+          <span className="max-w-[22rem] text-xs leading-5 text-muted-foreground">A public record of ordinary days, kept by people who happened to be here.</span>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
           <Link href="/terms" className="transition-colors hover:text-primary" data-testid="footer-link-terms">Terms</Link>
@@ -180,16 +180,16 @@ export function formatDate(date: string) {
 export function StoryCard({ participant, featured = false }: { participant: CompetitionParticipant; featured?: boolean }) {
   const hasWebsite = Boolean(participant.websiteUrl);
   return (
-    <article className={`group relative overflow-hidden rounded-[24px] border border-primary/10 bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${featured ? 'md:p-8' : ''}`} data-testid={`card-story-${participant.id}`}>
+    <article className={`group relative overflow-hidden border-y border-primary/10 bg-card/40 px-0 py-6 transition-colors duration-300 hover:bg-secondary/10 ${featured ? 'md:px-3 md:py-8' : ''}`} data-testid={`card-story-${participant.id}`}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-full bg-muted font-mono-ui text-xs font-bold text-primary">{participant.displayName.slice(0, 1).toUpperCase()}</span>
+          <span className="grid h-10 w-10 place-items-center rounded-[6px] bg-muted font-mono-ui text-xs font-bold text-primary">{participant.displayName.slice(0, 1).toUpperCase()}</span>
           <div>
             <p className="text-sm font-bold text-primary" data-testid={`text-story-author-${participant.id}`}>{participant.displayName}</p>
             <p className="font-mono-ui text-[10px] uppercase tracking-[.16em] text-muted-foreground">Rank {participant.rank}</p>
           </div>
         </div>
-        <span className="rounded-full bg-secondary/35 px-3 py-1 font-mono-ui text-[10px] font-bold tracking-wide text-primary">{formatMoney(participant.runningTotalCents)}</span>
+        <span className="font-mono-ui text-xs font-bold tracking-wide text-accent">{formatMoney(participant.runningTotalCents)}</span>
       </div>
       <p className={`story-lines mt-6 whitespace-pre-line pb-1 font-display leading-[1.5] text-primary/90 ${featured ? 'text-2xl md:text-[29px]' : 'text-xl'}`} data-testid={`text-story-content-${participant.id}`}>
         “{participant.story}”
@@ -197,7 +197,7 @@ export function StoryCard({ participant, featured = false }: { participant: Comp
       <div className="mt-7 flex items-center justify-between gap-3 border-t border-primary/10 pt-4">
         <span className="font-mono-ui text-[10px] uppercase tracking-[.14em] text-muted-foreground">A piece of history</span>
         {hasWebsite && (
-          <a href={participant.websiteUrl ?? undefined} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center justify-center gap-2 font-bold transition-colors ${featured ? 'min-h-12 rounded-full bg-primary px-6 text-sm text-primary-foreground hover:bg-primary/90' : 'rounded-full border border-primary/15 px-4 py-2 text-xs text-primary hover:border-primary/40'}`} data-testid={`link-story-website-${participant.id}`}>
+            <a href={participant.websiteUrl ?? undefined} target="_blank" rel="noopener noreferrer" className="quiet-link inline-flex items-center justify-center gap-2 text-xs font-bold text-primary transition-colors" data-testid={`link-story-website-${participant.id}`}>
             Visit Website <ExternalLink size={featured ? 15 : 13} />
           </a>
         )}
@@ -275,13 +275,13 @@ export function TodayData({
             <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground">Live today</p>
             <h2 className="mt-2 font-display text-4xl leading-none text-primary">{formatDate(competition.date)}</h2>
           </div>
-          <div className="rounded-full bg-primary px-4 py-2">
+          <div className="border-l border-primary/20 pl-4">
             <Countdown closingTimestamp={competition.closingTimestamp} serverTime={competition.serverTime} tone="light" />
           </div>
         </div>
       )}
       {participants.length === 0 ? (
-        <div className="rounded-[24px] border border-dashed border-primary/20 bg-card p-8 text-center" data-testid="state-competition-empty">
+        <div className="border-y border-dashed border-primary/20 bg-card/35 px-5 py-10 text-center" data-testid="state-competition-empty">
           <PenLine className="mx-auto text-secondary" size={25} />
           <p className="mt-4 font-display text-2xl text-primary">The page is still blank.</p>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">Be the first person to leave a mark on today. The first sentence is always the hardest.</p>
@@ -350,7 +350,7 @@ export function HowStep({ number, title, children, icon }: { number: string; tit
     <div className="relative border-l border-primary/15 pl-7 md:border-l-0 md:pl-0">
       <div className="flex items-center gap-3">
         <span className="font-mono-ui text-[10px] font-bold tracking-[.2em] text-accent">{number}</span>
-        <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-primary">{icon}</span>
+        <span className="grid h-9 w-9 place-items-center rounded-[6px] bg-secondary text-primary">{icon}</span>
       </div>
       <h3 className="mt-6 font-display text-3xl text-primary">{title}</h3>
       <p className="mt-3 text-sm leading-7 text-muted-foreground">{children}</p>

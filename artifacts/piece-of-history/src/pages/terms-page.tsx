@@ -15,13 +15,13 @@ export function TermsPage() {
           Terms &amp;<br /><span className="text-accent italic">Conditions.</span>
         </h1>
         <p className="mt-8 max-w-2xl text-lg leading-8 text-muted-foreground">
-          Piece of History is a small side project for putting meaningful days somewhere they can last. By using it, you agree to these simple rules.
+          This is a small public record for meaningful days. The rules are brief because the promise is simple: submit honestly, pay voluntarily, and understand that a winning story stays visible.
         </p>
 
-        <div className="mt-14 grid gap-4">
-          <section className="rounded-[24px] border border-primary/10 bg-card p-7 sm:p-9">
+        <div className="mt-14 divide-y divide-primary/10 border-y border-primary/10">
+          <section className="py-8 sm:py-10">
             <h2 className="font-display text-3xl text-primary">How a day works</h2>
-            <ul className="mt-5 list-disc space-y-3 pl-5 text-sm leading-7 text-muted-foreground">
+            <ul className="mt-5 list-disc space-y-3 pl-5 text-sm leading-7 text-muted-foreground marker:text-accent">
               <li>Users voluntarily bid for a specific date.</li>
               <li>The highest valid, confirmed bid at 23:59:59 wins that date.</li>
               <li>Once the date is frozen, the winning story becomes public.</li>
@@ -29,9 +29,9 @@ export function TermsPage() {
             </ul>
           </section>
 
-          <section className="rounded-[24px] border border-primary/10 bg-card p-7 sm:p-9">
+          <section className="py-8 sm:py-10">
             <h2 className="font-display text-3xl text-primary">What you submit</h2>
-            <ul className="mt-5 list-disc space-y-3 pl-5 text-sm leading-7 text-muted-foreground">
+            <ul className="mt-5 list-disc space-y-3 pl-5 text-sm leading-7 text-muted-foreground marker:text-accent">
               <li>You are responsible for the stories and content you submit.</li>
               <li>Do not submit illegal, hateful, abusive, sexually explicit, fraudulent, private or confidential, or copyright-infringing content.</li>
               <li>We may remove content that violates these rules.</li>
@@ -39,7 +39,7 @@ export function TermsPage() {
             </ul>
           </section>
 
-          <section id="privacy" className="rounded-[24px] border border-primary/10 bg-muted/60 p-7 sm:p-9">
+          <section id="privacy" className="bg-muted/45 py-8 sm:py-10">
             <h2 className="font-display text-3xl text-primary">Privacy</h2>
             <p className="mt-5 text-sm leading-7 text-muted-foreground">
               Stories that win become part of the public archive. Please avoid submitting personal or confidential information about yourself or anyone else.

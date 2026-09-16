@@ -81,17 +81,17 @@
   --elevate-1: rgba(0, 0, 0, 0.03);
   --elevate-2: rgba(0, 0, 0, 0.08);
 
-  --background: 210 60% 98%;
+  --background: 204 38% 95%;
 
-  --foreground: 220 45% 13%;
+  --foreground: 211 42% 17%;
 
-  --border: 210 35% 88%;
+  --border: 204 24% 82%;
 
-  --card: 0 0% 100%;
+  --card: 205 36% 97%;
 
-  --card-foreground: 220 45% 13%;
+  --card-foreground: 211 42% 17%;
 
-  --card-border: 210 35% 88%;
+  --card-border: 204 24% 82%;
 
   --sidebar: 201 54% 25%;
 
@@ -115,19 +115,19 @@
 
   --popover-border: 210 35% 88%;
 
-  --primary: 220 45% 13%;
+  --primary: 211 42% 17%;
 
-  --primary-foreground: 210 60% 98%;
+  --primary-foreground: 204 38% 95%;
 
-  --secondary: 199 82% 60%;
+  --secondary: 191 57% 72%;
 
   --secondary-foreground: 220 45% 13%;
 
-  --muted: 210 40% 95%;
+  --muted: 202 29% 90%;
 
-  --muted-foreground: 215 18% 48%;
+  --muted-foreground: 209 21% 45%;
 
-  --accent: 199 82% 60%;
+  --accent: 13 63% 58%;
 
   --accent-foreground: 220 45% 13%;
 
@@ -135,8 +135,8 @@
 
   --destructive-foreground: 0 0% 100%;
 
-  --input: 210 35% 88%;
-  --ring: 199 82% 60%;
+  --input: 204 24% 82%;
+  --ring: 13 63% 58%;
   --chart-1: 220 45% 13%;
   --chart-2: 199 82% 60%;
   --chart-3: 210 60% 75%;
@@ -146,7 +146,7 @@
   --app-font-sans: 'DM Sans', sans-serif;
   --app-font-serif: 'Instrument Serif', Georgia, serif;
   --app-font-mono: 'Space Mono', monospace;
-  --radius: 1.2rem;
+  --radius: 0.85rem;
   --shadow-2xs: 0px 2px 0px 0px hsl(201 54% 25% / 0.03);
   --shadow-xs: 0px 3px 0px 0px hsl(201 54% 25% / 0.04);
   --shadow-sm:
@@ -230,13 +230,13 @@
   --elevate-1: rgba(255, 255, 255, 0.04);
   --elevate-2: rgba(255, 255, 255, 0.09);
 
-  --background: 205 48% 12%;
+  --background: 211 38% 12%;
 
   --foreground: 195 40% 96%;
 
-  --border: 201 28% 31%;
+  --border: 205 22% 29%;
 
-  --card: 201 42% 17%;
+  --card: 209 31% 16%;
 
   --card-foreground: 195 40% 96%;
 
@@ -264,11 +264,11 @@
 
   --popover-border: 201 28% 31%;
 
-  --primary: 39 94% 64%;
+  --primary: 191 57% 72%;
 
-  --primary-foreground: 205 48% 12%;
+  --primary-foreground: 211 38% 12%;
 
-  --secondary: 201 28% 24%;
+  --secondary: 205 22% 29%;
 
   --secondary-foreground: 195 40% 96%;
 
@@ -276,7 +276,7 @@
 
   --muted-foreground: 196 19% 71%;
 
-  --accent: 349 62% 67%;
+  --accent: 13 67% 66%;
 
   --accent-foreground: 205 48% 12%;
 
@@ -285,9 +285,9 @@
   --destructive-foreground: 205 48% 12%;
 
   /* Used as the border around inputs. Dark mode: Should be a border that is light enough to have high contrast when rendered on a --card background. More contrast than standard --border */
-  --input: 201 28% 31%;
-  --ring: 39 94% 64%;
-  --chart-1: 39 94% 64%;
+  --input: 205 22% 29%;
+  --ring: 13 67% 66%;
+  --chart-1: 191 57% 72%;
   --chart-2: 349 62% 67%;
   --chart-3: 155 32% 55%;
   --chart-4: 195 40% 96%;
@@ -442,11 +442,7 @@
 
   body {
     min-width: 320px;
-    background:
-      radial-gradient(ellipse at 20% 0%, hsl(199 82% 70% / 0.18), transparent 30rem),
-      radial-gradient(ellipse at 80% 5%, hsl(210 80% 85% / 0.22), transparent 26rem),
-      radial-gradient(ellipse at 50% 100%, hsl(210 60% 92% / 0.35), transparent 40rem),
-      hsl(var(--background));
+    background: hsl(var(--background));
   }
 
   ::selection {
@@ -485,7 +481,7 @@
   inset: 0;
   z-index: 50;
   pointer-events: none;
-  opacity: .035;
+   opacity: .025;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
 }
@@ -499,11 +495,9 @@
   position: absolute;
   inset: -60px -40px 0;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 18% 30%, hsl(199 82% 70% / 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 78% 15%, hsl(210 80% 85% / 0.2) 0%, transparent 45%);
-  border-radius: 50%;
-  filter: blur(40px);
+   background: hsl(var(--secondary) / .1);
+   border-radius: 0 0 50% 50%;
+   filter: blur(46px);
   z-index: 0;
 }
 
@@ -513,9 +507,7 @@
 }
 
 .frost-leader {
-  background:
-    radial-gradient(circle at 92% 18%, hsl(var(--secondary) / .10), transparent 11rem),
-    linear-gradient(90deg, transparent, hsl(var(--secondary) / .025), transparent);
+  background: hsl(var(--secondary) / .055);
 }
 
 @keyframes frost-float {
@@ -565,6 +557,30 @@
 .story-lines {
   background-image: linear-gradient(to bottom, transparent 31px, hsl(var(--border) / .55) 32px);
   background-size: 100% 32px;
+}
+
+.editorial-rule {
+  border-color: hsl(var(--primary) / .14);
+}
+
+.list-row {
+  transition: background-color 180ms ease, padding 180ms ease;
+}
+
+.list-row:hover {
+  background: hsl(var(--secondary) / .08);
+}
+
+.quiet-link {
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--secondary) / .8);
+  text-underline-offset: 4px;
+  transition: color 180ms ease, text-decoration-color 180ms ease;
+}
+
+.quiet-link:hover {
+  color: hsl(var(--accent));
+  text-decoration-color: hsl(var(--accent));
 }
 
 .sketch-border {
