@@ -127,7 +127,7 @@
 
   --muted-foreground: 209 21% 45%;
 
-  --accent: 13 63% 58%;
+  --accent: 195 76% 48%;
 
   --accent-foreground: 220 45% 13%;
 
@@ -136,7 +136,7 @@
   --destructive-foreground: 0 0% 100%;
 
   --input: 204 24% 82%;
-  --ring: 13 63% 58%;
+  --ring: 195 76% 48%;
   --chart-1: 220 45% 13%;
   --chart-2: 199 82% 60%;
   --chart-3: 210 60% 75%;
@@ -276,9 +276,9 @@
 
   --muted-foreground: 196 19% 71%;
 
-  --accent: 13 67% 66%;
+  --accent: 194 78% 72%;
 
-  --accent-foreground: 205 48% 12%;
+  --accent-foreground: 211 42% 17%;
 
   --destructive: 0 63% 57%;
 
@@ -286,7 +286,7 @@
 
   /* Used as the border around inputs. Dark mode: Should be a border that is light enough to have high contrast when rendered on a --card background. More contrast than standard --border */
   --input: 205 22% 29%;
-  --ring: 13 67% 66%;
+  --ring: 194 78% 72%;
   --chart-1: 191 57% 72%;
   --chart-2: 349 62% 67%;
   --chart-3: 155 32% 55%;
