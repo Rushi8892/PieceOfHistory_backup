@@ -165,8 +165,8 @@ export function SiteNav() {
   ];
 
   return (
-    <header className="relative z-20 border-b border-primary/10 bg-background">
-      <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
+    <header className="nav-ice relative z-20 border-b border-primary/10">
+      <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
         <Logo />
           <nav className="hidden items-center gap-7 md:flex" aria-label="Main navigation">
           {links.map((link) => (
@@ -201,7 +201,7 @@ export function SiteNav() {
         </button>
       </div>
       {open && (
-        <div className="absolute inset-x-0 top-full border-b border-primary/10 bg-background px-5 pb-5 shadow-[0_18px_30px_-24px_hsl(var(--primary)/.55)] md:hidden">
+         <div className="absolute inset-x-0 top-full border-b border-primary/10 bg-card/95 px-5 pb-5 shadow-[0_18px_30px_-24px_hsl(var(--primary)/.55)] backdrop-blur-xl md:hidden">
           <nav className="flex flex-col gap-1 pt-2" aria-label="Mobile navigation">
             {links.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-xl px-4 py-3 text-sm font-semibold text-primary hover:bg-muted" data-testid={`link-mobile-${link.label.toLowerCase().replaceAll(' ', '-')}`}>
@@ -236,19 +236,19 @@ export function SiteNav() {
 
 export function SiteFooter({ stats: _stats }: { stats?: SiteStats }) {
   return (
-    <footer className="border-t border-primary/10">
-      <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
+    <footer className="footer-night border-t border-secondary/20">
+      <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-6 px-5 py-10 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-          <Logo />
-          <span className="max-w-[22rem] text-xs leading-5 text-muted-foreground">A public record of ordinary days, kept by people who happened to be here.</span>
+          <Logo light />
+          <span className="max-w-[22rem] text-xs leading-5 text-primary-foreground/60">A public record of ordinary days, kept by people who happened to be here.</span>
         </div>
-        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-          <Link href="/terms" className="transition-colors hover:text-primary" data-testid="footer-link-terms">Terms</Link>
-          <span aria-hidden="true">·</span>
-          <Link href="/terms#privacy" className="transition-colors hover:text-primary" data-testid="footer-link-privacy">Privacy</Link>
-          <span aria-hidden="true">·</span>
-          <a href="mailto:hello@pieceofhistory.app" className="transition-colors hover:text-primary" data-testid="footer-link-contact">Contact</a>
-          <span className="text-muted-foreground/60">© 2026</span>
+        <div className="flex flex-wrap items-center gap-3 text-xs text-primary-foreground/65">
+          <Link href="/terms" className="transition-colors hover:text-secondary" data-testid="footer-link-terms">Terms</Link>
+          <span aria-hidden="true" className="text-secondary/50">·</span>
+          <Link href="/terms#privacy" className="transition-colors hover:text-secondary" data-testid="footer-link-privacy">Privacy</Link>
+          <span aria-hidden="true" className="text-secondary/50">·</span>
+          <a href="mailto:hello@pieceofhistory.app" className="transition-colors hover:text-secondary" data-testid="footer-link-contact">Contact</a>
+          <span className="text-primary-foreground/45">© 2026 Piece of History</span>
         </div>
       </div>
     </footer>
@@ -261,13 +261,14 @@ export function formatMoney(cents: number) {
 
 export function formatDate(date: string) {
   const parsedDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? new Date(`${date}T12:00:00`) : new Date(date);
+  if (Number.isNaN(parsedDate.getTime())) return 'Date unavailable';
   return new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(parsedDate);
 }
 
 export function StoryCard({ participant, featured = false }: { participant: CompetitionParticipant; featured?: boolean }) {
   const hasWebsite = Boolean(participant.websiteUrl);
   return (
-    <article className={`group relative overflow-hidden border-y border-primary/10 bg-card/40 px-0 py-6 transition-colors duration-300 hover:bg-secondary/10 ${featured ? 'md:px-3 md:py-8' : ''}`} data-testid={`card-story-${participant.id}`}>
+    <article className={`ice-panel group relative overflow-hidden rounded-[18px] px-5 py-6 transition-colors duration-300 hover:bg-secondary/10 ${featured ? 'md:px-7 md:py-8' : ''}`} data-testid={`card-story-${participant.id}`}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <span className="grid h-10 w-10 place-items-center rounded-[6px] bg-muted text-secondary">

@@ -82,7 +82,8 @@ export function ParticipatePage() {
           </p>
         </div>
         
-        <div className="rounded-[30px] border border-primary/10 bg-card p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:p-10 animate-rise-in" style={{ animationDelay: '100ms' }}>
+         <div className="ice-shell rounded-[26px] p-6 sm:p-10 animate-rise-in" style={{ animationDelay: '100ms' }}>
+           <div className="relative z-10">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               
@@ -177,7 +178,8 @@ export function ParticipatePage() {
                 </PrimaryButton>
               </div>
             </form>
-          </Form>
+           </Form>
+           </div>
         </div>
       </main>
 

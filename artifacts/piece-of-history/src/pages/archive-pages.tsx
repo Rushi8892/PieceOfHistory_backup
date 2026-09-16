@@ -42,8 +42,8 @@ export function ArchivePage() {
               <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">Every archive begins with a blank page and somebody willing to mark it.</p>
             </div>
           ) : (
-            <div data-testid="data-archive-list">
-              <div className="divide-y divide-primary/10 border-y border-primary/10">
+            <div data-testid="data-archive-list" className="ice-panel overflow-hidden rounded-[22px]">
+              <div className="divide-y divide-primary/10">
                 {items.map(item => (
                   <Link key={item.id} href={`/archive/${item.date}`} className="list-row group grid gap-3 py-6 transition-colors sm:grid-cols-[180px_1fr_auto] sm:items-center sm:gap-5" data-testid={`link-archive-item-${item.date}`}>
                     <span className="flex items-center gap-2 font-display text-2xl text-primary group-hover:text-accent"><IceGlyph kind="calendar" size={17} className="text-secondary" />{formatDate(item.date)}</span>
@@ -54,7 +54,7 @@ export function ArchivePage() {
               </div>
               
               {pagination && pagination.totalPages > 1 && (
-                <div className="mt-12 flex items-center justify-center gap-4">
+               <div className="mt-12 flex items-center justify-center gap-4">
                    <button type="button" disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))} className="grid h-10 w-10 place-items-center rounded-[6px] border border-primary/15 text-primary hover:bg-muted disabled:opacity-50" data-testid="button-archive-prev">
                     <ChevronLeft size={18} />
                   </button>
@@ -125,7 +125,7 @@ export function ArchiveDetailPage() {
                 </div>
               </div>
 
-               <div className="mt-12 border-y border-primary/10 bg-card/35 px-1 py-9 md:px-5 md:py-12">
+                <div className="ice-panel mt-12 rounded-[22px] px-5 py-9 md:px-8 md:py-12">
                  <p className="story-lines whitespace-pre-line pb-2 font-display text-2xl leading-[1.6] text-primary/90 md:text-3xl" data-testid="text-archive-winning-story">
                   “{detail.winningStory}”
                 </p>

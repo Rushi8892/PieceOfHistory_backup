@@ -81,13 +81,13 @@
   --elevate-1: rgba(0, 0, 0, 0.03);
   --elevate-2: rgba(0, 0, 0, 0.08);
 
-  --background: 202 46% 93%;
+  --background: 201 57% 95%;
 
-  --foreground: 211 42% 17%;
+  --foreground: 211 48% 15%;
 
-  --border: 200 29% 79%;
+  --border: 199 44% 82%;
 
-  --card: 201 55% 97%;
+  --card: 200 62% 98%;
 
   --card-foreground: 211 42% 17%;
 
@@ -115,19 +115,19 @@
 
   --popover-border: 210 35% 88%;
 
-  --primary: 211 42% 17%;
+  --primary: 211 48% 15%;
 
-  --primary-foreground: 202 46% 93%;
+  --primary-foreground: 201 57% 95%;
 
-  --secondary: 191 65% 70%;
+  --secondary: 193 72% 72%;
 
   --secondary-foreground: 220 45% 13%;
 
-  --muted: 201 36% 87%;
+  --muted: 201 42% 89%;
 
-  --muted-foreground: 209 21% 45%;
+  --muted-foreground: 209 25% 42%;
 
-  --accent: 195 76% 48%;
+  --accent: 194 72% 43%;
 
   --accent-foreground: 220 45% 13%;
 
@@ -474,8 +474,9 @@
   position: relative;
   isolation: isolate;
   background:
-    linear-gradient(135deg, hsl(204 56% 96% / .72), transparent 38%),
-    linear-gradient(315deg, hsl(195 54% 91% / .48), transparent 52%),
+    radial-gradient(circle at 10% 15%, hsl(194 75% 98% / .95), transparent 30%),
+    linear-gradient(135deg, hsl(204 56% 97% / .82), transparent 42%),
+    linear-gradient(315deg, hsl(195 54% 91% / .55), transparent 62%),
     hsl(var(--background));
 }
 
@@ -503,6 +504,122 @@
    border-radius: 0 0 50% 50%;
    filter: blur(46px);
   z-index: 0;
+}
+
+.ice-shell {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, hsl(var(--card) / .9), hsl(var(--secondary) / .12)),
+    hsl(var(--card));
+  border: 1px solid hsl(var(--secondary) / .5);
+  box-shadow:
+    0 22px 48px -34px hsl(var(--primary) / .52),
+    inset 0 1px 0 hsl(var(--card) / .95),
+    inset 0 -1px 0 hsl(var(--secondary) / .3);
+  backdrop-filter: blur(10px);
+}
+
+.ice-shell::before,
+.ice-shell::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  opacity: .6;
+}
+
+.ice-shell::before {
+  inset: 0;
+  background:
+    linear-gradient(118deg, transparent 0 22%, hsl(var(--secondary) / .22) 22.2% 22.5%, transparent 22.7%),
+    linear-gradient(62deg, transparent 0 74%, hsl(var(--card) / .8) 74.2% 74.6%, transparent 74.8%);
+}
+
+.ice-shell::after {
+  width: 180px;
+  height: 180px;
+  right: -76px;
+  top: -86px;
+  border: 1px solid hsl(var(--secondary) / .55);
+  transform: rotate(28deg);
+  box-shadow: 16px 14px 0 -1px hsl(var(--card) / .4), -14px 20px 0 -1px hsl(var(--secondary) / .2);
+}
+
+.ice-panel {
+  border: 1px solid hsl(var(--primary) / .09);
+  background: hsl(var(--card) / .62);
+  box-shadow: inset 0 1px 0 hsl(var(--card) / .85);
+}
+
+.ice-stat {
+  border-left: 1px solid hsl(var(--primary) / .1);
+  padding-left: 1rem;
+}
+
+.ice-stat:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.frozen-card {
+  border: 1px solid hsl(var(--secondary) / .34);
+  background: linear-gradient(145deg, hsl(var(--card) / .86), hsl(var(--secondary) / .12));
+  box-shadow: 0 8px 18px -16px hsl(var(--primary) / .5), inset 0 1px 0 hsl(var(--card) / .8);
+}
+
+.nav-ice {
+  background: hsl(201 66% 97% / .86);
+  box-shadow: 0 10px 28px -26px hsl(var(--primary) / .72);
+  backdrop-filter: blur(14px);
+}
+
+.footer-night {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 82% 8%, hsl(var(--secondary) / .2), transparent 28%),
+    hsl(211 48% 15%);
+  color: hsl(201 57% 95%);
+}
+
+.footer-night::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .2;
+  background-image: radial-gradient(circle, hsl(var(--secondary) / .8) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+.hero-calendar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(120px, 18vw, 178px);
+  aspect-ratio: .86;
+  border: 1px solid hsl(var(--primary) / .2);
+  border-radius: 18px;
+  background: linear-gradient(145deg, hsl(var(--secondary) / .5), hsl(var(--card) / .86));
+  box-shadow: 10px 12px 0 hsl(var(--secondary) / .25), 0 20px 30px -20px hsl(var(--primary) / .65);
+  transform: rotate(-5deg);
+}
+
+.hero-calendar::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid hsl(var(--card) / .8);
+  border-radius: 12px;
+}
+
+.hero-calendar::after {
+  content: '';
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 25%;
+  border-top: 1px solid hsl(var(--primary) / .2);
 }
 
 .frost-detail {

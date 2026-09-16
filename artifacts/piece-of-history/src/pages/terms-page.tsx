@@ -18,7 +18,7 @@ export function TermsPage() {
           This is a small public record for meaningful days. The rules are brief because the promise is simple: submit honestly, pay voluntarily, and understand that a winning story stays visible.
         </p>
 
-        <div className="mt-14 divide-y divide-primary/10 border-y border-primary/10">
+        <div className="ice-panel mt-14 divide-y divide-primary/10 overflow-hidden rounded-[22px]">
           <section className="py-8 sm:py-10">
             <h2 className="font-display text-3xl text-primary">How a day works</h2>
             <ul className="mt-5 list-disc space-y-3 pl-5 text-sm leading-7 text-muted-foreground marker:text-accent">
@@ -39,7 +39,7 @@ export function TermsPage() {
             </ul>
           </section>
 
-          <section id="privacy" className="bg-muted/45 py-8 sm:py-10">
+           <section id="privacy" className="bg-secondary/10 py-8 sm:py-10">
             <h2 className="font-display text-3xl text-primary">Privacy</h2>
             <p className="mt-5 text-sm leading-7 text-muted-foreground">
               Stories that win become part of the public archive. Please avoid submitting personal or confidential information about yourself or anyone else.
