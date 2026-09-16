@@ -507,6 +507,22 @@
   z-index: 0;
 }
 
+.frost-detail {
+  animation: frost-float 7s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px hsl(var(--secondary) / .28));
+}
+
+.frost-leader {
+  background:
+    radial-gradient(circle at 92% 18%, hsl(var(--secondary) / .10), transparent 11rem),
+    linear-gradient(90deg, transparent, hsl(var(--secondary) / .025), transparent);
+}
+
+@keyframes frost-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: .7; }
+  50% { transform: translate3d(2px, -4px, 0) rotate(8deg); opacity: 1; }
+}
+
 .font-display {
   font-family: var(--app-font-serif);
 }

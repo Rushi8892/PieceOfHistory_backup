@@ -161,7 +161,7 @@ export function SiteFooter({ stats: _stats }: { stats?: SiteStats }) {
           <Link href="/terms#privacy" className="transition-colors hover:text-primary" data-testid="footer-link-privacy">Privacy</Link>
           <span aria-hidden="true">·</span>
           <a href="mailto:hello@pieceofhistory.app" className="transition-colors hover:text-primary" data-testid="footer-link-contact">Contact</a>
-          <span className="hidden text-muted-foreground/60 sm:inline">© 2026</span>
+          <span className="text-muted-foreground/60">© 2026</span>
         </div>
       </div>
     </footer>
