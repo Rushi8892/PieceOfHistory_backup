@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
-import { ArrowUpRight, Check, Clock3, ExternalLink, Menu, PenLine, X } from 'lucide-react';
+import { ArrowUpRight, Check, Clock3, ExternalLink, Menu, PenLine, Snowflake, Sparkles, X } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import type { CompetitionParticipant, SiteStats, TodayCompetition } from '@workspace/api-client-react';
 import { getGetCurrentUserQueryKey, useGetCurrentUser } from '@workspace/api-client-react';
@@ -49,7 +49,7 @@ export function PrimaryButton({
     quiet: 'border border-primary/15 bg-card text-primary hover:border-primary/40 hover:bg-muted disabled:hover:border-primary/15 disabled:hover:bg-card',
     light: 'bg-secondary text-primary shadow-[4px_4px_0_hsl(var(--primary)/.25)] hover:-translate-y-0.5 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0_hsl(var(--primary)/.25)]',
   }[variant];
-  const classes = `inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-sm font-bold tracking-[-.01em] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${styles} ${className}`;
+  const classes = `inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] px-5 text-sm font-bold tracking-[-.01em] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${styles} ${className}`;
 
   if (href) {
     return <Link href={href} className={classes} data-testid={testId}>{children}</Link>;
@@ -71,9 +71,9 @@ export function SiteNav() {
   });
   const isActive = (path: string) => path === '/' ? location === '/' : location.startsWith(path);
   const links = [
+    { href: '/competition', label: 'Today' },
     { href: '/explore', label: 'Explore' },
     { href: '/archive', label: 'Archive' },
-    { href: '/competition', label: 'Today' },
     { href: '/how-it-works', label: 'How it works' },
   ];
 
@@ -155,12 +155,13 @@ export function SiteFooter({ stats: _stats }: { stats?: SiteStats }) {
           <Logo />
           <span className="text-xs text-muted-foreground">Built by someone who won&apos;t be remembered.</span>
         </div>
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
           <Link href="/terms" className="transition-colors hover:text-primary" data-testid="footer-link-terms">Terms</Link>
           <span aria-hidden="true">·</span>
           <Link href="/terms#privacy" className="transition-colors hover:text-primary" data-testid="footer-link-privacy">Privacy</Link>
           <span aria-hidden="true">·</span>
           <a href="mailto:hello@pieceofhistory.app" className="transition-colors hover:text-primary" data-testid="footer-link-contact">Contact</a>
+          <span className="hidden text-muted-foreground/60 sm:inline">© 2026</span>
         </div>
       </div>
     </footer>
@@ -205,7 +206,7 @@ export function StoryCard({ participant, featured = false }: { participant: Comp
   );
 }
 
-export function Countdown({ closingTimestamp, serverTime }: { closingTimestamp: string; serverTime?: string }) {
+export function Countdown({ closingTimestamp, serverTime, tone = 'dark' }: { closingTimestamp: string; serverTime?: string; tone?: 'dark' | 'light' }) {
   const getClockSkew = () => serverTime ? new Date(serverTime).getTime() - Date.now() : 0;
   const getRemaining = () => Math.max(0, new Date(closingTimestamp).getTime() - (Date.now() + getClockSkew()));
   const [remaining, setRemaining] = useState(getRemaining);
@@ -225,10 +226,11 @@ export function Countdown({ closingTimestamp, serverTime }: { closingTimestamp: 
   const unit = (value: number) => String(value).padStart(2, '0');
 
   return (
-    <div className="flex items-center gap-2" data-testid="countdown-timer">
-      <Clock3 size={16} className="text-secondary" />
-      <span className="font-mono-ui text-sm font-bold tracking-wide text-primary-foreground">
-        {remaining > 0 ? `${unit(time.hours)}:${unit(time.minutes)}:${unit(time.seconds)}` : 'Closed for today'}
+    <div className={`flex items-center gap-2 ${tone === 'light' ? 'text-primary-foreground' : 'text-primary'}`} data-testid="countdown-timer">
+      <Snowflake size={15} className={remaining > 0 ? 'text-secondary' : 'text-accent'} aria-hidden="true" />
+      <Clock3 size={14} className="opacity-60" aria-hidden="true" />
+      <span className="font-mono-ui text-sm font-bold tracking-wide">
+        {remaining > 0 ? `${unit(time.hours)}:${unit(time.minutes)}:${unit(time.seconds)}` : 'FROZEN'}
       </span>
     </div>
   );
@@ -274,7 +276,7 @@ export function TodayData({
             <h2 className="mt-2 font-display text-4xl leading-none text-primary">{formatDate(competition.date)}</h2>
           </div>
           <div className="rounded-full bg-primary px-4 py-2">
-            <Countdown closingTimestamp={competition.closingTimestamp} serverTime={competition.serverTime} />
+            <Countdown closingTimestamp={competition.closingTimestamp} serverTime={competition.serverTime} tone="light" />
           </div>
         </div>
       )}
@@ -301,6 +303,15 @@ export function TodayData({
 
 export function SectionKicker({ children }: { children: ReactNode }) {
   return <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.24em] text-accent">{children}</p>;
+}
+
+export function FrostDetail({ kind = 'sparkle', className = '' }: { kind?: 'sparkle' | 'snowflake'; className?: string }) {
+  const Icon = kind === 'snowflake' ? Snowflake : Sparkles;
+  return (
+    <span className={`frost-detail pointer-events-none absolute text-secondary/75 ${className}`} aria-hidden="true">
+      <Icon size={16} strokeWidth={1.5} />
+    </span>
+  );
 }
 
 export function StatStrip({ stats, loading }: { stats?: SiteStats; loading: boolean }) {

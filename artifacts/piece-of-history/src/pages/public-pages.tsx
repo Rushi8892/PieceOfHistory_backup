@@ -2,7 +2,7 @@ import { ArrowUpRight, BookOpen, Coins, Feather } from 'lucide-react';
 import { Link } from 'wouter';
 import { Show } from '@clerk/react';
 import { getGetTodayCompetitionQueryKey, useGetArchive, useGetSiteStats, useGetTodayCompetition } from '@workspace/api-client-react';
-import { CheckLine, Countdown, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney } from '@/components/site';
+import { Countdown, FrostDetail, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney } from '@/components/site';
 
 export function LandingPage() {
   const todayQuery = useGetTodayCompetition({
@@ -23,6 +23,8 @@ export function LandingPage() {
       <SiteNav />
       <main className="mx-auto max-w-5xl px-5 pb-16 sm:px-8 md:pb-24 lg:px-12">
         <section className="frost-hero relative border-b border-primary/10 pb-10 pt-12 md:pb-14 md:pt-20">
+          <FrostDetail kind="snowflake" className="right-[12%] top-8 hidden rotate-12 md:block" />
+          <FrostDetail className="right-[4%] top-28 hidden md:block" />
           <div className="relative z-10 grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
             <div>
               <p className="font-mono-ui text-xs tracking-wide text-accent">pieceofhistory.lol / today</p>
@@ -33,7 +35,8 @@ export function LandingPage() {
                 The internet is keeping score of one ordinary day. Nobody knows why.
               </p>
             </div>
-            <div className="border-l border-primary/10 pl-5 md:min-w-[190px]">
+            <div className="relative border-l border-primary/10 pl-5 md:min-w-[190px]">
+              <FrostDetail kind="snowflake" className="-right-2 -top-5" />
               <p className="text-xs text-muted-foreground">freezes in</p>
               <div className="mt-2 text-2xl text-primary">
                 {today ? <Countdown closingTimestamp={today.closingTimestamp} serverTime={today.serverTime} /> : '—'}
@@ -43,7 +46,8 @@ export function LandingPage() {
             </div>
           </div>
 
-          <div className="relative z-10 mt-10 border-y border-primary/10 py-6 md:flex md:items-center md:justify-between md:gap-8">
+          <div className="frost-leader relative z-10 mt-10 border-y border-primary/10 py-6 md:flex md:items-center md:justify-between md:gap-8">
+            <FrostDetail className="right-3 top-3" />
             <div className="min-w-0">
               <p className="text-xs text-muted-foreground">currently leading</p>
               {leader ? (
@@ -54,6 +58,7 @@ export function LandingPage() {
               ) : (
                 <p className="mt-2 font-display text-3xl text-primary">The first story is still hiding.</p>
               )}
+              <p className="mt-3 text-xs italic text-muted-foreground">{leader ? 'Someone is trying to steal today.' : 'The clock is waiting for someone to care.'}</p>
             </div>
             <Show when="signed-out">
               <PrimaryButton href="/sign-up" className="mt-6 shrink-0 md:mt-0" testId="button-home-make-bid">Make your bid <ArrowUpRight size={16} /></PrimaryButton>

@@ -1,5 +1,5 @@
 import { Link, useRoute } from 'wouter';
-import { Calendar, ArrowLeft, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, ArrowLeft, Globe, ChevronLeft, ChevronRight, LockKeyhole, Snowflake } from 'lucide-react';
 import { useGetArchive, useGetArchiveDetail, useGetSiteStats } from '@workspace/api-client-react';
 import { SectionKicker, SiteFooter, SiteNav, PrimaryButton, formatMoney, formatDate } from '@/components/site';
 import { useState } from 'react';
@@ -24,31 +24,31 @@ export function ArchivePage() {
 
         <div className="mt-12">
           {archiveQuery.isLoading ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-testid="state-archive-loading">
+            <div className="divide-y divide-primary/10 border-y border-primary/10" data-testid="state-archive-loading">
               {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="h-40 animate-pulse rounded-[24px] bg-muted/60" />
+                <div key={i} className="h-20 animate-pulse bg-muted/40" />
               ))}
             </div>
           ) : archiveQuery.error ? (
-            <div className="rounded-[24px] border border-accent/30 bg-accent/10 p-12 text-center" data-testid="state-archive-error">
+            <div className="border-y border-accent/30 bg-accent/5 px-5 py-8" data-testid="state-archive-error">
               <p className="font-display text-2xl text-primary">The archive is resting.</p>
               <p className="mt-2 text-sm text-muted-foreground">We couldn&apos;t load the past right now.</p>
-              <button type="button" onClick={() => void archiveQuery.refetch()} className="mt-6 text-sm font-bold text-primary underline underline-offset-4" data-testid="button-retry-archive">Try again</button>
+              <button type="button" onClick={() => void archiveQuery.refetch()} className="mt-4 text-sm font-bold text-primary underline underline-offset-4" data-testid="button-retry-archive">Try again</button>
             </div>
           ) : items.length === 0 ? (
-            <div className="rounded-[24px] border border-dashed border-primary/20 bg-card p-16 text-center" data-testid="state-archive-empty">
+            <div className="border-y border-dashed border-primary/20 py-12 text-center" data-testid="state-archive-empty">
               <Calendar className="mx-auto text-secondary" size={32} />
-              <p className="mt-6 font-display text-3xl text-primary">The archive is empty.</p>
+              <p className="mt-4 font-display text-3xl text-primary">The archive is empty.</p>
               <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">Tomorrow, this space will hold its first piece of history.</p>
             </div>
           ) : (
             <div data-testid="data-archive-list">
-              <div className="divide-y divide-primary/10 border-y border-primary/10" data-testid="data-archive-list">
+              <div className="divide-y divide-primary/10 border-y border-primary/10">
                 {items.map(item => (
                   <Link key={item.id} href={`/archive/${item.date}`} className="group grid gap-2 py-5 transition-colors hover:text-accent sm:grid-cols-[180px_1fr_auto] sm:items-center sm:gap-5" data-testid={`link-archive-item-${item.date}`}>
-                    <span className="font-display text-2xl text-primary group-hover:text-accent">{formatDate(item.date)}</span>
+                    <span className="flex items-center gap-2 font-display text-2xl text-primary group-hover:text-accent"><Snowflake size={15} className="text-secondary" aria-hidden="true" />{formatDate(item.date)}</span>
                     <span className="text-sm text-muted-foreground">{item.winnerDisplayName ? `Won by ${item.winnerDisplayName}` : 'No pieces recorded'} · {item.participantCount} piece{item.participantCount !== 1 ? 's' : ''}</span>
-                    <span className="font-mono-ui text-sm font-bold text-accent">{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : '—'}</span>
+                    <span className="flex items-center gap-2 font-mono-ui text-sm font-bold text-accent"><LockKeyhole size={13} aria-hidden="true" />{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : '—'}</span>
                   </Link>
                 ))}
               </div>
