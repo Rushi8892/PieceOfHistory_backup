@@ -1,4 +1,4 @@
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Lock } from 'lucide-react';
 import { Link } from 'wouter';
 import { useGetSiteStats } from '@workspace/api-client-react';
 import { SectionKicker, SiteFooter, SiteNav } from '@/components/site';
@@ -24,7 +24,7 @@ export function TermsPage() {
             <ul className="mt-5 list-disc space-y-3 pl-5 text-sm leading-7 text-muted-foreground marker:text-accent">
               <li>Users voluntarily bid for a specific date.</li>
               <li>The highest valid, confirmed bid at 23:59:59 wins that date.</li>
-              <li>Once the date is frozen, the winning story becomes public.</li>
+              <li className="flex gap-2"><Lock size={13} className="mt-0.5 shrink-0 text-secondary" aria-hidden="true" /><span>Once the date is frozen, the winning story becomes public.</span></li>
               <li>Completed bids are non-refundable unless required by applicable law.</li>
             </ul>
           </section>

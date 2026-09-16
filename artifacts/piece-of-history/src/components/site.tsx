@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
-import { ArrowUpRight, Check, Clock3, ExternalLink, Menu, PenLine, Snowflake, Sparkles, X } from 'lucide-react';
+import { ArrowUpRight, Box, Calendar, Check, Crown, ExternalLink, Globe, Hourglass, Menu, PenLine, ScrollText, Snowflake, Sparkles, X } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import type { CompetitionParticipant, SiteStats, TodayCompetition } from '@workspace/api-client-react';
 import { getGetCurrentUserQueryKey, useGetCurrentUser } from '@workspace/api-client-react';
@@ -17,8 +17,8 @@ export function Logo({ light = false }: { light?: boolean }) {
         <span className={`font-display text-[25px] leading-none tracking-tight ${light ? 'text-white' : 'text-primary'}`}>
           Piece of History
         </span>
-        <span className={`mt-1 font-mono-ui text-[9px] uppercase tracking-[.16em] ${light ? 'text-primary-foreground/55' : 'text-muted-foreground'}`}>
-          Piece of Internet History
+        <span className={`mt-1 inline-flex items-center gap-1 font-mono-ui text-[9px] uppercase tracking-[.16em] ${light ? 'text-primary-foreground/55' : 'text-muted-foreground'}`}>
+          <Globe size={10} strokeWidth={2} aria-hidden="true" /> Piece of Internet History
         </span>
       </span>
     </Link>
@@ -185,17 +185,20 @@ export function StoryCard({ participant, featured = false }: { participant: Comp
         <div className="flex items-center gap-3">
           <span className="grid h-10 w-10 place-items-center rounded-[6px] bg-muted font-mono-ui text-xs font-bold text-primary">{participant.displayName.slice(0, 1).toUpperCase()}</span>
           <div>
-            <p className="text-sm font-bold text-primary" data-testid={`text-story-author-${participant.id}`}>{participant.displayName}</p>
+            <p className="flex items-center gap-1.5 text-sm font-bold text-primary" data-testid={`text-story-author-${participant.id}`}>
+              {featured && <Crown size={13} className="text-accent" aria-hidden="true" />}
+              {participant.displayName}
+            </p>
             <p className="font-mono-ui text-[10px] uppercase tracking-[.16em] text-muted-foreground">Rank {participant.rank}</p>
           </div>
         </div>
-        <span className="font-mono-ui text-xs font-bold tracking-wide text-accent">{formatMoney(participant.runningTotalCents)}</span>
+        <span className="inline-flex items-center gap-1.5 font-mono-ui text-xs font-bold tracking-wide text-accent"><Box size={12} aria-hidden="true" />{formatMoney(participant.runningTotalCents)}</span>
       </div>
       <p className={`story-lines mt-6 whitespace-pre-line pb-1 font-display leading-[1.5] text-primary/90 ${featured ? 'text-2xl md:text-[29px]' : 'text-xl'}`} data-testid={`text-story-content-${participant.id}`}>
         “{participant.story}”
       </p>
       <div className="mt-7 flex items-center justify-between gap-3 border-t border-primary/10 pt-4">
-        <span className="font-mono-ui text-[10px] uppercase tracking-[.14em] text-muted-foreground">A piece of history</span>
+        <span className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] uppercase tracking-[.14em] text-muted-foreground"><ScrollText size={12} aria-hidden="true" />A piece of history</span>
         {hasWebsite && (
             <a href={participant.websiteUrl ?? undefined} target="_blank" rel="noopener noreferrer" className="quiet-link inline-flex items-center justify-center gap-2 text-xs font-bold text-primary transition-colors" data-testid={`link-story-website-${participant.id}`}>
             Visit Website <ExternalLink size={featured ? 15 : 13} />
@@ -227,8 +230,7 @@ export function Countdown({ closingTimestamp, serverTime, tone = 'dark' }: { clo
 
   return (
     <div className={`flex items-center gap-2 ${tone === 'light' ? 'text-primary-foreground' : 'text-primary'}`} data-testid="countdown-timer">
-      <Snowflake size={15} className={remaining > 0 ? 'text-secondary' : 'text-accent'} aria-hidden="true" />
-      <Clock3 size={14} className="opacity-60" aria-hidden="true" />
+      <Hourglass size={14} className={remaining > 0 ? 'text-secondary' : 'text-accent'} aria-hidden="true" />
       <span className="font-mono-ui text-sm font-bold tracking-wide">
         {remaining > 0 ? `${unit(time.hours)}:${unit(time.minutes)}:${unit(time.seconds)}` : 'FROZEN'}
       </span>
@@ -272,7 +274,7 @@ export function TodayData({
       {!compact && (
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground">Live today</p>
+            <p className="inline-flex items-center gap-1.5 font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground"><Calendar size={11} aria-hidden="true" />Live today</p>
             <h2 className="mt-2 font-display text-4xl leading-none text-primary">{formatDate(competition.date)}</h2>
           </div>
           <div className="border-l border-primary/20 pl-4">

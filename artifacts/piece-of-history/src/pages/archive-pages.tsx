@@ -1,5 +1,5 @@
 import { Link, useRoute } from 'wouter';
-import { Calendar, ArrowLeft, Globe, ChevronLeft, ChevronRight, LockKeyhole, Snowflake } from 'lucide-react';
+import { Calendar, ArrowLeft, BookOpen, Globe, ChevronLeft, ChevronRight, LockKeyhole, Snowflake } from 'lucide-react';
 import { useGetArchive, useGetArchiveDetail, useGetSiteStats } from '@workspace/api-client-react';
 import { SectionKicker, SiteFooter, SiteNav, formatMoney, formatDate } from '@/components/site';
 import { useState } from 'react';
@@ -18,7 +18,7 @@ export function ArchivePage() {
       <main className="mx-auto max-w-4xl px-5 pb-20 pt-12 sm:px-8 md:pt-20">
         <div className="max-w-2xl">
           <SectionKicker>The Archive</SectionKicker>
-          <h1 className="mt-5 font-display text-[clamp(3.8rem,8vw,6.5rem)] leading-[.84] tracking-[-.04em] text-primary">Frozen<br /><span className="text-accent italic">days.</span></h1>
+          <h1 className="mt-5 font-display text-[clamp(3.8rem,8vw,6.5rem)] leading-[.84] tracking-[-.04em] text-primary"><BookOpen className="mr-3 hidden -translate-y-2 align-middle text-secondary md:inline" size={36} strokeWidth={1.5} aria-hidden="true" />Frozen<br /><span className="text-accent italic">days.</span></h1>
           <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">The days that made it through the cold. Each one keeps the sentence someone thought should outlast midnight.</p>
         </div>
 
