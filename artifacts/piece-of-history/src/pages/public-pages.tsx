@@ -42,9 +42,20 @@ export function LandingPage() {
                   <span className="hero-ice-cube hero-ice-cube-right" aria-hidden="true" />
                   <span className="hero-ice-shard" aria-hidden="true" />
                   <div className="hero-calendar">
-                   <FrostAsset name="calendar" size={34} className="absolute top-5 frost-asset-plain frost-asset-calendar" />
-                  <span className="mt-6 font-display text-5xl leading-none text-primary">{hasValidCalendarDate ? calendarDate?.getDate() : '—'}</span>
-                  <span className="absolute bottom-5 font-mono-ui text-[9px] font-bold uppercase tracking-[.2em] text-primary/70">{hasValidCalendarDate ? new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' }).format(calendarDate) : 'loading'}</span>
+                   <span className="calendar-binder calendar-binder-left" aria-hidden="true" />
+                   <span className="calendar-binder calendar-binder-right" aria-hidden="true" />
+                   <span className="calendar-gloss" aria-hidden="true" />
+                   <span className="calendar-ice-crack calendar-ice-crack-left" aria-hidden="true" />
+                   <span className="calendar-ice-crack calendar-ice-crack-right" aria-hidden="true" />
+                   <span className="calendar-ice-crystal calendar-ice-crystal-left" aria-hidden="true" />
+                   <span className="calendar-ice-crystal calendar-ice-crystal-right" aria-hidden="true" />
+                   <span className="hero-calendar-mark" aria-hidden="true">
+                     <FrostAsset name="calendar" size={25} className="frost-asset-plain" />
+                     <FrostAsset name="snowflake" size={14} className="frost-asset-plain" />
+                   </span>
+                   <span className="hero-calendar-divider" aria-hidden="true" />
+                   <span className="hero-calendar-date font-display text-5xl leading-none text-primary">{hasValidCalendarDate ? calendarDate?.getDate() : '—'}</span>
+                   <span className="hero-calendar-month absolute bottom-5 font-mono-ui text-[9px] font-bold uppercase tracking-[.2em] text-primary/70">{hasValidCalendarDate ? new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' }).format(calendarDate) : 'loading'}</span>
                   </div>
                 </div>
               </div>
