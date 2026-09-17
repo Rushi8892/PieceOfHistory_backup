@@ -1071,6 +1071,22 @@
   }
 }
 
+@media (max-width: 359px) {
+  .hero-primary-grid {
+    grid-template-columns: 60px minmax(0, 1fr);
+    gap: .5rem;
+  }
+
+  .hero-calendar-compact {
+    width: 60px;
+  }
+
+  .today-copy > h1 {
+    font-size: clamp(2rem, 8.5vw, 2.25rem);
+    line-height: .9;
+  }
+}
+
 @keyframes frost-float {
   0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: .7; }
   50% { transform: translate3d(2px, -4px, 0) rotate(8deg); opacity: 1; }
