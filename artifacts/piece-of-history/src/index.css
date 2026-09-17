@@ -994,11 +994,16 @@
 }
 
 @media (max-width: 767px) {
+  .hero-shell {
+    width: 100%;
+    min-width: 0;
+  }
+
   .hero-primary-grid {
     display: grid;
     grid-template-columns: 88px minmax(0, 1fr);
     align-items: start;
-    gap: .875rem;
+    gap: .75rem;
     min-width: 0;
   }
 
@@ -1012,6 +1017,33 @@
   .today-copy {
     min-width: 0;
     padding-top: 0;
+  }
+
+  .today-stats {
+    grid-template-columns: minmax(0, 1fr);
+    gap: .375rem;
+    margin-top: .75rem !important;
+    padding-top: .625rem !important;
+  }
+
+  .today-stats .ice-stat {
+    min-width: 0;
+    padding-left: .5rem;
+  }
+
+  .hero-shell > .relative.mt-4 {
+    min-width: 0;
+    gap: .75rem;
+    margin-top: 1rem !important;
+    padding-top: .75rem !important;
+  }
+
+  .hero-shell > .relative.mt-4 > div {
+    min-width: 0;
+  }
+
+  .hero-shell > .relative.mt-4 p.mt-2 {
+    margin-top: .5rem !important;
   }
 
   .hero-calendar-compact {
