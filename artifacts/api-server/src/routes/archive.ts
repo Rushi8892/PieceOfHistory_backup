@@ -27,6 +27,27 @@ import {
 import { getAuthenticatedLocalUser } from "../lib/authenticated-user";
 
 const router: IRouter = Router();
+const ISO_CALENDAR_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+export function parseArchiveDate(
+  rawDate: string | string[] | undefined,
+): string | null {
+  const date = Array.isArray(rawDate) ? rawDate[0] : rawDate;
+  if (!date || !ISO_CALENDAR_DATE.test(date)) {
+    return null;
+  }
+
+  const dateValue = new Date(`${date}T00:00:00.000Z`);
+  if (
+    Number.isNaN(dateValue.getTime()) ||
+    dateValue.toISOString().slice(0, 10) !== date
+  ) {
+    return null;
+  }
+
+  const parsed = GetArchiveDetailParams.safeParse({ date: dateValue });
+  return parsed.success ? parsed.data.date.toISOString().slice(0, 10) : null;
+}
 
 function pagination(total: number, page: number, pageSize: number) {
   return {
@@ -93,17 +114,8 @@ router.get("/archive", async (req, res): Promise<void> => {
 });
 
 router.get("/archive/:date", async (req, res): Promise<void> => {
-  const rawDate = Array.isArray(req.params.date)
-    ? req.params.date[0]
-    : req.params.date;
-  const dateValue = new Date(`${rawDate}T00:00:00.000Z`);
-  const parsed = GetArchiveDetailParams.safeParse({ date: dateValue });
-  if (
-    !rawDate ||
-    Number.isNaN(dateValue.getTime()) ||
-    !parsed.success ||
-    dateValue.toISOString().slice(0, 10) !== rawDate
-  ) {
+  const archiveDate = parseArchiveDate(req.params.date);
+  if (!archiveDate) {
     res.status(400).json({ error: "date must be an ISO calendar date." });
     return;
   }
@@ -134,7 +146,7 @@ router.get("/archive/:date", async (req, res): Promise<void> => {
     )
     .where(
       and(
-        eq(dailyPiecesTable.date, parsed.data.date.toISOString().slice(0, 10)),
+        eq(dailyPiecesTable.date, archiveDate),
         eq(dailyPiecesTable.status, "closed"),
       ),
     )
