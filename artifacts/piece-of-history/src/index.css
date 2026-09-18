@@ -1230,3 +1230,27 @@
     transition-duration: .01ms !important;
   }
 }
+
+@media (max-width: 639px) {
+  .hero-primary-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .hero-calendar-slot {
+    justify-content: center;
+  }
+
+  .hero-calendar-wrap {
+    margin-inline: auto;
+  }
+
+  .today-copy {
+    min-width: 0;
+  }
+
+  .today-stats {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
