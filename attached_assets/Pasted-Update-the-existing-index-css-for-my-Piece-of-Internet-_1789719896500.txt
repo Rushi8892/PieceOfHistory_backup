@@ -1,0 +1,166 @@
+Update the existing "index.css" for my Piece of Internet History project.
+
+IMPORTANT:
+
+- Do NOT redesign the existing UI.
+- Do NOT change the layout, spacing, typography, colors, responsive behavior, animations, or component structure.
+- Do NOT remove any existing CSS.
+- Preserve the current snowy-blue/frost visual identity.
+- Make only the CSS changes necessary to enable and enhance the existing frost effect.
+- Keep the effect subtle, premium, icy, and clean — NOT neon, overly glowing, or glassmorphism-heavy.
+
+1. ENABLE THE DISABLED FROST LAYERS
+
+The current CSS contains disabled pseudo-elements such as:
+
+.paper-grain::after {
+display: none;
+}
+
+.frost-hero::before {
+display: none;
+}
+
+.ice-shell::before,
+.ice-shell::after {
+display: none;
+}
+
+.footer-night::before {
+display: none;
+}
+
+Do NOT simply change all of these to "display: block".
+
+Instead, implement proper frost-layer styling only where it visually makes sense.
+
+2. ENHANCE ".ice-shell"
+
+Keep all existing ".ice-shell" properties, but enhance it with:
+
+- "position: relative"
+- "overflow: hidden"
+- "isolation: isolate"
+- subtle semi-transparent snowy-blue layered background
+- "backdrop-filter: blur(...) saturate(...)"
+- subtle icy border
+- inset white highlight
+- soft blue outer shadow
+
+Add a "::before" layer containing subtle radial frost highlights/glow.
+
+Add a "::after" layer containing very subtle diagonal ice/crystal highlights.
+
+The pseudo-elements must:
+
+- use "pointer-events: none"
+- preserve "border-radius: inherit"
+- stay behind or above content appropriately using z-index
+- never interfere with buttons, links, text, or icons.
+
+3. ENHANCE ".frost-asset"
+
+The existing ".frost-asset" is already used for icons/assets.
+
+Keep its current design and enhance it with:
+
+- subtle backdrop blur
+- icy translucent background
+- white frost highlight
+- soft blue edge
+- very subtle inner reflection
+- existing shadows should remain intact
+
+Do NOT make the icons themselves blurry.
+
+Add a subtle filter only to:
+
+.frost-asset svg
+
+Use a very light white highlight and blue drop shadow so icons look slightly frozen/icy.
+
+4. MULTI-LAYER FROST LOOK
+
+The final visual effect should have approximately these layers:
+
+1. Existing snowy-blue background
+2. Translucent icy surface
+3. Soft white frost highlight
+4. Subtle blue radial frost glow
+5. Thin icy border
+6. Small inner highlight
+7. Very subtle shadow underneath
+
+Avoid excessive blur or opacity.
+
+5. KEEP EXISTING FROST ELEMENTS
+
+Do NOT modify or remove the existing styling for:
+
+- ".hero-calendar"
+- ".hero-calendar::before"
+- ".hero-calendar::after"
+- ".hero-ice-cube"
+- ".hero-ice-shard"
+- ".calendar-ice-crack"
+- ".calendar-ice-crystal"
+- ".frost-detail"
+- ".frost-leader"
+- ".ice-glyph-halo"
+- ".frozen-card"
+- ".nav-ice"
+- ".hero-shell"
+
+These already contain the intended snowy/frost aesthetic.
+
+Only make small compatibility improvements if required for the new frost layers.
+
+6. RESPONSIVE SAFETY
+
+Make sure the frost layers work correctly on mobile.
+
+Do not introduce:
+
+- horizontal scrolling
+- layout shifts
+- content overlap
+- inaccessible buttons
+- broken z-index behavior
+- performance-heavy animations
+
+Keep pseudo-elements static; do not add expensive continuous animations.
+
+7. ACCESSIBILITY / PERFORMANCE
+
+Respect:
+
+@media (prefers-reduced-motion: reduce)
+
+Do not add unnecessary animations.
+
+Use moderate "backdrop-filter" values and avoid excessive blur because this is a lightweight side project.
+
+8. FINAL RESULT
+
+The site should feel like:
+
+"Everything is lightly frozen in a clean snowy-blue atmosphere."
+
+The frost should be visible when looking at cards, panels, icons, and hero elements, but the content must remain the primary focus.
+
+Think:
+❄️ fresh snow
+🧊 thin layer of ice
+✨ subtle frozen reflections
+🌨️ cool snowy-blue atmosphere
+
+NOT:
+❌ neon blue
+❌ excessive glow
+❌ heavy glassmorphism
+❌ blurry text
+❌ over-designed UI
+
+After making the changes, review the complete "index.css" and ensure there are no duplicate/conflicting ".ice-shell", ".frost-asset", or pseudo-element rules that override the new implementation.
+
+Do not change any React/TypeScript components unless absolutely necessary. This task should be CSS-only.

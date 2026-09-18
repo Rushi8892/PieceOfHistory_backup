@@ -478,30 +478,79 @@
 }
 
 .paper-grain::after {
-  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 18% 12%, hsl(0 0% 100% / .24), transparent 24%),
+    radial-gradient(circle at 84% 28%, hsl(194 78% 82% / .1), transparent 28%),
+    linear-gradient(135deg, transparent 0 48%, hsl(194 76% 86% / .06) 50%, transparent 52%);
+  content: '';
+  opacity: .55;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
 }
 
 .frost-hero {
   position: relative;
 }
 .frost-hero::before {
-  display: none;
+  position: absolute;
+  inset: -8% 4% auto;
+  z-index: 0;
+  height: 58%;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 32% 24%, hsl(0 0% 100% / .28), transparent 42%),
+    radial-gradient(ellipse at 76% 42%, hsl(194 80% 82% / .16), transparent 48%);
+  content: '';
+  filter: blur(18px);
+  opacity: .48;
+  pointer-events: none;
 }
 
 .ice-shell {
   position: relative;
   overflow: hidden;
-  background: hsl(var(--card) / .78);
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 18% 10%, hsl(0 0% 100% / .3), transparent 32%),
+    linear-gradient(145deg, hsl(var(--card) / .82), hsl(194 72% 89% / .34) 58%, hsl(var(--secondary) / .14)),
+    hsl(var(--card) / .78);
   border: 1px solid hsl(194 42% 78% / .7);
   box-shadow:
     0 12px 28px -24px hsl(var(--primary) / .4),
-    inset 0 1px 0 hsl(var(--card) / .96);
-  backdrop-filter: blur(7px);
+    inset 0 1px 0 hsl(0 0% 100% / .78),
+    inset 0 -1px 0 hsl(201 72% 54% / .12);
+  backdrop-filter: blur(7px) saturate(1.04);
 }
 
-.ice-shell::before,
+.ice-shell::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse at 22% 18%, hsl(0 0% 100% / .3), transparent 30%),
+    radial-gradient(ellipse at 78% 82%, hsl(194 82% 80% / .12), transparent 38%);
+  content: '';
+  opacity: .7;
+  pointer-events: none;
+}
+
 .ice-shell::after {
-  display: none;
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+  border: 1px solid hsl(0 0% 100% / .24);
+  border-radius: inherit;
+  background:
+    linear-gradient(124deg, transparent 0 28%, hsl(0 0% 100% / .12) 29%, transparent 30% 70%, hsl(194 78% 78% / .08) 71%, transparent 72%),
+    linear-gradient(164deg, transparent 0 54%, hsl(0 0% 100% / .08) 55%, transparent 56%);
+  content: '';
+  opacity: .6;
+  pointer-events: none;
 }
 
 .ice-panel {
@@ -552,7 +601,15 @@
 }
 
 .footer-night::before {
-  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 18% 18%, hsl(194 76% 72% / .12), transparent 34%),
+    linear-gradient(132deg, transparent 0 48%, hsl(0 0% 100% / .05) 49%, transparent 50%);
+  content: '';
+  opacity: .7;
+  pointer-events: none;
 }
 
 .hero-calendar {
