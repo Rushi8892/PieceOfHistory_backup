@@ -325,6 +325,10 @@ export function formatDate(date: string) {
   return new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(parsedDate);
 }
 
+export function getArchiveDatePath(date: string) {
+  return date.slice(0, 10);
+}
+
 export function StoryCard({ participant, featured = false }: { participant: CompetitionParticipant; featured?: boolean }) {
   const hasWebsite = Boolean(participant.websiteUrl);
   return (

@@ -1,7 +1,7 @@
 import { Link, useRoute } from 'wouter';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useGetArchive, useGetArchiveDetail, useGetSiteStats } from '@workspace/api-client-react';
-import { FrostAsset, SectionKicker, SiteFooter, SiteNav, formatMoney, formatDate } from '@/components/site';
+import { FrostAsset, SectionKicker, SiteFooter, SiteNav, formatMoney, formatDate, getArchiveDatePath } from '@/components/site';
 import { useState } from 'react';
 
 export function ArchivePage() {
@@ -45,7 +45,7 @@ export function ArchivePage() {
             <div data-testid="data-archive-list" className="ice-panel overflow-hidden rounded-[22px]">
               <div className="divide-y divide-primary/10">
                 {items.map(item => (
-                  <Link key={item.id} href={`/archive/${item.date}`} className="list-row group grid gap-3 py-6 transition-colors sm:grid-cols-[180px_1fr_auto] sm:items-center sm:gap-5" data-testid={`link-archive-item-${item.date}`}>
+                  <Link key={item.id} href={`/archive/${getArchiveDatePath(item.date)}`} className="list-row group grid gap-3 py-6 transition-colors sm:grid-cols-[180px_1fr_auto] sm:items-center sm:gap-5" data-testid={`link-archive-item-${item.date}`}>
                     <span className="flex items-center gap-2 font-display text-2xl text-primary group-hover:text-accent"><FrostAsset name="calendar" size={19} className="frost-asset-compact" />{formatDate(item.date)}</span>
                     <span className="text-sm text-muted-foreground">{item.winnerDisplayName ? `Won by ${item.winnerDisplayName}` : 'No pieces recorded'} <span className="text-primary/30">/</span> {item.participantCount} piece{item.participantCount !== 1 ? 's' : ''}</span>
                     <span className="flex items-center gap-2 font-mono-ui text-sm font-bold text-accent"><FrostAsset name="lock" size={16} className="frost-asset-compact" />{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : '—'}</span>
@@ -116,7 +116,7 @@ export function ArchiveDetailPage() {
                 {detail.winningStandingCents !== null && (
                   <div>
                     <p className="font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground">Winning standing</p>
-                    <p className="mt-1 text-sm font-bold text-primary">{formatMoney(detail.winningStandingCents)}</p>
+                   <p className="mt-1 text-sm font-bold text-primary">{formatMoney(detail.winningStandingCents)}</p>
                   </div>
                 )}
                 <div>
