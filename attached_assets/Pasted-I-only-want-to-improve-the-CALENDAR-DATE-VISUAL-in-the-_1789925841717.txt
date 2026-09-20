@@ -1,0 +1,160 @@
+I only want to improve the CALENDAR / DATE VISUAL in the hero section.
+
+DO NOT change anything else in the application.
+
+Do not modify:
+- Header/navbar
+- Logo
+- Hero text
+- "TODAY" label
+- Date typography
+- Current bid
+- Currently leading
+- Freezes in
+- Current piece
+- Write your piece button
+- Card layout
+- Page background
+- Mobile spacing
+- Any business logic
+- Any other component
+
+FOCUS ONLY on the visual element currently displayed above the "TODAY" label — the calendar/date illustration.
+
+CURRENT PROBLEM:
+The calendar illustration looks cluttered and slightly unnatural because it has too many surrounding elements:
+- floating ice pieces
+- multiple translucent shapes
+- excessive glow
+- excessive blur
+- multiple overlapping calendar layers
+- random decorative fragments
+- overly strong 3D effects
+
+I want to completely simplify this calendar visual.
+
+DESIRED DESIGN:
+
+Create a clean, minimal "frozen calendar" visual that fits the Piece of History icy/frost theme.
+
+Think:
+
+"An elegant calendar frozen inside a thin layer of ice."
+
+The calendar should have:
+
+- One clear calendar object
+- Simple rounded rectangular calendar shape
+- Very subtle icy-blue translucent glass material
+- Thin frosted border
+- Very soft blue-white shadow
+- Slight glassmorphism
+- Subtle frost highlight around the edges
+- Small calendar rings/top binding
+- Minimal snow/ice detail
+- Clean, premium appearance
+
+IMPORTANT:
+Do NOT use floating ice shards around the calendar.
+
+Do NOT use multiple calendars layered behind it.
+
+Do NOT use excessive glow.
+
+Do NOT use heavy blur.
+
+Do NOT use complicated pseudo-elements.
+
+Do NOT make it look like a 3D gaming asset.
+
+Do NOT make the calendar oversized.
+
+The calendar should feel like a simple physical calendar made from translucent frosted glass.
+
+VISUAL HIERARCHY:
+
+The calendar illustration is only a small decorative element.
+
+The most important content remains:
+
+TODAY
+16 September 2026
+Who knows... this could be the day someone finally does it.
+
+Therefore the calendar must support the content rather than compete with it.
+
+POSITION:
+Keep the calendar centered above the TODAY label exactly where the existing calendar currently appears.
+
+Do not change the surrounding spacing/layout unless absolutely necessary to prevent overlap.
+
+SIZE:
+Keep approximately the same overall footprint as the existing calendar visual, but remove the surrounding decorative clutter.
+
+STYLE:
+
+Use the existing Piece of History color palette.
+
+Prefer:
+- snowy blue
+- icy blue
+- translucent white
+- very subtle cyan
+- dark navy text/details
+
+Avoid:
+- saturated blue
+- neon
+- purple
+- strong cyan glow
+
+FROST EFFECT:
+
+Use a very subtle frost effect around the calendar:
+
+- thin white translucent border
+- soft icy highlight
+- very subtle inner glow
+- tiny amount of backdrop blur if appropriate
+- soft shadow beneath
+
+The frost should be visible but restrained.
+
+IMPLEMENTATION:
+
+Use Tailwind CSS utilities wherever possible.
+
+Do not create a large new CSS system.
+
+If the existing calendar is an image/asset/component, inspect how it is currently implemented first.
+
+If it is generated through CSS/SVG/component code, simplify the existing implementation rather than adding another complicated layer.
+
+If custom CSS is required, create only the minimum CSS necessary.
+
+Remove unused styles related specifically to the old calendar decoration.
+
+RESPONSIVE:
+
+The calendar must remain centered on mobile.
+
+It must not cause:
+- horizontal overflow
+- layout shifting
+- overlap with TODAY
+- overlap with the date
+- excessive vertical spacing
+
+Keep the desktop version and mobile version visually consistent.
+
+FINAL GOAL:
+
+The result should look like:
+
+A single elegant calendar made of thin frosted glass, quietly sitting above the date.
+
+NOT:
+
+A calendar surrounded by random floating ice/glass objects.
+
+Make ONLY this calendar visual change and leave the rest of the application untouched.

@@ -487,22 +487,16 @@
   position: relative;
   display: grid;
   place-items: center;
-  isolation: isolate;
   width: clamp(120px, 18vw, 178px);
   aspect-ratio: .86;
-  border: 2px solid hsl(194 80% 94% / .88);
+  border: 1px solid hsl(0 0% 100% / .78);
   border-radius: 16px;
-  background:
-    radial-gradient(ellipse at 28% 18%, hsl(0 0% 100% / .72), transparent 28%),
-    radial-gradient(ellipse at 68% 74%, hsl(194 88% 84% / .4), transparent 45%),
-    linear-gradient(138deg, hsl(194 86% 93% / .88), hsl(198 78% 86% / .64) 56%, hsl(205 70% 78% / .54));
+  background: hsl(var(--card) / .62);
   box-shadow:
-    7px 9px 0 hsl(202 78% 57% / .2),
-    0 14px 24px -16px hsl(var(--primary) / .62),
-    0 0 16px hsl(194 90% 86% / .7),
-    inset 2px 2px 0 hsl(0 0% 100% / .82),
-    inset -3px -4px 0 hsl(201 78% 54% / .22);
-  transform: rotate(-5deg);
+    0 8px 18px -14px hsl(194 68% 52% / .3),
+    inset 0 1px 0 hsl(0 0% 100% / .72);
+  backdrop-filter: blur(4px);
+  transform: rotate(-3deg);
 }
 
 .hero-calendar-wrap {
@@ -517,73 +511,11 @@
 }
 
 .hero-ice-cube,
-.hero-ice-shard {
-  position: absolute;
-  z-index: 2;
-  pointer-events: none;
-  border: 1px solid hsl(var(--secondary) / .65);
-  background: linear-gradient(145deg, hsl(var(--card) / .92), hsl(var(--secondary) / .52));
-  box-shadow: inset 3px 3px 0 hsl(var(--card) / .65), 4px 7px 0 hsl(var(--secondary) / .2);
-}
-
-.hero-ice-cube {
-  width: 26px;
-  height: 26px;
-  bottom: 5px;
-  transform: rotate(14deg) skewY(-5deg);
-  clip-path: polygon(50% 0, 100% 23%, 91% 82%, 50% 100%, 8% 82%, 0 23%);
-}
-
-.hero-ice-cube-left {
-  left: -17px;
-}
-
-.hero-ice-cube-right {
-  right: -12px;
-  width: 20px;
-  height: 20px;
-  bottom: 23px;
-  transform: rotate(-18deg);
-}
-
-.hero-ice-shard {
-  width: 17px;
-  height: 47px;
-  left: -22px;
-  bottom: 21px;
-  border-radius: 70% 18% 55% 25%;
-  transform: rotate(27deg);
-  opacity: .8;
-}
-
-.hero-calendar::before {
-  content: '';
-  position: absolute;
-  inset: 5px;
-  z-index: 1;
-  border: 2px solid hsl(0 0% 100% / .58);
-  border-right-color: hsl(201 76% 56% / .3);
-  border-bottom-color: hsl(201 76% 56% / .38);
-  border-radius: 11px;
-  box-shadow:
-    inset 2px 2px 6px hsl(0 0% 100% / .55),
-    inset -3px -4px 8px hsl(201 80% 54% / .16);
-  pointer-events: none;
-}
-
-.hero-calendar::after {
-  content: '';
-  position: absolute;
-  inset: 7px;
-  z-index: 1;
-  border-radius: 10px;
-  background:
-    linear-gradient(118deg, transparent 0 21%, hsl(0 0% 100% / .42) 21.5% 22%, transparent 22.5%),
-    linear-gradient(76deg, transparent 0 67%, hsl(198 76% 54% / .18) 67.4% 68%, transparent 68.5%),
-    linear-gradient(166deg, transparent 0 45%, hsl(0 0% 100% / .28) 45.5% 46%, transparent 46.5%);
-  opacity: .66;
-  mix-blend-mode: screen;
-  pointer-events: none;
+.hero-ice-shard,
+.calendar-gloss,
+.calendar-ice-crack,
+.calendar-ice-crystal {
+  display: none;
 }
 
 .hero-calendar > span {
@@ -604,51 +536,26 @@
   top: 34%;
   left: 11%;
   right: 11%;
-  border-top: 1px solid hsl(202 60% 43% / .42);
-  box-shadow: 0 1px 0 hsl(0 0% 100% / .58);
+  border-top: 1px solid hsl(var(--primary) / .18);
 }
 
 .hero-calendar-date {
   position: relative !important;
   z-index: 3 !important;
-  text-shadow: 0 1px 0 hsl(0 0% 100% / .72), 0 2px 5px hsl(202 70% 36% / .15);
 }
 
 .hero-calendar-month {
   z-index: 3 !important;
   color: hsl(211 48% 15% / .74);
-  text-shadow: 0 1px 0 hsl(0 0% 100% / .68);
-}
-
-.calendar-gloss {
-  inset: 5px;
-  z-index: 2 !important;
-  border-radius: 11px;
-  background: linear-gradient(116deg, hsl(0 0% 100% / .38), transparent 26% 72%, hsl(0 0% 100% / .14));
-  opacity: .68;
-  pointer-events: none;
 }
 
 .calendar-binder {
   top: -13px;
-  width: 15px;
-  height: 29px;
-  border: 2px solid hsl(196 82% 91% / .92);
-  border-bottom-color: hsl(201 76% 50% / .48);
+  width: 12px;
+  height: 22px;
+  border: 1px solid hsl(0 0% 100% / .76);
   border-radius: 999px;
-  background: linear-gradient(90deg, hsl(202 80% 58% / .42), hsl(0 0% 100% / .7) 46%, hsl(202 80% 58% / .28));
-  box-shadow:
-    1px 3px 0 hsl(201 78% 46% / .24),
-    inset 2px 1px 2px hsl(0 0% 100% / .76),
-    0 0 8px hsl(194 92% 83% / .78);
-}
-
-.calendar-binder::after {
-  content: '';
-  position: absolute;
-  inset: 4px 3px;
-  border-radius: inherit;
-  border: 1px solid hsl(201 76% 44% / .24);
+  background: hsl(var(--card) / .5);
 }
 
 .calendar-binder-left {
@@ -659,52 +566,6 @@
 .calendar-binder-right {
   right: 28%;
   transform: rotate(-5deg);
-}
-
-.calendar-ice-crack {
-  z-index: 2 !important;
-  width: 18%;
-  height: 14%;
-  border-top: 1px solid hsl(0 0% 100% / .68);
-  border-left: 1px solid hsl(201 75% 54% / .3);
-  opacity: .76;
-}
-
-.calendar-ice-crack-left {
-  top: 22%;
-  left: 7%;
-  transform: rotate(24deg) skewX(-24deg);
-}
-
-.calendar-ice-crack-right {
-  right: 8%;
-  bottom: 20%;
-  transform: rotate(-32deg) skewX(22deg);
-}
-
-.calendar-ice-crystal {
-  z-index: 3 !important;
-  width: 12px;
-  height: 17px;
-  border: 1px solid hsl(0 0% 100% / .78);
-  background: linear-gradient(145deg, hsl(0 0% 100% / .54), hsl(197 86% 67% / .4));
-  clip-path: polygon(50% 0, 100% 31%, 78% 100%, 24% 86%, 0 30%);
-  filter: drop-shadow(0 1px 2px hsl(201 70% 43% / .28));
-  opacity: .8;
-}
-
-.calendar-ice-crystal-left {
-  left: 8%;
-  bottom: 8%;
-  transform: rotate(-20deg);
-}
-
-.calendar-ice-crystal-right {
-  right: 8%;
-  bottom: 10%;
-  width: 9px;
-  height: 13px;
-  transform: rotate(26deg);
 }
 
 .history-ribbon {
