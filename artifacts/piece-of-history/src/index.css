@@ -735,10 +735,6 @@
   margin-right: .1rem;
 }
 
-.frost-asset-calendar {
-  animation: frost-float 8s ease-in-out infinite;
-}
-
 .hero-shell {
   background: hsl(var(--card) / .82);
   border-top: 1px solid hsl(var(--primary) / .2);
@@ -759,29 +755,6 @@
     4px 6px 0 hsl(var(--secondary) / .14),
     0 8px 18px -14px hsl(var(--primary) / .4),
     inset 1px 1px 0 hsl(var(--card) / .76);
-}
-
-.hero-calendar-compact .hero-ice-cube {
-  width: 20px;
-  height: 20px;
-}
-
-.hero-calendar-compact .hero-ice-cube-left {
-  left: -13px;
-}
-
-.hero-calendar-compact .hero-ice-cube-right {
-  right: -10px;
-  width: 16px;
-  height: 16px;
-  bottom: 18px;
-}
-
-.hero-calendar-compact .hero-ice-shard {
-  left: -17px;
-  bottom: 17px;
-  width: 13px;
-  height: 37px;
 }
 
 .today-kicker {
