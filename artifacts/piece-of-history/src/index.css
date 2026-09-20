@@ -540,9 +540,9 @@
   flex: 0 0 auto;
   place-items: center;
   vertical-align: middle;
-  border: 1px solid hsl(198 72% 68% / .62);
+  border: 1px solid hsl(198 72% 68% / .52);
   border-radius: .55rem;
-  background: hsl(198 74% 92% / .72);
+  background: hsl(198 74% 92% / .58);
   box-shadow:
     inset 0 0 0 1px hsl(0 0% 100% / .5),
     0 2px 0 hsl(198 72% 58% / .14);
@@ -554,9 +554,11 @@
   object-fit: contain;
   opacity: 1;
   filter:
-    brightness(.56)
-    saturate(1.8)
-    contrast(1.2);
+    saturate(1.45)
+    contrast(1.2)
+    brightness(.68)
+    sepia(.12)
+    hue-rotate(158deg);
 }
 
 .frost-asset-inline {
