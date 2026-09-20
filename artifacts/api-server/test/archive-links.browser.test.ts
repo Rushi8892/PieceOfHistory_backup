@@ -218,6 +218,26 @@ test("seeded archive links use date-only hrefs and open their matching detail pa
     const archiveDetail = await clickAndReadDetail(page, archive.href);
     assert.equal(archiveDetail.path, archive.href);
     assert.equal(archiveDetail.loaded, true);
+
+    await page.goto(`${BASE_URL}/archive`);
+    await page.waitFor<{ href: string; path: string }>(
+      archiveLinkState('a[data-testid^="link-archive-item-"]'),
+    );
+    await page.evaluate("document.querySelector('[data-testid=\"button-archive-next\"]')?.click()");
+
+    const laterArchive = await page.waitFor<{ href: string; path: string }>(`(() => {
+      const link = document.querySelector('a[data-testid^="link-archive-item-"]');
+      const href = link?.getAttribute("href");
+      return href && href !== ${JSON.stringify(archive.href)}
+        ? { href, path: window.location.pathname }
+        : null;
+    })()`);
+    assert.match(laterArchive.href, /^\/archive\/\d{4}-\d{2}-\d{2}$/);
+    assert.notEqual(laterArchive.href, archive.href);
+
+    const laterArchiveDetail = await clickAndReadDetail(page, laterArchive.href);
+    assert.equal(laterArchiveDetail.path, laterArchive.href);
+    assert.equal(laterArchiveDetail.loaded, true);
   } finally {
     await page.close();
   }

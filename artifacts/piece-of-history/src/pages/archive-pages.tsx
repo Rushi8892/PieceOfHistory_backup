@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 export function ArchivePage() {
   const [page, setPage] = useState(1);
-  const archiveQuery = useGetArchive({ page, pageSize: 12 });
+  const archiveQuery = useGetArchive({ page, pageSize: 3 });
   
   const response = archiveQuery.data;
   const items = response?.items ?? [];
