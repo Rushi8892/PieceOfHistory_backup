@@ -195,9 +195,9 @@ export function PrimaryButton({
   disabled?: boolean;
 }) {
   const styles = {
-    primary: 'bg-primary text-primary-foreground shadow-[4px_4px_0_hsl(var(--secondary))] hover:-translate-y-0.5 hover:shadow-[5px_6px_0_hsl(var(--secondary))] disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0_hsl(var(--secondary))]',
-    quiet: 'border border-primary/15 bg-card text-primary hover:border-primary/40 hover:bg-muted disabled:hover:border-primary/15 disabled:hover:bg-card',
-    light: 'bg-secondary text-primary shadow-[4px_4px_0_hsl(var(--primary)/.25)] hover:-translate-y-0.5 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0_hsl(var(--primary)/.25)]',
+    primary: 'frost-button',
+    quiet: 'frost-button frost-button-quiet',
+    light: 'frost-button frost-button-light',
   }[variant];
   const classes = `inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-[6px] px-5 text-sm font-bold tracking-[-.01em] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${styles} ${className}`;
 
