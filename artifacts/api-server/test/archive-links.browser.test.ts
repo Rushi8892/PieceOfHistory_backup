@@ -26,10 +26,11 @@ async function assertServiceReady(
   serviceName: string,
   url: string,
   expectedHealthStatus?: string,
+  fetchImplementation: typeof fetch = fetch,
 ) {
   let response: Response;
   try {
-    response = await fetch(url, {
+    response = await fetchImplementation(url, {
       signal: AbortSignal.timeout(READINESS_TIMEOUT_MS),
     });
   } catch (error) {
@@ -71,6 +72,103 @@ async function assertReleaseServicesReady() {
   await assertServiceReady("frontend", `${BASE_URL}/`);
   await assertServiceReady("API", API_HEALTH_URL, "ok");
 }
+
+function assertErrorContains(error: unknown, expectedFragments: string[]) {
+  assert.ok(error instanceof Error);
+  for (const fragment of expectedFragments) {
+    assert.ok(
+      error.message.includes(fragment),
+      `Expected error to contain ${JSON.stringify(fragment)}, received: ${error.message}`,
+    );
+  }
+  return true;
+}
+
+test("release check preflight reports an unreachable frontend", async () => {
+  const endpoint = "http://frontend.example.test/";
+  await assert.rejects(
+    () =>
+      assertServiceReady(
+        "frontend",
+        endpoint,
+        undefined,
+        async () => {
+          throw new Error("connection refused");
+        },
+      ),
+    (error: unknown) =>
+      assertErrorContains(error, [
+        "frontend",
+        endpoint,
+        "Start the frontend workflow and retry",
+      ]),
+  );
+});
+
+test("release check preflight reports an unhealthy API response", async () => {
+  const endpoint = "http://api.example.test/api/healthz";
+  await assert.rejects(
+    () =>
+      assertServiceReady(
+        "API",
+        endpoint,
+        undefined,
+        async () => new Response("service unavailable", { status: 503 }),
+      ),
+    (error: unknown) =>
+      assertErrorContains(error, [
+        "API",
+        endpoint,
+        "HTTP 503",
+        "Start or fix the API workflow and retry",
+      ]),
+  );
+});
+
+test("release check preflight reports invalid API health JSON", async () => {
+  const endpoint = "http://api.example.test/api/healthz";
+  await assert.rejects(
+    () =>
+      assertServiceReady(
+        "API",
+        endpoint,
+        "ok",
+        async () => new Response("{invalid-json", { status: 200 }),
+      ),
+    (error: unknown) =>
+      assertErrorContains(error, [
+        "API",
+        endpoint,
+        "invalid JSON",
+        "Fix the API workflow and retry",
+      ]),
+  );
+});
+
+test("release check preflight reports a non-ok API health payload", async () => {
+  const endpoint = "http://api.example.test/api/healthz";
+  await assert.rejects(
+    () =>
+      assertServiceReady(
+        "API",
+        endpoint,
+        "ok",
+        async () =>
+          new Response(JSON.stringify({ status: "degraded" }), {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          }),
+      ),
+    (error: unknown) =>
+      assertErrorContains(error, [
+        "API",
+        endpoint,
+        '"degraded"',
+        '"ok"',
+        "Fix the API workflow and retry",
+      ]),
+  );
+});
 
 type CdpMessage = {
   id?: number;
