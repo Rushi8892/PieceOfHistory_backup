@@ -10,6 +10,7 @@
     "close-day": "tsx scripts/close-day.ts",
     "test": "tsx --test --test-concurrency=1 $(find test -maxdepth 1 -name '*.test.ts' ! -name '*.browser.test.ts' -print)",
     "test:browser": "tsx --test --test-concurrency=1 test/archive-links.browser.test.ts",
+    "test:browser:release": "pnpm --filter @workspace/db run seed && pnpm run test:browser",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {

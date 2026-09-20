@@ -9,7 +9,68 @@ const CHROMIUM_PATH = process.env.CHROMIUM_PATH ?? "/repl/tools/bin/chromium";
 const DEFAULT_BASE_URL = process.env.REPLIT_DEV_DOMAIN
   ? `https://${process.env.REPLIT_DEV_DOMAIN}`
   : "http://127.0.0.1:25721";
-const BASE_URL = (process.env.E2E_BASE_URL ?? DEFAULT_BASE_URL).replace(/\/+$/, "");
+const BASE_URL = (process.env.E2E_BASE_URL ?? DEFAULT_BASE_URL).replace(
+  /\/+$/,
+  "",
+);
+const API_HEALTH_URL = (
+  process.env.E2E_API_HEALTH_URL ?? `${BASE_URL}/api/healthz`
+).replace(/\/+$/, "");
+const READINESS_TIMEOUT_MS = 5_000;
+
+function errorMessage(error: unknown) {
+  return error instanceof Error ? error.message : String(error);
+}
+
+async function assertServiceReady(
+  serviceName: string,
+  url: string,
+  expectedHealthStatus?: string,
+) {
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      signal: AbortSignal.timeout(READINESS_TIMEOUT_MS),
+    });
+  } catch (error) {
+    throw new Error(
+      `Archive link release check preflight failed: ${serviceName} is unreachable at ${url}. ` +
+        `Start the ${serviceName} workflow and retry (${errorMessage(error)}).`,
+    );
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      `Archive link release check preflight failed: ${serviceName} at ${url} returned HTTP ${response.status}. ` +
+        `Start or fix the ${serviceName} workflow and retry.`,
+    );
+  }
+
+  if (expectedHealthStatus === undefined) return;
+
+  let body: { status?: unknown };
+  try {
+    body = (await response.json()) as { status?: unknown };
+  } catch (error) {
+    throw new Error(
+      `Archive link release check preflight failed: API health endpoint ${url} returned invalid JSON. ` +
+        `Fix the API workflow and retry (${errorMessage(error)}).`,
+    );
+  }
+
+  if (body.status !== expectedHealthStatus) {
+    throw new Error(
+      `Archive link release check preflight failed: API health endpoint ${url} returned status ` +
+        `${JSON.stringify(body.status)} instead of ${JSON.stringify(expectedHealthStatus)}. ` +
+        `Fix the API workflow and retry.`,
+    );
+  }
+}
+
+async function assertReleaseServicesReady() {
+  await assertServiceReady("frontend", `${BASE_URL}/`);
+  await assertServiceReady("API", API_HEALTH_URL, "ok");
+}
 
 type CdpMessage = {
   id?: number;
@@ -193,6 +254,7 @@ async function clickAndReadDetail(page: ChromiumPage, href: string) {
 }
 
 test("seeded archive links use date-only hrefs and open their matching detail page", async () => {
+  await assertReleaseServicesReady();
   const page = await ChromiumPage.launch();
   try {
     await page.goto(`${BASE_URL}/`);
