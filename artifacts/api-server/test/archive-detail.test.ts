@@ -16,16 +16,21 @@ import app from "../src/app.ts";
 const fixtureUserId = randomUUID();
 const fixtureDailyPieceId = randomUUID();
 const fixtureStoryId = randomUUID();
+const activeFixtureDailyPieceId = randomUUID();
 const winningStandingCents = 27500;
 let archiveDate: string;
+let missingArchiveDate: string;
+let activeArchiveDate: string;
+let insertedActiveFixture = false;
 let baseUrl: string;
 let server: ReturnType<typeof app.listen>;
 
-async function findUnusedArchiveDate(): Promise<string> {
+async function findUnusedArchiveDate(excludedDates = new Set<string>()): Promise<string> {
   for (let offset = 0; offset < 365; offset += 1) {
     const date = new Date("2099-01-01T00:00:00.000Z");
     date.setUTCDate(date.getUTCDate() + offset);
     const candidate = date.toISOString().slice(0, 10);
+    if (excludedDates.has(candidate)) continue;
     const [existing] = await db
       .select({ id: dailyPiecesTable.id })
       .from(dailyPiecesTable)
@@ -35,8 +40,31 @@ async function findUnusedArchiveDate(): Promise<string> {
   throw new Error("Could not find an unused archive fixture date.");
 }
 
+async function findActiveArchiveDate(): Promise<string | null> {
+  const [activeDay] = await db
+    .select({ date: dailyPiecesTable.date })
+    .from(dailyPiecesTable)
+    .where(eq(dailyPiecesTable.status, "active"));
+  return activeDay?.date ?? null;
+}
+
 before(async () => {
   archiveDate = await findUnusedArchiveDate();
+  missingArchiveDate = await findUnusedArchiveDate(new Set([archiveDate]));
+  activeArchiveDate = (await findActiveArchiveDate()) ?? "";
+  if (!activeArchiveDate) {
+    activeArchiveDate = await findUnusedArchiveDate(
+      new Set([archiveDate, missingArchiveDate]),
+    );
+    await db.insert(dailyPiecesTable).values({
+      id: activeFixtureDailyPieceId,
+      date: activeArchiveDate,
+      closingTimestamp: new Date(`${activeArchiveDate}T23:59:59.000Z`),
+      status: "active",
+      minimumPaymentCents: 100,
+    });
+    insertedActiveFixture = true;
+  }
 
   await db.insert(usersTable).values({
     id: fixtureUserId,
@@ -92,6 +120,11 @@ after(async () => {
   await db
     .delete(dailyPiecesTable)
     .where(eq(dailyPiecesTable.id, fixtureDailyPieceId));
+  if (insertedActiveFixture) {
+    await db
+      .delete(dailyPiecesTable)
+      .where(eq(dailyPiecesTable.id, activeFixtureDailyPieceId));
+  }
   await db.delete(usersTable).where(eq(usersTable.id, fixtureUserId));
   await pool.end();
 });
@@ -126,6 +159,24 @@ test("returns the same winner and amount in the archive list", async () => {
     winnerDisplayName: "Archive winner",
     winningStandingCents,
     participantCount: 1,
+  });
+});
+
+test("returns 404 for a date that has no archive record", async () => {
+  const response = await fetch(`${baseUrl}/api/archive/${missingArchiveDate}`);
+
+  assert.equal(response.status, 404);
+  assert.deepEqual(await response.json(), {
+    error: "Closed archive day not found.",
+  });
+});
+
+test("returns 404 for an active day", async () => {
+  const response = await fetch(`${baseUrl}/api/archive/${activeArchiveDate}`);
+
+  assert.equal(response.status, 404);
+  assert.deepEqual(await response.json(), {
+    error: "Closed archive day not found.",
   });
 });
 
