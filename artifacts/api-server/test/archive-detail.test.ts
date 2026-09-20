@@ -111,6 +111,24 @@ test("returns the winning record for a closed date-only archive path", async () 
   });
 });
 
+test("returns the same winner and amount in the archive list", async () => {
+  const response = await fetch(`${baseUrl}/api/archive?page=1&pageSize=100`);
+
+  assert.equal(response.status, 200);
+  const archive = await response.json();
+  const fixture = archive.items.find(
+    (item: { id: string }) => item.id === fixtureDailyPieceId,
+  );
+
+  assert.deepEqual(fixture, {
+    id: fixtureDailyPieceId,
+    date: `${archiveDate}T00:00:00.000Z`,
+    winnerDisplayName: "Archive winner",
+    winningStandingCents,
+    participantCount: 1,
+  });
+});
+
 test("rejects timestamp archive paths as invalid calendar dates", async () => {
   const timestampPath = `${archiveDate}T00:00:00.000Z`;
   const response = await fetch(
