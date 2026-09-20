@@ -8,7 +8,8 @@
     "build": "node ./build.mjs",
     "start": "node --enable-source-maps ./dist/index.mjs",
     "close-day": "tsx scripts/close-day.ts",
-    "test": "tsx --test --test-concurrency=1 test/*.test.ts",
+    "test": "tsx --test --test-concurrency=1 $(find test -maxdepth 1 -name '*.test.ts' ! -name '*.browser.test.ts' -print)",
+    "test:browser": "tsx --test --test-concurrency=1 test/archive-links.browser.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
