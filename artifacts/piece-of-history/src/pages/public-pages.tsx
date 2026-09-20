@@ -43,7 +43,7 @@ export function LandingPage() {
                     aria-label={hasValidCalendarDate ? `Today, ${new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(calendarDate)}` : 'Today, date loading'}
                   >
                     <span className="hero-calendar-icon" aria-hidden="true">
-                      <FrostAsset name="calendar" size={21} className="frost-asset-plain" />
+                      <FrostAsset name="calendar" size={21} className="frost-asset-plain frost-asset-compact" />
                     </span>
                     <span className="hero-calendar-divider" aria-hidden="true" />
                     <span className="hero-calendar-copy">
