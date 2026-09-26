@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
@@ -128,6 +128,57 @@ test("release check preflight reports a timed-out API request", async () => {
         "Start the API workflow and retry",
       ]),
   );
+});
+
+test("release check preflight stops before browser when seeding fails", async () => {
+  const packageJson = JSON.parse(
+    await readFile(new URL("../package.json", import.meta.url), "utf8"),
+  ) as { scripts: Record<string, string> };
+  const releaseCommand = packageJson.scripts["test:browser:release"];
+  assert.ok(releaseCommand, "Expected the release browser command to exist");
+
+  const tempDir = await mkdtemp(join(tmpdir(), "piece-of-history-release-"));
+  const fakePnpmPath = join(tempDir, "pnpm");
+  const callLogPath = join(tempDir, "pnpm-calls.log");
+  const browserMarkerPath = join(tempDir, "browser-started");
+  await writeFile(
+    fakePnpmPath,
+    `#!/bin/sh
+printf '%s\\n' "$*" >> "$RELEASE_TEST_CALLS"
+case "$*" in
+  "run test:browser:preflight") exit 0 ;;
+  "--filter @workspace/db run seed") exit 17 ;;
+  "run test:browser") touch "$RELEASE_BROWSER_MARKER"; exit 0 ;;
+  *) exit 99 ;;
+esac
+`,
+    { mode: 0o755 },
+  );
+
+  try {
+    const exitCode = await new Promise<number>((resolve, reject) => {
+      const shell = spawn("sh", ["-c", releaseCommand], {
+        env: {
+          ...process.env,
+          PATH: `${tempDir}:${process.env.PATH ?? ""}`,
+          RELEASE_TEST_CALLS: callLogPath,
+          RELEASE_BROWSER_MARKER: browserMarkerPath,
+        },
+        stdio: "ignore",
+      });
+      shell.once("error", reject);
+      shell.once("close", (code) => resolve(code ?? -1));
+    });
+
+    assert.equal(exitCode, 17);
+    assert.deepEqual(
+      (await readFile(callLogPath, "utf8")).trim().split("\n"),
+      ["run test:browser:preflight", "--filter @workspace/db run seed"],
+    );
+    await assert.rejects(readFile(browserMarkerPath), { code: "ENOENT" });
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
 });
 
 test("release check preflight reports an unhealthy API response", async () => {
