@@ -105,6 +105,31 @@ test("release check preflight reports an unreachable frontend", async () => {
   );
 });
 
+test("release check preflight reports a timed-out API request", async () => {
+  const endpoint = "http://api.example.test/api/healthz";
+  await assert.rejects(
+    () =>
+      assertServiceReady(
+        "API",
+        endpoint,
+        "ok",
+        async () => {
+          throw new DOMException(
+            "The operation was aborted due to timeout",
+            "TimeoutError",
+          );
+        },
+      ),
+    (error: unknown) =>
+      assertErrorContains(error, [
+        "API",
+        endpoint,
+        "The operation was aborted due to timeout",
+        "Start the API workflow and retry",
+      ]),
+  );
+});
+
 test("release check preflight reports an unhealthy API response", async () => {
   const endpoint = "http://api.example.test/api/healthz";
   await assert.rejects(
