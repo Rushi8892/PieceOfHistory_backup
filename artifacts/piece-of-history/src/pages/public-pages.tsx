@@ -155,7 +155,7 @@ export function ExplorePage() {
     <div className="paper-grain min-h-[100dvh]">
       <SiteNav />
       <main className="mx-auto max-w-4xl px-5 pb-20 pt-12 sm:px-8 md:pt-20">
-        <div className="border-b border-primary/10 pb-8">
+        <div className="ice-hero-wash border-b border-primary/10 pb-8">
           <SectionKicker>Explore</SectionKicker>
           <h1 className="mt-5 font-display text-[clamp(3.8rem,9vw,7rem)] leading-[.8] tracking-[-.05em] text-primary">Today&apos;s<br /><span className="inline-flex items-center gap-3 text-accent italic">evidence.<span className="ice-glyph-halo text-secondary"><FrostAsset name="crystal" size={25} className="frost-asset-plain" /></span></span></h1>
           <div className="mt-7 flex flex-wrap items-end justify-between gap-5">
