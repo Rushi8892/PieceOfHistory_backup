@@ -12,7 +12,7 @@
     "test:browser": "tsx --test --test-concurrency=1 test/archive-links.browser.test.ts",
     "test:browser:preflight": "tsx --test --test-concurrency=1 --test-name-pattern='^release check preflight' test/archive-links.browser.test.ts",
     "test:seed:release": "pnpm --filter @workspace/db run test:seed:release",
-    "test:browser:release": "pnpm run test:browser:preflight && pnpm --filter @workspace/db run seed && pnpm run test:browser",
+    "test:browser:release": "pnpm run test:browser:preflight && pnpm --filter @workspace/db run seed && sh scripts/run-browser-release.sh",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {

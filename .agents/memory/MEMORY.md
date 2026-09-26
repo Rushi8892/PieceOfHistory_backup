@@ -2,3 +2,4 @@
 - [Piece of History reference sizing](piece-of-history-reference-sizing.md) — the supplied 683px reference behaves like compact desktop; reserve the mobile composition for ~402px.
 - [Development seed boundary](development-seed-boundary.md) — homepage fixtures use deterministic seed identities and upserts, keeping user/live records separate.
 - [Browser link regressions](browser-link-regressions.md) — wait for rendered detail content after client-side archive-link navigation, not only for the URL change.
+- [Release service startup](release-service-startup.md) — release browser checks must start missing local services and wait on health before testing.
