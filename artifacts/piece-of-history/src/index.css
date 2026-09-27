@@ -881,6 +881,55 @@
   line-height: .9;
 }
 
+.ice-date-heading--archive-detail {
+  align-items: flex-start;
+  gap: .58rem;
+  padding: .34rem .78rem .44rem .58rem;
+}
+
+.ice-date-heading--archive-detail .ice-date-heading__accent {
+  width: auto;
+  aspect-ratio: auto;
+  margin-top: .14rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  filter:
+    drop-shadow(0 0 6px hsl(0 0% 100% / .92))
+    drop-shadow(0 2px 3px hsl(197 72% 62% / .35));
+  transform: scale(.78);
+  transform-origin: top center;
+}
+
+.ice-date-heading--archive-detail .ice-date-heading__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .08rem;
+  font-size: 1rem;
+  letter-spacing: normal;
+  line-height: 1;
+}
+
+.ice-date-heading--archive-detail .ice-date-heading__weekday {
+  color: hsl(197 60% 39% / .88);
+  font-family: var(--app-font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.ice-date-heading--archive-detail .ice-date-heading__date {
+  color: hsl(var(--primary));
+  font-family: var(--app-font-serif);
+  font-size: clamp(2rem, 4.5vw, 2.8rem);
+  letter-spacing: -.035em;
+  line-height: .94;
+}
+
 .ice-date-heading--card {
   gap: .42rem;
   border-radius: .62rem;

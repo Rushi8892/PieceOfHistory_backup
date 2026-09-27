@@ -6,6 +6,20 @@ import { IceCrystalAccent } from '@/components/ice-crystal-accent';
 import { IceDateHeading, IceDateLabel } from '@/components/ice-date-treatment';
 import { useState } from 'react';
 
+function getArchiveDetailDateHeading(date: string) {
+  const parsedDate = /^\d{4}-\d{2}-\d{2}$/.test(date)
+    ? new Date(`${date}T12:00:00`)
+    : new Date(date);
+
+  return {
+    weekday: new Intl.DateTimeFormat(undefined, { weekday: 'long' }).format(parsedDate),
+    dayAndMonth: new Intl.DateTimeFormat(undefined, {
+      day: 'numeric',
+      month: 'long',
+    }).format(parsedDate),
+  };
+}
+
 export function ArchivePage() {
   const [page, setPage] = useState(1);
   const archiveQuery = useGetArchive({ page, pageSize: 3 });
@@ -85,6 +99,7 @@ export function ArchiveDetailPage() {
   const detailQuery = useGetArchiveDetail(date);
   
   const detail = detailQuery.data;
+  const detailDateHeading = detail ? getArchiveDetailDateHeading(detail.date) : null;
 
   return (
     <div className="paper-grain min-h-[100dvh]">
@@ -109,7 +124,10 @@ export function ArchiveDetailPage() {
           ) : (
             <article data-testid="data-archive-detail">
               <SectionKicker>Piece No. {detail.id.slice(0, 6)}</SectionKicker>
-              <IceDateHeading size="display" className="mt-4">{formatDate(detail.date)}</IceDateHeading>
+              <IceDateHeading size="display" className="mt-4 ice-date-heading--archive-detail">
+                <span className="ice-date-heading__weekday">{detailDateHeading?.weekday}</span>
+                <span className="ice-date-heading__date">{detailDateHeading?.dayAndMonth}</span>
+              </IceDateHeading>
               
                <div className="mt-8 grid gap-5 border-y border-primary/10 py-6 sm:grid-cols-3">
                 <div>
