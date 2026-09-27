@@ -2,6 +2,7 @@ import { Link, useRoute } from 'wouter';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useGetArchive, useGetArchiveDetail, useGetSiteStats } from '@workspace/api-client-react';
 import { FrostAsset, SectionKicker, SiteFooter, SiteNav, formatMoney, formatDate, getArchiveDatePath } from '@/components/site';
+import { IceCrystalAccent } from '@/components/ice-crystal-accent';
 import { useState } from 'react';
 
 export function ArchivePage() {
@@ -18,6 +19,7 @@ export function ArchivePage() {
       <main className="mx-auto max-w-4xl px-5 pb-20 pt-12 sm:px-8 md:pt-20">
         <div className="ice-hero-wash max-w-2xl">
           <SectionKicker>The Archive</SectionKicker>
+          <IceCrystalAccent />
           <h1 className="mt-5 font-display text-[clamp(3.8rem,8vw,6.5rem)] leading-[.84] tracking-[-.04em] text-primary"><FrostAsset name="book" size={40} className="mr-3 inline-block -translate-y-2 align-middle frost-asset-quiet" />Frozen<br /><span className="text-accent italic">days.</span></h1>
           <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">The days that made it through the cold. Each one keeps the sentence someone thought should outlast midnight.</p>
         </div>

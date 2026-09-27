@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 220" fill="none">
+  <defs>
+    <linearGradient id="crystal-main" x1="90" y1="26" x2="145" y2="185" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FDFF" stop-opacity=".96"/>
+      <stop offset=".44" stop-color="#BDEBFA" stop-opacity=".82"/>
+      <stop offset="1" stop-color="#58B4DC" stop-opacity=".74"/>
+    </linearGradient>
+    <linearGradient id="crystal-side" x1="34" y1="68" x2="83" y2="181" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EFFBFF" stop-opacity=".92"/>
+      <stop offset="1" stop-color="#77C9E9" stop-opacity=".74"/>
+    </linearGradient>
+    <linearGradient id="cube-front" x1="146" y1="128" x2="195" y2="184" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E9FAFF" stop-opacity=".84"/>
+      <stop offset="1" stop-color="#85D3EF" stop-opacity=".52"/>
+    </linearGradient>
+    <filter id="frost-glow" x="0" y="0" width="240" height="220" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+  <ellipse cx="119" cy="187" rx="77" ry="12" fill="#A6E3F8" fill-opacity=".24" filter="url(#frost-glow)"/>
+  <path d="M95 28 124 10l29 18-8 30-21 18-22-18z" fill="url(#crystal-main)" stroke="#EAFBFF" stroke-opacity=".9" stroke-width="2"/>
+  <path d="m95 28 29 18-22 12zM124 46l29-18-8 30-21 0zM124 46l-1 78-22-66zM124 46l21 12-22 66zM102 58l21 66-39-8zM145 58l-22 66 39-8z" fill="#E8F9FF" fill-opacity=".38" stroke="#F6FDFF" stroke-opacity=".56" stroke-width="1.4"/>
+  <path d="m124 124-46-18 16 72 30 15z" fill="url(#crystal-side)" stroke="#EAFBFF" stroke-opacity=".78" stroke-width="2"/>
+  <path d="m124 124 46-18-16 72-30 15z" fill="#8ED7F0" fill-opacity=".42" stroke="#F3FCFF" stroke-opacity=".76" stroke-width="2"/>
+  <path d="m78 106 46 18-30 54zM170 106l-46 18 30 54M124 124v69" stroke="#F7FDFF" stroke-opacity=".68" stroke-width="1.5"/>
+  <path d="m151 126 23-13 24 14v29l-24 14-23-14z" fill="#DDF6FF" fill-opacity=".38" stroke="#F3FCFF" stroke-opacity=".78" stroke-width="2"/>
+  <path d="m151 126 23 14 24-13M174 140v30M151 126v30l23 14" stroke="#E9FAFF" stroke-opacity=".74" stroke-width="1.5"/>
+  <path d="m35 122 17-39 25 15-3 39-22 15z" fill="url(#crystal-side)" fill-opacity=".8" stroke="#E9FAFF" stroke-opacity=".7" stroke-width="1.7"/>
+  <path d="m52 83 9 46-9 23M77 98l-16 31-7-31" stroke="#F5FCFF" stroke-opacity=".68" stroke-width="1.4"/>
+  <path d="M52 58v12m-6-6h12M207 77v10m-5-5h10M201 183v8m-4-4h8" stroke="#72C9E9" stroke-linecap="round" stroke-opacity=".78" stroke-width="2"/>
+</svg>

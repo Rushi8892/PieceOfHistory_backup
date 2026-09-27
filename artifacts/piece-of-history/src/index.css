@@ -578,6 +578,46 @@
   z-index: 1;
 }
 
+.archive-crystal-accent {
+  position: absolute;
+  top: 1.8rem;
+  right: -.25rem;
+  z-index: 0;
+  width: clamp(6.5rem, 22vw, 12rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.ice-hero-wash > .archive-crystal-accent {
+  position: absolute;
+  z-index: 0;
+}
+
+.archive-crystal-accent .ice-crystal-poster,
+.archive-crystal-accent .ice-crystal-canvas-root {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.archive-crystal-accent .ice-crystal-poster {
+  object-fit: contain;
+  filter: drop-shadow(0 14px 24px hsl(197 82% 62% / .2));
+  transition: opacity 220ms ease;
+}
+
+.archive-crystal-accent .ice-crystal-canvas-root {
+  overflow: visible !important;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-crystal-accent .ice-crystal-poster {
+    transition: none;
+  }
+}
+
 .footer-night {
   position: relative;
   overflow: hidden;
