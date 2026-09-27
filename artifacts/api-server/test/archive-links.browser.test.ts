@@ -27,11 +27,12 @@ async function assertServiceReady(
   url: string,
   expectedHealthStatus?: string,
   fetchImplementation: typeof fetch = fetch,
+  readinessTimeoutMs = READINESS_TIMEOUT_MS,
 ) {
   let response: Response;
   try {
     response = await fetchImplementation(url, {
-      signal: AbortSignal.timeout(READINESS_TIMEOUT_MS),
+      signal: AbortSignal.timeout(readinessTimeoutMs),
     });
   } catch (error) {
     throw new Error(
@@ -128,6 +129,47 @@ test("release check preflight reports a timed-out API request", async () => {
         "Start the API workflow and retry",
       ]),
   );
+});
+
+test("release check preflight aborts a stalled readiness request", async () => {
+  const endpoint = "http://api.example.test/api/healthz";
+  let receivedSignal: AbortSignal | undefined;
+  let fetchObservedAbort = false;
+
+  await assert.rejects(
+    () =>
+      assertServiceReady(
+        "API",
+        endpoint,
+        "ok",
+        async (_input, init) => {
+          const signal = init?.signal;
+          assert.ok(signal, "Expected readiness fetch to receive an abort signal");
+          receivedSignal = signal;
+          return new Promise<Response>((_resolve, reject) => {
+            signal.addEventListener(
+              "abort",
+              () => {
+                fetchObservedAbort = true;
+                reject(signal.reason);
+              },
+              { once: true },
+            );
+          });
+        },
+        25,
+      ),
+    (error: unknown) =>
+      assertErrorContains(error, [
+        "API",
+        endpoint,
+        "Start the API workflow and retry",
+      ]),
+  );
+
+  assert.ok(receivedSignal, "Expected the stalled fetch to receive the signal");
+  assert.equal(receivedSignal.aborted, true);
+  assert.equal(fetchObservedAbort, true);
 });
 
 test("release check preflight stops before browser when seeding fails", async () => {
