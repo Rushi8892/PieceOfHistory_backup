@@ -4,6 +4,7 @@ import { Show } from '@clerk/react';
 import { getGetTodayCompetitionQueryKey, useGetArchive, useGetTodayCompetition } from '@workspace/api-client-react';
 import { Countdown, FrostAsset, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney, getArchiveDatePath } from '@/components/site';
 import { CalendarArt } from '@/components/calendar-art';
+import { IceDateHeading, IceDateLabel } from '@/components/ice-date-treatment';
 
 export function LandingPage() {
   const todayQuery = useGetTodayCompetition({
@@ -104,7 +105,7 @@ export function LandingPage() {
               <Link href="/archive" className="quiet-link text-[9px] font-bold text-muted-foreground" data-testid="link-home-archive">View all →</Link>
             </div>
             <div className="mt-3 space-y-3">
-               {archiveQuery.isLoading ? [1, 2, 3].map((item) => <div key={item} className="h-[68px] animate-pulse rounded-xl bg-muted/50" />) : recentHistory.length ? recentHistory.map((item) => <Link key={item.id} href={`/archive/${getArchiveDatePath(item.date)}`} className="frozen-card block rounded-[9px] p-3 transition-transform duration-200 hover:-translate-y-0.5" data-testid={`link-home-history-${item.date}`}><div className="flex items-start justify-between gap-2"><span className="font-mono-ui text-[8px] font-bold uppercase tracking-[.1em] text-muted-foreground">{formatDate(item.date)}</span><span className="inline-flex items-center gap-1 font-mono-ui text-[7px] font-bold uppercase tracking-[.12em] text-secondary"><FrostAsset name="lock" size={12} className="frost-asset-compact" />Frozen</span></div><p className="mt-2 line-clamp-1 font-display text-sm text-primary">{item.winnerDisplayName ?? 'No recorded winner'}</p><p className="mt-1 text-[10px] text-muted-foreground">{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : 'No standing recorded'}</p></Link>) : <div className="frozen-card rounded-[9px] px-3 py-7"><p className="font-display text-base text-primary">No frozen days yet.</p><p className="mt-1 text-[10px] leading-4 text-muted-foreground">The archive will collect each winner here.</p></div>}
+               {archiveQuery.isLoading ? [1, 2, 3].map((item) => <div key={item} className="h-[68px] animate-pulse rounded-xl bg-muted/50" />) : recentHistory.length ? recentHistory.map((item) => <Link key={item.id} href={`/archive/${getArchiveDatePath(item.date)}`} className="frozen-card block rounded-[9px] p-3 transition-transform duration-200 hover:-translate-y-0.5" data-testid={`link-home-history-${item.date}`}><div className="flex items-start justify-between gap-2"><IceDateLabel size="compact">{formatDate(item.date)}</IceDateLabel><span className="inline-flex items-center gap-1 font-mono-ui text-[7px] font-bold uppercase tracking-[.12em] text-secondary"><FrostAsset name="lock" size={12} className="frost-asset-compact" />Frozen</span></div><p className="mt-2 line-clamp-1 font-display text-sm text-primary">{item.winnerDisplayName ?? 'No recorded winner'}</p><p className="mt-1 text-[10px] text-muted-foreground">{item.winningStandingCents !== null ? formatMoney(item.winningStandingCents) : 'No standing recorded'}</p></Link>) : <div className="frozen-card rounded-[9px] px-3 py-7"><p className="font-display text-base text-primary">No frozen days yet.</p><p className="mt-1 text-[10px] leading-4 text-muted-foreground">The archive will collect each winner here.</p></div>}
             </div>
           </div>
         </section>
@@ -136,7 +137,7 @@ export function ExplorePage() {
           <h1 className="mt-5 font-display text-[clamp(3.8rem,9vw,7rem)] leading-[.8] tracking-[-.05em] text-primary">Today&apos;s<br /><span className="inline-flex items-center gap-3 text-accent italic">evidence.<span className="ice-glyph-halo text-secondary"><FrostAsset name="crystal" size={25} className="frost-asset-plain" /></span></span></h1>
           <div className="mt-7 flex flex-wrap items-end justify-between gap-5">
              <p className="max-w-md text-base leading-7 text-muted-foreground">A running list of things people decided were worth leaving behind.</p>
-            {todayQuery.data && <div className="text-right text-sm text-muted-foreground"><p>{formatDate(todayQuery.data.date)}</p><Countdown closingTimestamp={todayQuery.data.closingTimestamp} serverTime={todayQuery.data.serverTime} /></div>}
+             {todayQuery.data && <div className="text-right text-sm text-muted-foreground"><IceDateLabel size="regular">{formatDate(todayQuery.data.date)}</IceDateLabel><Countdown closingTimestamp={todayQuery.data.closingTimestamp} serverTime={todayQuery.data.serverTime} /></div>}
           </div>
         </div>
         <div className="mt-4">
@@ -183,7 +184,7 @@ export function CompetitionPage() {
           <SectionKicker>Today&apos;s competition</SectionKicker>
           <div className="mt-5 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <h1 className="font-display text-[clamp(3.8rem,8vw,6.5rem)] leading-[.84] tracking-[-.04em] text-primary">{competition ? formatDate(competition.date) : 'Today'}</h1>
+              <IceDateHeading size="display">{competition ? formatDate(competition.date) : 'Today'}</IceDateHeading>
               <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">A small contest about what deserves to survive the day.</p>
             </div>
             <div className="border-l border-primary/10 pl-5 text-sm text-muted-foreground">

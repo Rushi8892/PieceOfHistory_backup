@@ -1,6 +1,7 @@
 import { ArrowUpRight, ChevronLeft, ChevronRight, PenLine, Info, Clock, Check, X } from 'lucide-react';
 import { getGetMyHistoryQueryKey, useGetCurrentUser, useGetMyHistory, useGetSiteStats } from '@workspace/api-client-react';
 import { SectionKicker, SiteFooter, SiteNav, PrimaryButton, formatMoney, formatDate } from '@/components/site';
+import { IceDateHeading } from '@/components/ice-date-treatment';
 import { useState } from 'react';
 
 export function MyHistoryPage() {
@@ -58,7 +59,7 @@ export function MyHistoryPage() {
                       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-primary/10 pb-5">
                         <div>
                           <span className="font-mono-ui text-[10px] font-bold uppercase tracking-[.2em] text-muted-foreground">No. {item.dayId.slice(0, 6)}</span>
-                          <h3 className="mt-1 font-display text-2xl leading-tight text-primary">{formatDate(item.date)}</h3>
+                           <IceDateHeading as="h3" size="card">{formatDate(item.date)}</IceDateHeading>
                         </div>
                         <div className="flex items-center gap-2">
                           {item.result === 'won' && (
