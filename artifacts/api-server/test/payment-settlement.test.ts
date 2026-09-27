@@ -25,6 +25,7 @@ import {
   advanceOverdueDailyPieces,
   closeDailyPiece,
 } from "../src/lib/day-close.ts";
+import { reconcilePendingPaymentsForDay } from "../src/lib/reconcile-pending-payments.ts";
 import {
   capturedPaymentFromEvent,
   settleAndRecordPaymentWebhook,
@@ -555,7 +556,20 @@ test("overdue active days roll forward through missed dates to the current day",
     standingReachedAt: new Date("2026-09-16T18:00:00.000Z"),
   });
 
-  const activeDay = await advanceOverdueDailyPieces(testDb, now);
+  const reconciledDates: string[] = [];
+  const activeDay = await advanceOverdueDailyPieces(
+    testDb,
+    now,
+    async (day) => {
+      reconciledDates.push(
+        (await testDb
+          .select({ date: dailyPiecesTable.date })
+          .from(dailyPiecesTable)
+          .where(eq(dailyPiecesTable.id, day.id))
+          .limit(1))[0].date,
+      );
+    },
+  );
   assert.equal(activeDay?.date, "2026-09-27");
   assert.equal(
     activeDay?.closingTimestamp.toISOString(),
@@ -570,4 +584,52 @@ test("overdue active days roll forward through missed dates to the current day",
   assert.equal(closedDays[0].id, dailyPieceId);
   assert.equal(closedDays[0].winnerUserId, userId);
   assert.equal(closedDays[0].winningStandingCents, 125000);
+  assert.equal(reconciledDates.length, 11);
+  assert.equal(reconciledDates[0], "2026-09-16");
+  assert.equal(reconciledDates.at(-1), "2026-09-26");
+});
+
+test("pending orders are checked with the provider before overdue days close", async () => {
+  const scenario = await createScenario([{ userIndex: 0, amountCents: 500 }]);
+  try {
+    await testDb
+      .update(dailyPiecesTable)
+      .set({
+        date: "2026-09-16",
+        closingTimestamp: new Date("2026-09-16T18:53:24.517Z"),
+      })
+      .where(eq(dailyPiecesTable.id, scenario.dailyPieceId));
+    const [day] = await testDb
+      .select()
+      .from(dailyPiecesTable)
+      .where(eq(dailyPiecesTable.id, scenario.dailyPieceId));
+
+    const reconciledOrders: string[] = [];
+    await reconcilePendingPaymentsForDay(testDb, day, () => ({
+      createOrder: async () => {
+        throw new Error("Order creation should not run during reconciliation.");
+      },
+      fetchCapturedPayments: async (orderId) => {
+        reconciledOrders.push(orderId);
+        return [
+          capture(
+            scenario,
+            0,
+            77,
+            500,
+            "2026-09-16T18:00:00.000Z",
+          ),
+        ];
+      },
+    }));
+
+    assert.equal(reconciledOrders.length, 1);
+    const [standing] = await testDb
+      .select()
+      .from(participantStandingsTable)
+      .where(eq(participantStandingsTable.userId, scenario.userIds[0]));
+    assert.equal(standing.runningTotalCents, 500);
+  } finally {
+    await cleanupScenario(scenario);
+  }
 });

@@ -115,6 +115,10 @@ export async function closeDailyPiece(
 export async function advanceOverdueDailyPieces(
   database: any,
   now = new Date(),
+  reconcilePendingPayments: (day: {
+    id: string;
+    closingTimestamp: Date;
+  }) => Promise<void>,
 ) {
   while (true) {
     const [activeDay] = await database
@@ -125,6 +129,7 @@ export async function advanceOverdueDailyPieces(
 
     if (!activeDay || activeDay.closingTimestamp > now) return activeDay ?? null;
 
+    await reconcilePendingPayments(activeDay);
     const result = await closeDailyPiece(database, activeDay.id, now);
     if (!result) {
       const [latestActiveDay] = await database

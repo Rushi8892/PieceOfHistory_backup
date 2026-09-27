@@ -8,12 +8,17 @@ import {
 } from "@workspace/db";
 import { GetTodayCompetitionResponse } from "@workspace/api-zod";
 import { advanceOverdueDailyPieces } from "../lib/day-close";
+import { reconcilePendingPaymentsForDay } from "../lib/reconcile-pending-payments";
 
 const router: IRouter = Router();
 
 router.get("/competition/today", async (req, res): Promise<void> => {
   const serverTime = new Date();
-  const activeDay = await advanceOverdueDailyPieces(db, serverTime);
+  const activeDay = await advanceOverdueDailyPieces(
+    db,
+    serverTime,
+    (day) => reconcilePendingPaymentsForDay(db, day),
+  );
 
   if (!activeDay) {
     res.status(404).json({ error: "There is no active competition." });

@@ -1,3 +1,5 @@
+import type { CapturedPayment } from "./payment-settlement";
+
 export interface RazorpayOrder {
   id: string;
   amount: number;
@@ -9,6 +11,7 @@ export interface RazorpayClient {
     amountCents: number;
     receipt: string;
   }): Promise<RazorpayOrder>;
+  fetchCapturedPayments?(orderId: string): Promise<CapturedPayment[]>;
 }
 
 export function createRazorpayClient(): RazorpayClient {
@@ -53,6 +56,55 @@ export function createRazorpayClient(): RazorpayClient {
         throw new Error("Razorpay returned an invalid USD order.");
       }
       return { id: data.id, amount: data.amount, currency: "USD" };
+    },
+    async fetchCapturedPayments(orderId): Promise<CapturedPayment[]> {
+      const authorization = Buffer.from(`${keyId}:${keySecret}`).toString(
+        "base64",
+      );
+      const response = await fetch(
+        `https://api.razorpay.com/v1/orders/${encodeURIComponent(orderId)}/payments?count=100`,
+        { headers: { Authorization: `Basic ${authorization}` } },
+      );
+      if (!response.ok) {
+        throw new Error(
+          `Razorpay payment reconciliation failed (${response.status}).`,
+        );
+      }
+
+      const data = (await response.json()) as {
+        items?: Array<Record<string, unknown>>;
+      };
+      if (!Array.isArray(data.items)) {
+        throw new Error("Razorpay returned an invalid order payment list.");
+      }
+
+      return data.items.flatMap((item) => {
+        if (item.status !== "captured") return [];
+        const paymentId = typeof item.id === "string" ? item.id : "";
+        const returnedOrderId =
+          typeof item.order_id === "string" ? item.order_id : "";
+        const amountCents = Number(item.amount);
+        const currency = typeof item.currency === "string" ? item.currency : "";
+        const capturedSeconds = Number(item.captured_at);
+        if (
+          !paymentId ||
+          returnedOrderId !== orderId ||
+          !Number.isSafeInteger(amountCents) ||
+          !Number.isSafeInteger(capturedSeconds) ||
+          capturedSeconds <= 0 ||
+          !currency
+        ) {
+          throw new Error("Razorpay returned an invalid captured payment.");
+        }
+
+        return [{
+          orderId: returnedOrderId,
+          paymentId,
+          amountCents,
+          currency,
+          capturedAt: new Date(capturedSeconds * 1000),
+        }];
+      });
     },
   };
 }
