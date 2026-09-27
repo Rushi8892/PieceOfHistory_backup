@@ -7,15 +7,13 @@ import {
   storiesTable,
 } from "@workspace/db";
 import { GetTodayCompetitionResponse } from "@workspace/api-zod";
+import { advanceOverdueDailyPieces } from "../lib/day-close";
 
 const router: IRouter = Router();
 
 router.get("/competition/today", async (req, res): Promise<void> => {
-  const [activeDay] = await db
-    .select()
-    .from(dailyPiecesTable)
-    .where(eq(dailyPiecesTable.status, "active"))
-    .limit(1);
+  const serverTime = new Date();
+  const activeDay = await advanceOverdueDailyPieces(db, serverTime);
 
   if (!activeDay) {
     res.status(404).json({ error: "There is no active competition." });
@@ -54,7 +52,7 @@ router.get("/competition/today", async (req, res): Promise<void> => {
   const data = GetTodayCompetitionResponse.parse({
     id: activeDay.id,
     date: activeDay.date,
-    serverTime: new Date(),
+    serverTime,
     closingTimestamp: activeDay.closingTimestamp,
     minimumPaymentCents: activeDay.minimumPaymentCents,
     participants: participants.map(

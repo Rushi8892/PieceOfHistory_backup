@@ -21,7 +21,10 @@ import {
   type CapturedPayment,
 } from "../src/lib/payment-settlement.ts";
 import { createPaymentOrderForStory } from "../src/lib/payment-orders.ts";
-import { closeDailyPiece } from "../src/lib/day-close.ts";
+import {
+  advanceOverdueDailyPieces,
+  closeDailyPiece,
+} from "../src/lib/day-close.ts";
 import {
   capturedPaymentFromEvent,
   settleAndRecordPaymentWebhook,
@@ -523,4 +526,48 @@ test("closing a day twice preserves the winner and creates one next active day",
   } finally {
     await cleanupScenario(scenario);
   }
+});
+
+test("overdue active days roll forward through missed dates to the current day", async () => {
+  const dailyPieceId = randomUUID();
+  const userId = randomUUID();
+  const now = new Date("2026-09-27T14:46:29.822Z");
+  const originalClosingTime = new Date("2026-09-16T18:53:24.517Z");
+
+  await testDb.insert(usersTable).values({
+    id: userId,
+    displayName: "Test winner",
+    email: `${userId}@example.test`,
+    authProvider: "test",
+    authProviderId: `test-${userId}`,
+  });
+  await testDb.insert(dailyPiecesTable).values({
+    id: dailyPieceId,
+    date: "2026-09-16",
+    closingTimestamp: originalClosingTime,
+    status: "active",
+    minimumPaymentCents: 100,
+  });
+  await testDb.insert(participantStandingsTable).values({
+    userId,
+    dailyPieceId,
+    runningTotalCents: 125000,
+    standingReachedAt: new Date("2026-09-16T18:00:00.000Z"),
+  });
+
+  const activeDay = await advanceOverdueDailyPieces(testDb, now);
+  assert.equal(activeDay?.date, "2026-09-27");
+  assert.equal(
+    activeDay?.closingTimestamp.toISOString(),
+    "2026-09-27T18:53:24.517Z",
+  );
+
+  const closedDays = await testDb
+    .select()
+    .from(dailyPiecesTable)
+    .where(eq(dailyPiecesTable.status, "closed"));
+  assert.equal(closedDays.length, 11);
+  assert.equal(closedDays[0].id, dailyPieceId);
+  assert.equal(closedDays[0].winnerUserId, userId);
+  assert.equal(closedDays[0].winningStandingCents, 125000);
 });

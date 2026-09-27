@@ -55,7 +55,13 @@ export function LandingPage() {
                      <FrostAsset name="clock" size={21} className="mt-0.5 shrink-0 frost-asset-quiet" />
                     <div>
                       <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.12em] text-muted-foreground">Freezes in</p>
-                      <div className="mt-0.5"><Countdown closingTimestamp={today?.closingTimestamp ?? new Date().toISOString()} serverTime={today?.serverTime} /></div>
+                      <div className="mt-0.5">
+                        {today?.closingTimestamp ? (
+                          <Countdown closingTimestamp={today.closingTimestamp} serverTime={today.serverTime} />
+                        ) : (
+                          <span className="font-mono-ui text-sm font-bold tracking-wide text-muted-foreground" data-testid="countdown-pending">—</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

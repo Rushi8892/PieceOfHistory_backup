@@ -111,3 +111,34 @@ export async function closeDailyPiece(
     };
   });
 }
+
+export async function advanceOverdueDailyPieces(
+  database: any,
+  now = new Date(),
+) {
+  while (true) {
+    const [activeDay] = await database
+      .select()
+      .from(dailyPiecesTable)
+      .where(eq(dailyPiecesTable.status, "active"))
+      .limit(1);
+
+    if (!activeDay || activeDay.closingTimestamp > now) return activeDay ?? null;
+
+    const result = await closeDailyPiece(database, activeDay.id, now);
+    if (!result) {
+      const [latestActiveDay] = await database
+        .select()
+        .from(dailyPiecesTable)
+        .where(eq(dailyPiecesTable.status, "active"))
+        .limit(1);
+
+      if (
+        latestActiveDay?.id === activeDay.id &&
+        latestActiveDay.closingTimestamp <= now
+      ) {
+        throw new Error("An overdue active DailyPiece could not be closed.");
+      }
+    }
+  }
+}
