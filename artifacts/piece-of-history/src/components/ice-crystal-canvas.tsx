@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useEffect, useMemo } from 'react';
+import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 
 type GeometryKind = 'octahedron' | 'icosahedron' | 'cube';
@@ -106,19 +106,8 @@ function Crystal({
 }
 
 function CrystalCluster() {
-  const clusterRef = useRef<THREE.Group>(null);
-
-  useFrame(({ clock }, delta) => {
-    if (!clusterRef.current) return;
-    const time = clock.elapsedTime;
-    clusterRef.current.rotation.y += delta * 0.075;
-    clusterRef.current.rotation.x = Math.sin(time * 0.31) * 0.018;
-    clusterRef.current.rotation.z = Math.sin(time * 0.36) * 0.025;
-    clusterRef.current.position.y = Math.sin(time * 0.5) * 0.05;
-  });
-
   return (
-    <group ref={clusterRef}>
+    <group>
       <ambientLight intensity={1.2} />
       <directionalLight
         position={[-3, 4, 5]}
@@ -180,7 +169,7 @@ export default function IceCrystalCanvas({
       style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
       camera={{ position: [0, 0, 4.8], fov: 36 }}
       dpr={[1, 1.35]}
-      frameloop="always"
+      frameloop="demand"
       gl={{ alpha: true, antialias: true, powerPreference: 'low-power' }}
       onCreated={({ gl }) => {
         gl.setClearColor(0x000000, 0);

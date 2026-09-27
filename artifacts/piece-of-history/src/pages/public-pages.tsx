@@ -3,6 +3,7 @@ import { Link } from 'wouter';
 import { Show } from '@clerk/react';
 import { getGetTodayCompetitionQueryKey, useGetArchive, useGetTodayCompetition } from '@workspace/api-client-react';
 import { Countdown, FrostAsset, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney, getArchiveDatePath } from '@/components/site';
+import { CalendarArt } from '@/components/calendar-art';
 
 function formatHeroDate(date?: string) {
   if (!date) return 'Today';
@@ -37,23 +38,7 @@ export function LandingPage() {
           <div className="ice-shell hero-shell relative z-10 rounded-[14px] p-3 sm:p-4 md:p-5">
             <div className="hero-primary-grid relative z-10 grid gap-4 sm:grid-cols-[128px_1fr] sm:items-center sm:gap-5">
               <div className="hero-calendar-slot flex justify-center sm:justify-start">
-                <div className="hero-calendar-wrap hero-calendar-compact">
-                  <div
-                    className="hero-calendar"
-                    aria-label={hasValidCalendarDate ? `Today, ${new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(calendarDate)}` : 'Today, date loading'}
-                  >
-                    <span className="hero-calendar-icon" aria-hidden="true">
-                      <FrostAsset name="calendar" size={21} className="frost-asset-plain frost-asset-compact" />
-                    </span>
-                    <span className="hero-calendar-divider" aria-hidden="true" />
-                    <span className="hero-calendar-copy">
-                      <span className="hero-calendar-label font-mono-ui">TODAY</span>
-                      <span className="hero-calendar-date font-display text-primary">
-                        {hasValidCalendarDate ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(calendarDate) : 'Date loading'}
-                      </span>
-                    </span>
-                  </div>
-                </div>
+                <CalendarArt date={hasValidCalendarDate ? calendarDate : undefined} />
               </div>
               <div className="today-copy">
                 <p className="today-kicker inline-flex items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[.24em] text-primary"><FrostAsset name="calendar" size={14} className="frost-asset-plain" />TODAY <span className="hidden font-normal tracking-[.12em] text-muted-foreground sm:inline">/ leave a mark</span></p>
