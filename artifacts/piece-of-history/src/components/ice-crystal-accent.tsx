@@ -20,7 +20,7 @@ export function IceCrystalAccent() {
       };
       const lowEndDevice =
         (typeof device.deviceMemory === 'number' && device.deviceMemory <= 4) ||
-        navigator.hardwareConcurrency <= 4 ||
+        navigator.hardwareConcurrency <= 2 ||
         device.connection?.saveData === true;
 
       let supportsWebGL = false;
