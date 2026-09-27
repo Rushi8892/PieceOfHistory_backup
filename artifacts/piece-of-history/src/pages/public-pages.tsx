@@ -5,13 +5,6 @@ import { getGetTodayCompetitionQueryKey, useGetArchive, useGetTodayCompetition }
 import { Countdown, FrostAsset, HowStep, PrimaryButton, SectionKicker, SiteFooter, SiteNav, formatDate, formatMoney, getArchiveDatePath } from '@/components/site';
 import { CalendarArt } from '@/components/calendar-art';
 
-function formatHeroDate(date?: string) {
-  if (!date) return 'Today';
-  const parsedDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? new Date(`${date}T12:00:00`) : new Date(date);
-  if (Number.isNaN(parsedDate.getTime())) return 'Today';
-  return new Intl.DateTimeFormat(undefined, { month: 'long', day: 'numeric', year: 'numeric' }).format(parsedDate);
-}
-
 export function LandingPage() {
   const todayQuery = useGetTodayCompetition({
     query: {
@@ -41,8 +34,6 @@ export function LandingPage() {
                 <CalendarArt date={hasValidCalendarDate ? calendarDate : undefined} />
               </div>
               <div className="today-copy">
-                <p className="today-kicker inline-flex items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[.24em] text-primary"><FrostAsset name="calendar" size={14} className="frost-asset-plain" />TODAY <span className="hidden font-normal tracking-[.12em] text-muted-foreground sm:inline">/ leave a mark</span></p>
-                <h1 className="mt-1 max-w-3xl font-display text-[clamp(3rem,6vw,5.2rem)] leading-[.86] tracking-[-.045em] text-primary">{hasValidCalendarDate && today?.date ? formatHeroDate(today.date) : 'Today'}</h1>
                 <p className="mt-2 max-w-xl font-display text-base italic leading-6 text-primary/70 md:text-lg">Who knows… this could be the day someone finally does it.</p>
                 <div className="today-stats mt-4 grid gap-2 border-t border-primary/15 pt-3 sm:grid-cols-3 sm:gap-0">
                   <div className="ice-stat flex items-start gap-2">

@@ -994,15 +994,6 @@ svg.lucide.text-destructive {
   width: 100%;
 }
 
-.today-kicker {
-  position: relative;
-  z-index: 1;
-  width: fit-content;
-  padding: .22rem .42rem;
-  border-left: 2px solid hsl(var(--primary) / .62);
-  background: hsl(var(--primary) / .06);
-}
-
 .today-stats .ice-stat {
   padding-left: .75rem;
 }
@@ -1155,9 +1146,6 @@ svg.lucide.text-destructive {
     width: min(100%, 360px);
   }
 
-  .today-copy > h1 {
-    font-size: clamp(2.25rem, 9vw, 3.25rem);
-  }
 }
 
 @media (max-width: 359px) {
@@ -1165,10 +1153,6 @@ svg.lucide.text-destructive {
     width: 100%;
   }
 
-  .today-copy > h1 {
-    font-size: clamp(2rem, 8.5vw, 2.25rem);
-    line-height: .9;
-  }
 }
 
 @keyframes frost-float {
