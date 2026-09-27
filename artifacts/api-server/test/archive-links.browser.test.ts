@@ -172,6 +172,73 @@ test("release check preflight aborts a stalled readiness request", async () => {
   assert.equal(fetchObservedAbort, true);
 });
 
+test("release check preflight failure stops before seeding or browser checks", async () => {
+  const packageJson = JSON.parse(
+    await readFile(new URL("../package.json", import.meta.url), "utf8"),
+  ) as { scripts: Record<string, string> };
+  const releaseCommand = packageJson.scripts["test:browser:release"];
+  assert.ok(releaseCommand, "Expected the release browser command to exist");
+
+  const tempDir = await mkdtemp(join(tmpdir(), "piece-of-history-release-"));
+  const fakePnpmPath = join(tempDir, "pnpm");
+  const fakeShPath = join(tempDir, "sh");
+  const callLogPath = join(tempDir, "pnpm-calls.log");
+  const seedMarkerPath = join(tempDir, "seed-started");
+  const browserMarkerPath = join(tempDir, "browser-started");
+  const browserScriptMarkerPath = join(tempDir, "browser-script-started");
+
+  await writeFile(
+    fakePnpmPath,
+    `#!/bin/sh
+printf '%s\\n' "$*" >> "$RELEASE_TEST_CALLS"
+case "$*" in
+  "run test:browser:preflight") exit 23 ;;
+  "--filter @workspace/db run seed") touch "$RELEASE_SEED_MARKER"; exit 0 ;;
+  "run test:browser") touch "$RELEASE_BROWSER_MARKER"; exit 0 ;;
+  *) exit 99 ;;
+esac
+`,
+    { mode: 0o755 },
+  );
+  await writeFile(
+    fakeShPath,
+    `#!/bin/sh
+printf '%s\\n' "$*" >> "$RELEASE_BROWSER_SCRIPT_CALLS"
+exit 0
+`,
+    { mode: 0o755 },
+  );
+
+  try {
+    const exitCode = await new Promise<number>((resolve, reject) => {
+      const shell = spawn("/bin/sh", ["-c", releaseCommand], {
+        env: {
+          ...process.env,
+          PATH: `${tempDir}:${process.env.PATH ?? ""}`,
+          RELEASE_TEST_CALLS: callLogPath,
+          RELEASE_SEED_MARKER: seedMarkerPath,
+          RELEASE_BROWSER_MARKER: browserMarkerPath,
+          RELEASE_BROWSER_SCRIPT_CALLS: browserScriptMarkerPath,
+        },
+        stdio: "ignore",
+      });
+      shell.once("error", reject);
+      shell.once("close", (code) => resolve(code ?? -1));
+    });
+
+    assert.equal(exitCode, 23);
+    assert.deepEqual(
+      (await readFile(callLogPath, "utf8")).trim().split("\n"),
+      ["run test:browser:preflight"],
+    );
+    await assert.rejects(readFile(seedMarkerPath), { code: "ENOENT" });
+    await assert.rejects(readFile(browserMarkerPath), { code: "ENOENT" });
+    await assert.rejects(readFile(browserScriptMarkerPath), { code: "ENOENT" });
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
+
 test("release check preflight stops before browser when seeding fails", async () => {
   const packageJson = JSON.parse(
     await readFile(new URL("../package.json", import.meta.url), "utf8"),
