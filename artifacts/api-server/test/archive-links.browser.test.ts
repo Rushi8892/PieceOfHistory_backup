@@ -290,6 +290,67 @@ esac
   }
 });
 
+test("release check runs the browser step once after successful preflight and seeding", async () => {
+  const packageJson = JSON.parse(
+    await readFile(new URL("../package.json", import.meta.url), "utf8"),
+  ) as { scripts: Record<string, string> };
+  const releaseCommand = packageJson.scripts["test:browser:release"];
+  assert.ok(releaseCommand, "Expected the release browser command to exist");
+
+  const tempDir = await mkdtemp(join(tmpdir(), "piece-of-history-release-"));
+  const fakePnpmPath = join(tempDir, "pnpm");
+  const fakeShPath = join(tempDir, "sh");
+  const callLogPath = join(tempDir, "release-calls.log");
+
+  await writeFile(
+    fakePnpmPath,
+    `#!/bin/sh
+printf 'pnpm:%s\\n' "$*" >> "$RELEASE_TEST_CALLS"
+case "$*" in
+  "run test:browser:preflight") exit 0 ;;
+  "--filter @workspace/db run seed") exit 0 ;;
+  *) exit 99 ;;
+esac
+`,
+    { mode: 0o755 },
+  );
+  await writeFile(
+    fakeShPath,
+    `#!/bin/sh
+printf 'sh:%s\\n' "$*" >> "$RELEASE_TEST_CALLS"
+exit 0
+`,
+    { mode: 0o755 },
+  );
+
+  try {
+    const exitCode = await new Promise<number>((resolve, reject) => {
+      const shell = spawn("/bin/sh", ["-c", releaseCommand], {
+        env: {
+          ...process.env,
+          PATH: `${tempDir}:${process.env.PATH ?? ""}`,
+          RELEASE_TEST_CALLS: callLogPath,
+        },
+        stdio: "ignore",
+      });
+      shell.once("error", reject);
+      shell.once("close", (code) => resolve(code ?? -1));
+    });
+
+    assert.equal(exitCode, 0);
+    assert.deepEqual(
+      (await readFile(callLogPath, "utf8")).trim().split("\n"),
+      [
+        "pnpm:run test:browser:preflight",
+        "pnpm:--filter @workspace/db run seed",
+        "sh:scripts/run-browser-release.sh",
+      ],
+    );
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
+
 test("release check preflight reports an unhealthy API response", async () => {
   const endpoint = "http://api.example.test/api/healthz";
   await assert.rejects(
