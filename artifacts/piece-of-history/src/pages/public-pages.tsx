@@ -19,10 +19,10 @@ export function LandingPage() {
   const participants = today?.participants ?? [];
   const leader = participants[0];
   const recentHistory = archiveQuery.data?.items ?? [];
-  const calendarDate = today?.date
-    ? (/^\d{4}-\d{2}-\d{2}$/.test(today.date) ? new Date(`${today.date}T12:00:00`) : new Date(today.date))
-    : undefined;
-  const hasValidCalendarDate = Boolean(calendarDate && !Number.isNaN(calendarDate.getTime()));
+  const calendarDate = today?.serverTime
+    ? new Date(today.serverTime)
+    : new Date();
+  const hasValidCalendarDate = !Number.isNaN(calendarDate.getTime());
 
   return (
     <div className="paper-grain min-h-[100dvh] overflow-hidden">
