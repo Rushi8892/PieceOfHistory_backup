@@ -1,5 +1,3 @@
-import { ArrowUpRight } from 'lucide-react';
-import { Link } from 'wouter';
 import { useGetSiteStats } from '@workspace/api-client-react';
 import { IceGlyph, SectionKicker, SiteFooter, SiteNav } from '@/components/site';
 
@@ -23,9 +21,9 @@ export function TermsPage() {
             <h2 className="font-display text-3xl text-primary">How a day works</h2>
             <ul className="mt-5 list-disc space-y-3 pl-5 text-sm leading-7 text-muted-foreground marker:text-accent">
               <li>Users voluntarily bid for a specific date.</li>
-              <li>The highest valid, confirmed bid at 23:59:59 wins that date.</li>
+              <li>The highest valid, confirmed bid at 23:59:59 UTC wins that date.</li>
               <li className="flex gap-2"><IceGlyph kind="lock" size={14} className="mt-0.5 shrink-0 text-secondary" /><span>Once the date is frozen, the winning story becomes public.</span></li>
-              <li>Completed bids are non-refundable unless required by applicable law.</li>
+              <li>Payments are real and non-refundable, whether or not a story reaches #1, except for duplicate or erroneous charges and where the law requires a refund. See our Refund &amp; Cancellation page.</li>
             </ul>
           </section>
 
@@ -38,18 +36,7 @@ export function TermsPage() {
               <li>Only submit information you are comfortable making public.</li>
             </ul>
           </section>
-
-           <section id="privacy" className="bg-secondary/10 py-8 sm:py-10">
-            <h2 className="font-display text-3xl text-primary">Privacy</h2>
-            <p className="mt-5 text-sm leading-7 text-muted-foreground">
-              Stories that win become part of the public archive. Please avoid submitting personal or confidential information about yourself or anyone else.
-            </p>
-          </section>
         </div>
-
-        <Link href="/" className="mt-10 inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-accent" data-testid="link-terms-back">
-          Back to the page <ArrowUpRight size={16} />
-        </Link>
       </main>
       <SiteFooter stats={statsQuery.data} />
     </div>

@@ -17,6 +17,7 @@ import * as z from 'zod';
 import { Loader2, AlertCircle, Lock, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useGetSiteStats } from '@workspace/api-client-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const loadRazorpay = (): Promise<boolean> => {
   return new Promise((resolve) => {
@@ -49,6 +50,8 @@ export function PaymentPage() {
   const statsQuery = useGetSiteStats();
 
   const [waitingForVerification, setWaitingForVerification] = useState(false);
+  const [verificationTimedOut, setVerificationTimedOut] = useState(false);
+  const [paymentAcknowledged, setPaymentAcknowledged] = useState(false);
   const [addingAnother, setAddingAnother] = useState(false);
   const [razorpayError, setRazorpayError] = useState<string | null>(null);
 
@@ -64,6 +67,15 @@ export function PaymentPage() {
 
   const context = paymentQuery.data;
   const minCents = context?.minimumPaymentCents || 100;
+
+  useEffect(() => {
+    if (!waitingForVerification) return;
+    const timeout = window.setTimeout(() => {
+      setWaitingForVerification(false);
+      setVerificationTimedOut(true);
+    }, 60_000);
+    return () => window.clearTimeout(timeout);
+  }, [waitingForVerification]);
   
   const paymentSchema = getPaymentSchema(minCents);
   
@@ -74,8 +86,12 @@ export function PaymentPage() {
 
   // Effect to handle capture completion
   useEffect(() => {
-    if (waitingForVerification && context?.paymentStatus === 'captured') {
+    if (
+      context?.paymentStatus === 'captured' &&
+      (waitingForVerification || verificationTimedOut)
+    ) {
       setWaitingForVerification(false);
+      setVerificationTimedOut(false);
       setAddingAnother(false);
       queryClient.invalidateQueries({ queryKey: getGetTodayCompetitionQueryKey() });
       queryClient.invalidateQueries({ queryKey: getGetSiteStatsQueryKey() });
@@ -84,7 +100,7 @@ export function PaymentPage() {
         description: 'Your piece has been added to the archive.',
       });
     }
-  }, [waitingForVerification, context?.paymentStatus, queryClient, toast]);
+  }, [waitingForVerification, verificationTimedOut, context?.paymentStatus, queryClient, toast]);
 
   // Effect to sync default value when context loads
   useEffect(() => {
@@ -181,6 +197,28 @@ export function PaymentPage() {
               We are confirming your contribution. This should only take a moment.
             </p>
           </div>
+        ) : verificationTimedOut ? (
+          <div className="rounded-[30px] border border-primary/10 bg-card p-10 max-w-md w-full text-center shadow-lg animate-rise-in" data-testid="state-payment-verification-timeout">
+            <AlertCircle className="mx-auto text-secondary mb-6" size={40} />
+            <h2 className="font-display text-3xl text-primary leading-tight">Still confirming</h2>
+            <p className="mt-4 text-base leading-7 text-muted-foreground">
+              Your payment may still be confirming. Please do not pay again. Check My History later to see its status.
+            </p>
+            <PrimaryButton
+              onClick={() => {
+                setVerificationTimedOut(false);
+                setWaitingForVerification(true);
+                void paymentQuery.refetch();
+              }}
+              className="mt-7 w-full"
+              testId="button-check-payment-again"
+            >
+              Check again
+            </PrimaryButton>
+            <PrimaryButton href="/my-history" variant="quiet" className="mt-3 w-full" testId="button-view-my-history">
+              Go to My History
+            </PrimaryButton>
+          </div>
         ) : isCaptured ? (
           <div className="rounded-[30px] border border-primary/10 bg-card p-10 max-w-md w-full text-center shadow-lg animate-rise-in" data-testid="state-payment-captured">
             <CheckCircle2 className="mx-auto text-secondary mb-6" size={48} strokeWidth={1.5} />
@@ -224,6 +262,9 @@ export function PaymentPage() {
                       Every payment is real and non-refundable, whether or not your story ends up at #1. 
                       Your ranking is determined by your own cumulative payments.
                     </p>
+                    <p className="mt-2 text-sm leading-6 text-primary/80">
+                      Today&apos;s competition closes at 23:59:59 UTC.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -260,6 +301,18 @@ export function PaymentPage() {
                     )}
                   />
 
+                  <label className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-primary" data-testid="payment-nonrefundable-acknowledgment">
+                    <Checkbox
+                      checked={paymentAcknowledged}
+                      onCheckedChange={(checked) => setPaymentAcknowledged(checked === true)}
+                      required
+                      aria-label="I understand this payment is real and non-refundable."
+                      data-testid="checkbox-payment-acknowledgment"
+                      className="mt-1"
+                    />
+                    <span>I understand this payment is real and non-refundable.</span>
+                  </label>
+
                   {razorpayError && (
                     <div className="rounded-lg bg-destructive/10 text-destructive text-sm p-3 font-semibold" data-testid="payment-error-message">
                       {razorpayError}
@@ -269,7 +322,7 @@ export function PaymentPage() {
                   <div className="pt-2">
                     <PrimaryButton 
                       type="submit" 
-                      disabled={createOrder.isPending} 
+                      disabled={createOrder.isPending || !paymentAcknowledged}
                       testId="button-submit-payment"
                       className="w-full h-14 text-base"
                     >

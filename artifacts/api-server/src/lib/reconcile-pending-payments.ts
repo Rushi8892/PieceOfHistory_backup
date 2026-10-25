@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, lte } from "drizzle-orm";
 import { paymentOrdersTable } from "@workspace/db";
 import type { DailyPiece } from "@workspace/db";
 import { settleCapturedPayment } from "./payment-settlement";
@@ -8,16 +8,19 @@ export async function reconcilePendingPaymentsForDay(
   database: any,
   day: Pick<DailyPiece, "id" | "closingTimestamp">,
   clientFactory: () => RazorpayClient = createRazorpayClient,
+  createdBefore?: Date,
 ): Promise<void> {
+  const pendingConditions = [
+    eq(paymentOrdersTable.dailyPieceId, day.id),
+    eq(paymentOrdersTable.status, "pending"),
+  ];
+  if (createdBefore) {
+    pendingConditions.push(lte(paymentOrdersTable.createdAt, createdBefore));
+  }
   const pendingOrders = await database
     .select({ razorpayOrderId: paymentOrdersTable.razorpayOrderId })
     .from(paymentOrdersTable)
-    .where(
-      and(
-        eq(paymentOrdersTable.dailyPieceId, day.id),
-        eq(paymentOrdersTable.status, "pending"),
-      ),
-    );
+    .where(and(...pendingConditions));
   if (pendingOrders.length === 0) return;
 
   const client = clientFactory();

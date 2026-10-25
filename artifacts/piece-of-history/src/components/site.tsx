@@ -306,9 +306,11 @@ export function SiteFooter({ stats: _stats }: { stats?: SiteStats }) {
         <div className="flex flex-wrap items-center gap-3 text-xs text-primary-foreground/65">
           <Link href="/terms" className="transition-colors hover:text-secondary" data-testid="footer-link-terms">Terms</Link>
           <span aria-hidden="true" className="text-secondary/50">·</span>
-          <Link href="/terms#privacy" className="transition-colors hover:text-secondary" data-testid="footer-link-privacy">Privacy</Link>
+          <Link href="/privacy" className="transition-colors hover:text-secondary" data-testid="footer-link-privacy">Privacy</Link>
           <span aria-hidden="true" className="text-secondary/50">·</span>
-          <a href="mailto:hello@pieceofhistory.app" className="transition-colors hover:text-secondary" data-testid="footer-link-contact">Contact</a>
+          <Link href="/refunds" className="transition-colors hover:text-secondary" data-testid="footer-link-refunds">Refund &amp; Cancellation</Link>
+          <span aria-hidden="true" className="text-secondary/50">·</span>
+          <Link href="/contact" className="transition-colors hover:text-secondary" data-testid="footer-link-contact">Contact</Link>
           <span className="text-primary-foreground/45">© 2026 Piece of History</span>
         </div>
       </div>

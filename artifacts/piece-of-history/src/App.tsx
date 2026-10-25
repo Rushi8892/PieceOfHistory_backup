@@ -18,6 +18,9 @@ import { SignInPage, SignUpPage } from '@/pages/auth-pages';
 import { ParticipatePage } from '@/pages/participate-page';
 import { PaymentPage } from '@/pages/payment-page';
 import { TermsPage } from '@/pages/terms-page';
+import { PrivacyPage } from '@/pages/privacy-page';
+import { RefundPage } from '@/pages/refund-page';
+import { ContactPage } from '@/pages/contact-page';
 import NotFound from '@/pages/not-found';
 import {
   Route,
@@ -101,6 +104,9 @@ function Router() {
         <Route path="/competition" component={CompetitionPage} />
         <Route path="/how-it-works" component={HowItWorksPage} />
         <Route path="/terms" component={TermsPage} />
+        <Route path="/privacy" component={PrivacyPage} />
+        <Route path="/refunds" component={RefundPage} />
+        <Route path="/contact" component={ContactPage} />
         
         <Route path="/my-history">
           <Show when="signed-in"><MyHistoryPage /></Show>
